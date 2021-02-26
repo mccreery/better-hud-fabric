@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "betterhud",
+  "version": "${version}",
+
+  "name": "Better HUD",
+  "description": "Gives you freedom over your HUD. Organize using Better HUD's versatile layout manager and add new elements such as a sign preview, armor display, compass, mob health bars, item pickup counter and many more to choose from.",
+  "authors": [
+    "Sam McCreery"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/mccreery/better-hud-fabric"
+  },
+
+  "license": "MIT",
+  "icon": "assets/betterhud/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "mccreery.betterhud.BetterHud"
+    ]
+  },
+  "mixins": [
+    "modid.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
