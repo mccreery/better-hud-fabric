@@ -28,4 +28,6 @@ public abstract class HudElement {
     public final void setCategory(HudElementCategory category) {
         this.category = category;
     }
+
+    public abstract void render(HudRenderContext context);
 }
