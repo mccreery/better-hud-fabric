@@ -1,10 +1,18 @@
-package mccreery.betterhud;
+package mccreery.betterhud.api;
 
+import mccreery.betterhud.BetterHud;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
 
 public abstract class HudElement {
+    public static final Registry<HudElement> REGISTRY = FabricRegistryBuilder
+            .createSimple(HudElement.class, new Identifier(BetterHud.ID, "element"))
+            .buildAndRegister();
+
     public MutableText getName() {
         return new TranslatableText(getTranslationKey());
     }
@@ -13,7 +21,7 @@ public abstract class HudElement {
 
     public String getTranslationKey() {
         if (translationKey == null) {
-            translationKey = Util.createTranslationKey("hudElement", BetterHud.REGISTRY.getId(this));
+            translationKey = Util.createTranslationKey("hudElement", REGISTRY.getId(this));
         }
 
         return translationKey;

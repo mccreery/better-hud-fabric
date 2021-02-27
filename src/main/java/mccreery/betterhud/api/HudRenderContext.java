@@ -1,4 +1,4 @@
-package mccreery.betterhud;
+package mccreery.betterhud.api;
 
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;

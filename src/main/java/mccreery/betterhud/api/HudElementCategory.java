@@ -1,4 +1,4 @@
-package mccreery.betterhud;
+package mccreery.betterhud.api;
 
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
