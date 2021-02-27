@@ -1,14 +1,20 @@
 package mccreery.betterhud;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointUtils;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class BetterHud implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
+    public static final String ID = "betterhud";
 
-		System.out.println("Hello Fabric world!");
-	}
+    public static final Registry<HudElement> REGISTRY = FabricRegistryBuilder
+            .createSimple(HudElement.class, new Identifier(ID, "element"))
+            .buildAndRegister();
+
+    @Override
+    public void onInitialize() {
+        EntrypointUtils.invoke(ID, BetterHudInitializer.class, BetterHudInitializer::onBetterHudInitialize);
+    }
 }
