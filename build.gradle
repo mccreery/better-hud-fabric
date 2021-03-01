@@ -1,8 +1,23 @@
-plugins {
-    id 'fabric-loom' version '0.5-SNAPSHOT'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+// For whatever reason, the Shadow plugin doesn't play nice when applied using the plugins DSL.
+// This is the exact same plugin, but using the legacy method.
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+        dependencies {
+            classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
+        }
+    }
 }
+
+plugins {
+    id 'fabric-loom' version '0.6-SNAPSHOT'
+    id 'maven-publish'
+    // id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -18,9 +33,17 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
 
+    // For gson-extras
     maven {
         url 'https://artifactory.cronapp.io/public-release/'
     }
+}
+
+configurations {
+    shadowInclude {
+        transitive = false
+    }
+    implementation.extendsFrom shadowInclude
 }
 
 dependencies {
@@ -35,7 +58,7 @@ dependencies {
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
 
-    shadow "com.google.code.gson:gson-extras:${project.gson_extras_version}"
+    shadowInclude "com.google.code.gson:gson-extras:${project.gson_extras_version}"
 }
 
 processResources {
@@ -69,17 +92,18 @@ java {
     withSourcesJar()
 }
 
-// Replace default jar with shadow jar
 shadowJar {
-    archiveClassifier = null
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
-    }
+    configurations = [ project.configurations.shadowInclude ]
+    relocate 'com.google.gson', "${project.group}.gson"
 }
 
-jar {
-    enabled = false
+remapJar {
     dependsOn shadowJar
+    input = shadowJar.archiveFile
+}
+
+tasks.withType(Jar) {
+    from 'LICENSE'
 }
 
 // configure the maven publication
@@ -95,7 +119,7 @@ publishing {
             }
         }
     }
-    
+
     // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
         // Add repositories to publish to here.
