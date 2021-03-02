@@ -30,4 +30,16 @@ public class RelativePosition {
     public void setOffset(Point offset) {
         this.offset = offset;
     }
+
+    public Rectangle apply(Rectangle parentBounds, Point size) {
+        Rectangle atOrigin = new Rectangle(0, 0, size.getX(), size.getY());
+        Point anchorPoint = Anchor.getAnchorPoint(atOrigin, anchor);
+        Point parentAnchorPoint = Anchor.getAnchorPoint(parentBounds, parentAnchor);
+
+        return new Rectangle(
+                parentAnchorPoint.getX() + offset.getX() - anchorPoint.getX(),
+                parentAnchorPoint.getY() + offset.getY() - anchorPoint.getY(),
+                size.getX(),
+                size.getY());
+    }
 }

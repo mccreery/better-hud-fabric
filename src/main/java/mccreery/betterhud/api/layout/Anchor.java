@@ -1,7 +1,5 @@
 package mccreery.betterhud.api.layout;
 
-import java.awt.Point;
-
 /**
  * Values corresponding to points in a regular 3x3 grid for rectangle and point alignment.
  */
