@@ -1,5 +1,6 @@
 package mccreery.betterhud.mixin;
 
+import mccreery.betterhud.HudRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -8,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = GameRenderer.class)
-public abstract class RenderHudMixin {
+public abstract class GameRendererMixin {
     /**
      * Redirected from {@link InGameHud#render(MatrixStack, float)}. Injections on the original render method will
      * succeed, but will have no effect at runtime since the method is no longer being called. Invokes the
@@ -18,6 +19,6 @@ public abstract class RenderHudMixin {
     @Redirect(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
     public void onRender(InGameHud thiz, MatrixStack matrices, float tickDelta) {
-        thiz.getFontRenderer().drawWithShadow(matrices, "Better HUD is running!", 5, 5, -1);
+        ((HudRenderer)thiz).renderOverlay(matrices, tickDelta);
     }
 }
