@@ -13,7 +13,7 @@ import java.io.IOException;
  * Creates type adapters only for {@link Schema} using the Gson instance's {@link SchemaProperty} adapter.
  * <p>Writing is not currently supported.
  */
-class SchemaAdapterFactory implements TypeAdapterFactory {
+public class SchemaAdapterFactory implements TypeAdapterFactory {
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
         if (type.getRawType() != Schema.class) {

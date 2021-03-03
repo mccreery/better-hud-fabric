@@ -14,7 +14,7 @@ import java.io.IOException;
 public class HudElementAdapterFactory implements TypeAdapterFactory {
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-        if (!HudElement.class.isAssignableFrom(type.getRawType())) {
+        if (type.getRawType() != HudElement.class) {
             return null;
         }
         TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);

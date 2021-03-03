@@ -52,7 +52,8 @@ public abstract class InGameHudMixin extends DrawableHelper implements HudRender
     @Shadow
     protected abstract void renderPumpkinOverlay();
 
-    @Shadow protected abstract void renderPortalOverlay(float nauseaStrength);
+    @Shadow
+    protected abstract void renderPortalOverlay(float nauseaStrength);
 
     @Override
     public void renderOverlay(MatrixStack matrices, float tickDelta) {
