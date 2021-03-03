@@ -69,7 +69,7 @@ public abstract class HudElement {
         return Collections.unmodifiableSet(children);
     }
 
-    private RelativePosition position = new RelativePosition();
+    private final RelativePosition position = new RelativePosition();
 
     public RelativePosition getPosition() {
         if (fixedPosition) {
