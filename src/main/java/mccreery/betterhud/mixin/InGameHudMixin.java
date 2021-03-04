@@ -1,6 +1,9 @@
 package mccreery.betterhud.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.internal.BetterHud;
+import mccreery.betterhud.internal.HudRenderContext;
 import mccreery.betterhud.internal.HudRenderer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -9,12 +12,14 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.w3c.dom.css.Rect;
 
 /**
  * Injections are used on various methods to eliminate side effects in the OpenGL state machine and maintain a sensible
@@ -61,11 +66,22 @@ public abstract class InGameHudMixin extends DrawableHelper implements HudRender
 
         scaledWidth = client.getWindow().getScaledWidth();
         scaledHeight = client.getWindow().getScaledHeight();
+        Rectangle screenBounds = new Rectangle(0, 0, scaledWidth, scaledHeight);
 
         // Fullscreen overlays, cannot be laid out
         tryRenderVignetteOverlay();
         tryRenderPumpkinOverlay();
         tryRenderPortalOverlay(tickDelta);
+
+        HudRenderContext context = new HudRenderContext();
+        context.setPhase(mccreery.betterhud.api.HudRenderContext.Phase.OVERLAY);
+        context.setMatrixStack(matrices);
+        context.setTickDelta(tickDelta);
+        context.setTargetEntity(client.player);
+        context.setParentBounds(screenBounds);
+        // position is populated by individual element tree nodes
+
+        BetterHud.getInstance().getLayout().render(context);
     }
 
     private void tryRenderVignetteOverlay() {
