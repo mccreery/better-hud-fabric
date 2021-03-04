@@ -1,4 +1,4 @@
-package mccreery.betterhud.api.layout;
+package mccreery.betterhud.internal.typeadapter;
 
 import com.google.common.base.Function;
 import com.google.common.collect.BiMap;
@@ -15,13 +15,13 @@ import java.io.IOException;
 /**
  * Formats enum field names through a converter before serializing.
  */
-public class EnumAdapterFactory implements TypeAdapterFactory {
+public class EnumTypeAdapterFactory implements TypeAdapterFactory {
     private final Function<String, String> nameFormatter;
 
     /**
      * @param nameFormatter Converts from enum field names to JSON names.
      */
-    public EnumAdapterFactory(Function<String, String> nameFormatter) {
+    public EnumTypeAdapterFactory(Function<String, String> nameFormatter) {
         this.nameFormatter = nameFormatter;
     }
 

@@ -8,11 +8,11 @@ import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.mojang.serialization.Lifecycle;
 import mccreery.betterhud.api.BetterHudInitializer;
 import mccreery.betterhud.api.HudElement;
-import mccreery.betterhud.api.HudElementAdapterFactory;
-import mccreery.betterhud.api.config.SchemaAdapterFactory;
+import mccreery.betterhud.internal.typeadapter.HudElementTypeAdapterFactory;
+import mccreery.betterhud.internal.typeadapter.SchemaTypeAdapterFactory;
 import mccreery.betterhud.api.config.SchemaProperty;
 import mccreery.betterhud.api.config.ToggleSchemaProperty;
-import mccreery.betterhud.api.layout.EnumAdapterFactory;
+import mccreery.betterhud.internal.typeadapter.EnumTypeAdapterFactory;
 import mccreery.betterhud.api.layout.HudLayout;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointUtils;
@@ -94,12 +94,12 @@ public class BetterHud implements ModInitializer {
                 .registerTypeAdapterFactory(elementTypeFactory)
                 .registerTypeAdapterFactory(propertyTypeFactory)
                 // Use camelCase for enums such as Anchor (topLeft, center etc.)
-                .registerTypeAdapterFactory(new EnumAdapterFactory(
+                .registerTypeAdapterFactory(new EnumTypeAdapterFactory(
                         CaseFormat.UPPER_UNDERSCORE.converterTo(CaseFormat.LOWER_CAMEL)))
                 // Populate parent (not present in JSON) and don't serialize positions where not needed
-                .registerTypeAdapterFactory(new HudElementAdapterFactory())
+                .registerTypeAdapterFactory(new HudElementTypeAdapterFactory())
                 // Translate JSON properties to schema properties
-                .registerTypeAdapterFactory(new SchemaAdapterFactory())
+                .registerTypeAdapterFactory(new SchemaTypeAdapterFactory())
                 .create();
     }
 

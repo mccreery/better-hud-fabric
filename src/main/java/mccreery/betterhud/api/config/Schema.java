@@ -1,5 +1,6 @@
 package mccreery.betterhud.api.config;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -8,15 +9,17 @@ import java.util.Map;
  * <p>This data is used by the config GUI to create controls for each property.
  */
 public class Schema {
-    Schema() {}
-
-    int schemaVersion;
+    private int schemaVersion;
 
     public int getSchemaVersion() {
         return schemaVersion;
     }
 
-    Map<String, SchemaProperty> properties;
+    public void setSchemaVersion(int schemaVersion) {
+        this.schemaVersion = schemaVersion;
+    }
+
+    private Map<String, SchemaProperty> properties = new HashMap<>();
 
     public Map<String, SchemaProperty> getProperties() {
         return properties;

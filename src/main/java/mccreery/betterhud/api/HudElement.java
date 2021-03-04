@@ -48,13 +48,24 @@ public abstract class HudElement {
         this.category = category;
     }
 
-    transient HudElement parent;
+    private transient HudElement parent;
 
     public HudElement getParent() {
         return parent;
     }
 
+    /**
+     * Reparents the element or removes its parent. This method ensures that this element is exclusively present in its
+     * new parent's child collection. It has no effect if the argument is equal to the current parent.
+     *
+     * @param parent {@code null} to remove this element's parent.
+     * @see #getChildren()
+     */
     public void setParent(HudElement parent) {
+        // Prevent remove-add if no change is needed
+        if (parent == this.parent) {
+            return;
+        }
         if (this.parent != null) {
             this.parent.children.remove(this);
         }
@@ -64,7 +75,7 @@ public abstract class HudElement {
         this.parent = parent;
     }
 
-    Set<HudElement> children = new HashSet<>();
+    private final Set<HudElement> children = new HashSet<>();
 
     public Set<HudElement> getChildren() {
         return Collections.unmodifiableSet(children);
