@@ -1,27 +1,28 @@
 package mccreery.betterhud.api;
 
-import com.mojang.serialization.Lifecycle;
-import mccreery.betterhud.BetterHud;
 import mccreery.betterhud.api.layout.Point;
 import mccreery.betterhud.api.layout.Rectangle;
 import mccreery.betterhud.api.layout.RelativePosition;
+import mccreery.betterhud.internal.BetterHud;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class HudElement {
-    // Cannot use FabricRegistryBuilder because it doesn't support generics
-    public static final Registry<Class<? extends HudElement>> REGISTRY = new SimpleRegistry<>(
-            RegistryKey.ofRegistry(new Identifier(BetterHud.ID, "element")),
-            Lifecycle.stable());
+    /**
+     * Registry for HUD elements by class. Should not be called before the {@code betterhud} entrypoint.
+     * @throws IllegalStateException If Better HUD has not been initialized.
+     */
+    @NotNull
+    public static Registry<Class<? extends HudElement>> getRegistry() {
+        return BetterHud.getElementRegistry();
+    }
 
     public MutableText getName() {
         return new TranslatableText(getTranslationKey());
@@ -31,7 +32,7 @@ public abstract class HudElement {
 
     public String getTranslationKey() {
         if (translationKey == null) {
-            translationKey = Util.createTranslationKey("hudElement", REGISTRY.getId(getClass()));
+            translationKey = Util.createTranslationKey("hudElement", getRegistry().getId(getClass()));
         }
 
         return translationKey;

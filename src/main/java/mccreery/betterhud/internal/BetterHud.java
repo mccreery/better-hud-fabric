@@ -1,10 +1,12 @@
-package mccreery.betterhud;
+package mccreery.betterhud.internal;
 
 import com.google.common.base.CaseFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+import com.mojang.serialization.Lifecycle;
+import mccreery.betterhud.BetterHudInitializer;
 import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.HudElementAdapterFactory;
 import mccreery.betterhud.api.config.SchemaAdapterFactory;
@@ -16,6 +18,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -23,6 +28,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Consumer;
 
 /**
  * Mod initializer calls entrypoint {@code betterhud} ({@link BetterHudInitializer}) when Better HUD is ready for
@@ -31,25 +37,39 @@ import java.nio.file.Paths;
 public class BetterHud implements ModInitializer {
     public static final String ID = "betterhud";
 
-    private static BetterHud instance;
+    private static Registry<Class<? extends HudElement>> elementRegistry;
 
     /**
-     * Should not be called before the {@code betterhud} entrypoint.
+     * <strong>Use {@link HudElement#getRegistry()} instead.</strong>
+     * <p>Registry for HUD elements by class. Should not be called before the {@code betterhud} entrypoint.
      * @throws IllegalStateException If Better HUD has not been initialized.
      */
     @NotNull
-    public static BetterHud getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("Better HUD not yet initialized");
+    public static Registry<Class<? extends HudElement>> getElementRegistry() {
+        if (elementRegistry != null) {
+            throw new IllegalStateException("Better HUD is not yet initialized");
         }
-        return instance;
+        return elementRegistry;
+    }
+
+    /**
+     * Setter for the HUD element registry.
+     */
+    private static Consumer<Registry<Class<? extends HudElement>>> registrySetter;
+
+    public static void setRegistrySetter(Consumer<Registry<Class<? extends HudElement>>> registrySetter) {
+        BetterHud.registrySetter = registrySetter;
     }
 
     @Override
     public void onInitialize() {
-        instance = this;
         layoutFilePath = MinecraftClient.getInstance().runDirectory.toPath()
                 .resolve(Paths.get("config", "betterhud-layout.json"));
+
+        // Cannot use FabricRegistryBuilder because it doesn't support generics
+        elementRegistry = new SimpleRegistry<>(
+                RegistryKey.ofRegistry(new Identifier(BetterHud.ID, "element")),
+                Lifecycle.stable());
 
         EntrypointUtils.invoke(ID, BetterHudInitializer.class, BetterHudInitializer::onBetterHudInitialize);
         initializeGson();
@@ -61,8 +81,8 @@ public class BetterHud implements ModInitializer {
         // Use subtypes for HudElement
         RuntimeTypeAdapterFactory<HudElement> elementTypeFactory = RuntimeTypeAdapterFactory.of(HudElement.class);
 
-        for (Identifier id : HudElement.REGISTRY.getIds()) {
-            Class<? extends HudElement> clazz = HudElement.REGISTRY.get(id);
+        for (Identifier id : HudElement.getRegistry().getIds()) {
+            Class<? extends HudElement> clazz = HudElement.getRegistry().get(id);
             elementTypeFactory.registerSubtype(clazz, id.toString());
         }
 

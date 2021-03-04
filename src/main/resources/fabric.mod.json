@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "mccreery.betterhud.BetterHud"
+      "mccreery.betterhud.internal.BetterHud"
     ]
   },
   "mixins": [

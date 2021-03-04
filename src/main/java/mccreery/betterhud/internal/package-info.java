@@ -1,8 +1,7 @@
 /**
- * Classes in this package is not part of Better HUD's public API and may change at any time without a major version
- * change.
+ * <strong>Classes in this package are not part of Better HUD's public API.</strong>
  *
- * <p><strong>Other mods should not use classes in this package.</strong></p>
+ * <p>Implements the internal functionality of Better HUD.
  *
  * @see mccreery.betterhud.api
  */
