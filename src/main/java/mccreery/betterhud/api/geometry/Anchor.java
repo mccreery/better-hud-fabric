@@ -1,4 +1,4 @@
-package mccreery.betterhud.api.layout;
+package mccreery.betterhud.api.geometry;
 
 /**
  * Values corresponding to points in a regular 3x3 grid for rectangle and point alignment.

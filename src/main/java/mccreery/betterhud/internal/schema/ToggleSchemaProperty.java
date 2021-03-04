@@ -1,4 +1,4 @@
-package mccreery.betterhud.api.config;
+package mccreery.betterhud.internal.schema;
 
 public class ToggleSchemaProperty extends SchemaProperty {
     private ToggleSchemaProperty() {}

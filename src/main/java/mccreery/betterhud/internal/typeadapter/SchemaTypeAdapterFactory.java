@@ -6,8 +6,8 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import mccreery.betterhud.api.config.Schema;
-import mccreery.betterhud.api.config.SchemaProperty;
+import mccreery.betterhud.internal.schema.Schema;
+import mccreery.betterhud.internal.schema.SchemaProperty;
 
 import java.io.IOException;
 

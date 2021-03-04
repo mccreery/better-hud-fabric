@@ -1,8 +1,8 @@
 package mccreery.betterhud.api;
 
-import mccreery.betterhud.api.layout.Point;
-import mccreery.betterhud.api.layout.Rectangle;
-import mccreery.betterhud.api.layout.RelativePosition;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.internal.layout.RelativePosition;
 import mccreery.betterhud.internal.BetterHud;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
@@ -72,13 +72,6 @@ public abstract class HudElement {
     }
 
     private final RelativePosition position = new RelativePosition();
-
-    public RelativePosition getPosition() {
-        if (fixedPosition) {
-            throw new IllegalStateException("Element has fixed position");
-        }
-        return position;
-    }
 
     private transient boolean fixedPosition;
 

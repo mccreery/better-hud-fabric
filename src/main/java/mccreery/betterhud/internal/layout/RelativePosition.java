@@ -1,4 +1,8 @@
-package mccreery.betterhud.api.layout;
+package mccreery.betterhud.internal.layout;
+
+import mccreery.betterhud.api.geometry.Anchor;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 
 public class RelativePosition {
     private Anchor anchor;

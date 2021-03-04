@@ -1,4 +1,4 @@
-package mccreery.betterhud.api.layout;
+package mccreery.betterhud.internal.layout;
 
 import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.HudRenderContext;

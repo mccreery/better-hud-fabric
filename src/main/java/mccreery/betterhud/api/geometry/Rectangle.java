@@ -1,4 +1,4 @@
-package mccreery.betterhud.api.layout;
+package mccreery.betterhud.api.geometry;
 
 /**
  * Immutable 2D integer rectangle.

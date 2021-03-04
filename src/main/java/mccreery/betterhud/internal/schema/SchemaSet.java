@@ -1,4 +1,4 @@
-package mccreery.betterhud.api.config;
+package mccreery.betterhud.internal.schema;
 
 import java.util.Map;
 import java.util.Set;
