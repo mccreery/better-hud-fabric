@@ -5,7 +5,7 @@ import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
 public class RelativePosition {
-    private Anchor anchor;
+    private Anchor anchor = Anchor.TOP_LEFT;
 
     public Anchor getAnchor() {
         return anchor;
@@ -15,7 +15,7 @@ public class RelativePosition {
         this.anchor = anchor;
     }
 
-    private Anchor parentAnchor;
+    private Anchor parentAnchor = Anchor.TOP_LEFT;
 
     public Anchor getParentAnchor() {
         return parentAnchor;
@@ -25,7 +25,7 @@ public class RelativePosition {
         this.parentAnchor = parentAnchor;
     }
 
-    private Point offset;
+    private Point offset = Point.ZERO;
 
     public Point getOffset() {
         return offset;

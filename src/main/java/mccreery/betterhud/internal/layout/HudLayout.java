@@ -1,28 +1,35 @@
 package mccreery.betterhud.internal.layout;
 
-import mccreery.betterhud.api.HudElement;
-import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.internal.HudRenderContext;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class HudLayout {
-    private final Set<HudElement> rootElements = new HashSet<>();
+    private final Set<HudElementTree> roots = new HashSet<>();
 
-    public Set<HudElement> getRootElements() {
-        return rootElements;
+    public Set<HudElementTree> getRoots() {
+        return roots;
     }
 
     public void render(HudRenderContext context) {
-        for (HudElement element : rootElements) {
-            renderTree(element, context);
+        for (HudElementTree root : roots) {
+            // Defensive copy, renderTree modifies element-specific properties of HudRenderContext
+            renderTree(root, new HudRenderContext(context));
         }
     }
 
-    private void renderTree(HudElement element, HudRenderContext context) {
-        element.render(context);
+    private void renderTree(HudElementTree tree, HudRenderContext context) {
+        context.setPosition(tree.getPosition());
+        Rectangle bounds = tree.getElement().render(context);
 
-        for (HudElement child : element.getChildren()) {
+        // Ignore non rendering elements, while still parenting as close as possible up the tree
+        if (bounds != null) {
+            context.setParentBounds(bounds);
+        }
+
+        for (HudElementTree child : tree.getChildren()) {
             renderTree(child, context);
         }
     }

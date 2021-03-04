@@ -8,7 +8,7 @@ import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.mojang.serialization.Lifecycle;
 import mccreery.betterhud.api.BetterHudInitializer;
 import mccreery.betterhud.api.HudElement;
-import mccreery.betterhud.internal.typeadapter.HudElementTypeAdapterFactory;
+import mccreery.betterhud.internal.typeadapter.HudElementTreeTypeAdapterFactory;
 import mccreery.betterhud.internal.typeadapter.SchemaTypeAdapterFactory;
 import mccreery.betterhud.internal.schema.SchemaProperty;
 import mccreery.betterhud.internal.schema.ToggleSchemaProperty;
@@ -97,7 +97,7 @@ public class BetterHud implements ModInitializer {
                 .registerTypeAdapterFactory(new EnumTypeAdapterFactory(
                         CaseFormat.UPPER_UNDERSCORE.converterTo(CaseFormat.LOWER_CAMEL)))
                 // Populate parent (not present in JSON) and don't serialize positions where not needed
-                .registerTypeAdapterFactory(new HudElementTypeAdapterFactory())
+                .registerTypeAdapterFactory(new HudElementTreeTypeAdapterFactory())
                 // Translate JSON properties to schema properties
                 .registerTypeAdapterFactory(new SchemaTypeAdapterFactory())
                 .create();

@@ -1,17 +1,14 @@
 package mccreery.betterhud.api;
 
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-public final class HudRenderContext {
-    HudRenderContext(Phase phase, MatrixStack matrixStack, float tickDelta, LivingEntity targetEntity) {
-        this.phase = phase;
-        this.matrixStack = matrixStack;
-        this.tickDelta = tickDelta;
-        this.targetEntity = targetEntity;
-    }
+public interface HudRenderContext {
+    Phase getPhase();
 
-    public enum Phase {
+    enum Phase {
         /**
          * Elements accepting this phase render as an overlay, like the vanilla HUD.
          */
@@ -23,30 +20,14 @@ public final class HudRenderContext {
         LIVING_ENTITY_BILLBOARD
     }
 
-    private final Phase phase;
+    MatrixStack getMatrixStack();
 
-    public Phase getPhase() {
-        return phase;
-    }
-
-    private final MatrixStack matrixStack;
-
-    public MatrixStack getMatrixStack() {
-        return matrixStack;
-    }
-
-    private final float tickDelta;
-
-    public float getTickDelta() {
-        return tickDelta;
-    }
-
-    private final LivingEntity targetEntity;
+    float getTickDelta();
 
     /**
-     * @return The entity carrying the billboard for phase {@link Phase#LIVING_ENTITY_BILLBOARD}, otherwise the player.
+     * @return The entity carrying the billboard for phase {@link mccreery.betterhud.internal.HudRenderContext.Phase#LIVING_ENTITY_BILLBOARD}, otherwise the player.
      */
-    public LivingEntity getTargetEntity() {
-        return targetEntity;
-    }
+    LivingEntity getTargetEntity();
+
+    Rectangle calculateBounds(Point size);
 }

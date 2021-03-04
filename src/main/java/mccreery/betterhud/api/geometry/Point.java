@@ -4,6 +4,8 @@ package mccreery.betterhud.api.geometry;
  * Immutable 2D integer point.
  */
 public final class Point {
+    public static final Point ZERO = new Point(0, 0);
+
     public Point(int x, int y) {
         this.x = x;
         this.y = y;

@@ -2,17 +2,13 @@ package mccreery.betterhud.api;
 
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
-import mccreery.betterhud.internal.layout.RelativePosition;
 import mccreery.betterhud.internal.BetterHud;
+import mccreery.betterhud.internal.HudRenderContext;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 public abstract class HudElement {
     /**
@@ -38,74 +34,20 @@ public abstract class HudElement {
         return translationKey;
     }
 
-    private transient HudElement parent;
+    private transient boolean fixed;
 
-    public HudElement getParent() {
-        return parent;
+    /**
+     * Indicates that the element has a fixed position and cannot be parented or positioned relatively.
+     */
+    public boolean isFixed() {
+        return fixed;
     }
 
     /**
-     * Reparents the element or removes its parent. This method ensures that this element is exclusively present in its
-     * new parent's child collection. It has no effect if the argument is equal to the current parent.
-     *
-     * @param parent {@code null} to remove this element's parent.
-     * @see #getChildren()
+     * Indicates that the element has a fixed position and cannot be parented or positioned relatively.
      */
-    public void setParent(HudElement parent) {
-        // Prevent remove-add if no change is needed
-        if (parent == this.parent) {
-            return;
-        }
-        if (this.parent != null) {
-            this.parent.children.remove(this);
-        }
-        if (parent != null) {
-            parent.children.add(this);
-        }
-        this.parent = parent;
-    }
-
-    private final Set<HudElement> children = new HashSet<>();
-
-    public Set<HudElement> getChildren() {
-        return Collections.unmodifiableSet(children);
-    }
-
-    private final RelativePosition position = new RelativePosition();
-
-    private transient boolean fixedPosition;
-
-    public boolean getFixedPosition() {
-        return fixedPosition;
-    }
-
-    /**
-     * Indicates that the element has a fixed position and cannot be parented or positioned relatively. Elements with
-     * this property set to true do not serialize or deserialize
-     */
-    protected void setFixedPosition(boolean fixedPosition) {
-        this.fixedPosition = fixedPosition;
-    }
-
-    private transient Rectangle bounds;
-
-    /**
-     * Bounds is {@code null} if the element renders fullscreen or otherwise cannot be parented to.
-     */
-    public Rectangle getBounds() {
-        return bounds;
-    }
-
-    public void setBounds(Rectangle bounds) {
-        this.bounds = bounds;
-    }
-
-    /**
-     * Calculates bounds by applying the anchor points of the current relative position to a rectangle of the given size
-     * and the parent's bounds.
-     */
-    protected Rectangle calculateBounds(Point size) {
-        return position.apply(parent.bounds, size);
+    protected void setFixed(boolean fixed) {
+        this.fixed = fixed;
     }
 
     private HudRenderContext.Phase renderPhase = HudRenderContext.Phase.OVERLAY;
@@ -122,11 +64,12 @@ public abstract class HudElement {
     }
 
     /**
-     * Renders and updates bounds.
+     * Renders the element if conditions defined by the implementation are met.
      *
-     * <p>Implementers should call {@link #setBounds(Rectangle)} with the result of {@link #calculateBounds(Point)} or
-     * their fixed bounds, unless the bounds do not need to be updated (for example, if constant and set in the
-     * constructor).
+     * <p>Elements which do not have fixed position should render within the bounds returned by
+     * {@link HudRenderContext#calculateBounds(Point)}.
+     *
+     * @return The bounds within which the element rendered or {@code null} if the element did not render.
      */
-    public abstract void render(HudRenderContext context);
+    public abstract Rectangle render(HudRenderContext context);
 }
