@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 public abstract class HudElement {
     /**
      * Registry for HUD elements by class. Should not be called before the {@code betterhud} entrypoint.
-     * @throws IllegalStateException If Better HUD has not been initialized.
+     * @throws IllegalStateException If Better HUD is not yet initialized
      */
     @NotNull
     public static Registry<Class<? extends HudElement>> getRegistry() {
-        return BetterHud.getElementRegistry();
+        return BetterHud.getInstance().getElementRegistry();
     }
 
     public MutableText getName() {

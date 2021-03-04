@@ -36,18 +36,21 @@ import java.nio.file.Paths;
 public class BetterHud implements ModInitializer {
     public static final String ID = "betterhud";
 
-    private static Registry<Class<? extends HudElement>> elementRegistry;
+    private static BetterHud instance;
 
     /**
-     * <strong>Use {@link HudElement#getRegistry()} instead.</strong>
-     * <p>Registry for HUD elements by class. Should not be called before the {@code betterhud} entrypoint.
-     * @throws IllegalStateException If Better HUD has not been initialized.
+     * @throws IllegalStateException if Better HUD is not yet initialized
      */
-    @NotNull
-    public static Registry<Class<? extends HudElement>> getElementRegistry() {
-        if (elementRegistry == null) {
+    public static BetterHud getInstance() {
+        if (instance == null) {
             throw new IllegalStateException("Better HUD is not yet initialized");
         }
+        return instance;
+    }
+
+    private Registry<Class<? extends HudElement>> elementRegistry;
+
+    public Registry<Class<? extends HudElement>> getElementRegistry() {
         return elementRegistry;
     }
 
@@ -61,6 +64,7 @@ public class BetterHud implements ModInitializer {
                 RegistryKey.ofRegistry(new Identifier(BetterHud.ID, "element")),
                 Lifecycle.stable());
 
+        instance = this;
         EntrypointUtils.invoke(ID, BetterHudInitializer.class, BetterHudInitializer::onBetterHudInitialize);
         initializeGson();
         loadLayout();
