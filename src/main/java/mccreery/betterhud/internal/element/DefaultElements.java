@@ -8,9 +8,7 @@ import net.minecraft.util.registry.Registry;
 
 public class DefaultElements implements BetterHudInitializer {
     @Override
-    public void onBetterHudInitialize() {
-        Registry<Class<? extends HudElement>> registry = HudElement.getRegistry();
-
+    public void onBetterHudInitialize(Registry<Class<? extends HudElement>> registry) {
         Registry.register(registry, new Identifier(BetterHud.ID, "block_viewer"), BlockViewer.class);
     }
 }

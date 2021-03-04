@@ -64,7 +64,9 @@ public class BetterHud implements ModInitializer {
                 Lifecycle.stable());
 
         instance = this;
-        EntrypointUtils.invoke(ID, BetterHudInitializer.class, BetterHudInitializer::onBetterHudInitialize);
+        EntrypointUtils.invoke(ID, BetterHudInitializer.class, callback ->
+                callback.onBetterHudInitialize(elementRegistry));
+
         initializeGson();
         loadLayout();
     }
