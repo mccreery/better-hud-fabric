@@ -28,7 +28,6 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.function.Consumer;
 
 /**
  * Mod initializer calls entrypoint {@code betterhud} ({@link BetterHudInitializer}) when Better HUD is ready for
@@ -46,19 +45,10 @@ public class BetterHud implements ModInitializer {
      */
     @NotNull
     public static Registry<Class<? extends HudElement>> getElementRegistry() {
-        if (elementRegistry != null) {
+        if (elementRegistry == null) {
             throw new IllegalStateException("Better HUD is not yet initialized");
         }
         return elementRegistry;
-    }
-
-    /**
-     * Setter for the HUD element registry.
-     */
-    private static Consumer<Registry<Class<? extends HudElement>>> registrySetter;
-
-    public static void setRegistrySetter(Consumer<Registry<Class<? extends HudElement>>> registrySetter) {
-        BetterHud.registrySetter = registrySetter;
     }
 
     @Override

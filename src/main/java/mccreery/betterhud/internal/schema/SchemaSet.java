@@ -1,5 +1,6 @@
 package mccreery.betterhud.internal.schema;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,7 +15,11 @@ public final class SchemaSet {
         return formatVersion;
     }
 
-    private Set<Schema> schemas;
+    public void setFormatVersion(int formatVersion) {
+        this.formatVersion = formatVersion;
+    }
+
+    private final Set<Schema> schemas = new HashSet<>();
 
     public Set<Schema> getSchemas() {
         return schemas;

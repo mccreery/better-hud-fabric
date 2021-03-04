@@ -19,7 +19,7 @@ public class Schema {
         this.schemaVersion = schemaVersion;
     }
 
-    private Map<String, SchemaProperty> properties = new HashMap<>();
+    private final Map<String, SchemaProperty> properties = new HashMap<>();
 
     public Map<String, SchemaProperty> getProperties() {
         return properties;

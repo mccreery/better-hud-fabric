@@ -1,6 +1,5 @@
 package mccreery.betterhud.internal.typeadapter;
 
-import com.google.common.base.Function;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
@@ -11,6 +10,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 /**
  * Formats enum field names through a converter before serializing.
