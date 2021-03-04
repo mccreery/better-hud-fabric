@@ -9,10 +9,11 @@ import net.minecraft.client.gui.DrawableHelper;
 public class BlockViewer extends HudElement {
     @Override
     public Rectangle render(HudRenderContext context) {
-        Rectangle bounds = context.calculateBounds(new Point(100, 50));
+        Rectangle bounds = context.calculateBounds(new Point(100, 20));
 
         DrawableHelper.fill(context.getMatrixStack(),
-                bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(),
+                bounds.getX(), bounds.getY(),
+                bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(),
                 0xffffffff);
 
         return bounds;
