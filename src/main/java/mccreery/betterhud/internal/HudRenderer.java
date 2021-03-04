@@ -1,4 +1,4 @@
-package mccreery.betterhud.mixin;
+package mccreery.betterhud.internal;
 
 import net.minecraft.client.util.math.MatrixStack;
 

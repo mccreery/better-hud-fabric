@@ -1,5 +1,6 @@
 package mccreery.betterhud.mixin;
 
+import mccreery.betterhud.internal.HudRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;

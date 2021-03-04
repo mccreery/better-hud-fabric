@@ -63,6 +63,7 @@ public class BetterHud implements ModInitializer {
 
         EntrypointUtils.invoke(ID, BetterHudInitializer.class, BetterHudInitializer::onBetterHudInitialize);
         initializeGson();
+        loadLayout();
     }
 
     private Gson gson;

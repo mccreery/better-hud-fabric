@@ -3,7 +3,6 @@ package mccreery.betterhud.api;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.internal.BetterHud;
-import mccreery.betterhud.internal.HudRenderContext;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;

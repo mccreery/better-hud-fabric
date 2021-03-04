@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "mccreery.betterhud.internal.BetterHud"
+    ],
+    "betterhud": [
+      "mccreery.betterhud.internal.element.DefaultElements"
     ]
   },
   "mixins": [

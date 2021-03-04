@@ -1,6 +1,7 @@
 package mccreery.betterhud.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import mccreery.betterhud.internal.HudRenderer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
