@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.mojang.serialization.Lifecycle;
-import mccreery.betterhud.BetterHudInitializer;
+import mccreery.betterhud.api.BetterHudInitializer;
 import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.HudElementAdapterFactory;
 import mccreery.betterhud.api.config.SchemaAdapterFactory;
