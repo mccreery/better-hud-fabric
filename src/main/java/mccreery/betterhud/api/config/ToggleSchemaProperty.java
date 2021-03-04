@@ -1,7 +1,5 @@
 package mccreery.betterhud.api.config;
 
-import com.google.gson.annotations.SerializedName;
-
 public class ToggleSchemaProperty extends SchemaProperty {
     private ToggleSchemaProperty() {}
 
@@ -12,9 +10,7 @@ public class ToggleSchemaProperty extends SchemaProperty {
     }
 
     public enum ToggleType {
-        @SerializedName("enabled")
         ENABLED,
-        @SerializedName("visibility")
         VISIBILITY;
     }
 }

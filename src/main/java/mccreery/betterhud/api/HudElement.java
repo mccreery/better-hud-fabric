@@ -38,16 +38,6 @@ public abstract class HudElement {
         return translationKey;
     }
 
-    private transient HudElementCategory category = HudElementCategory.MISC;
-
-    public HudElementCategory getCategory() {
-        return category;
-    }
-
-    protected void setCategory(HudElementCategory category) {
-        this.category = category;
-    }
-
     private transient HudElement parent;
 
     public HudElement getParent() {
@@ -123,6 +113,19 @@ public abstract class HudElement {
      */
     protected Rectangle calculateBounds(Point size) {
         return position.apply(parent.bounds, size);
+    }
+
+    private HudRenderContext.Phase renderPhase = HudRenderContext.Phase.OVERLAY;
+
+    public HudRenderContext.Phase getRenderPhase() {
+        return renderPhase;
+    }
+
+    /**
+     * {@link #render(HudRenderContext)} will only be called if the context's phase matches.
+     */
+    protected void setRenderPhase(HudRenderContext.Phase renderPhase) {
+        this.renderPhase = renderPhase;
     }
 
     /**
