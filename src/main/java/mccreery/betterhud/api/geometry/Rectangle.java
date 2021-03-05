@@ -11,6 +11,10 @@ public final class Rectangle {
         this.height = height;
     }
 
+    public Rectangle(Point position, Point size) {
+        this(position.getX(), position.getY(), size.getX(), size.getY());
+    }
+
     private final int x;
 
     public int getX() {
@@ -33,6 +37,22 @@ public final class Rectangle {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getMaxX() {
+        return x + width;
+    }
+
+    public int getMaxY() {
+        return y + height;
+    }
+
+    public Point getPosition() {
+        return new Point(x, y);
+    }
+
+    public Point getSize() {
+        return new Point(width, height);
     }
 
     @Override

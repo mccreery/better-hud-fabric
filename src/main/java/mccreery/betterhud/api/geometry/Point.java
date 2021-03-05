@@ -23,6 +23,14 @@ public final class Point {
         return y;
     }
 
+    public Point add(Point point) {
+        return new Point(x + point.x, y + point.y);
+    }
+
+    public Point subtract(Point point) {
+        return new Point(x - point.x, y - point.y);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == this) {
