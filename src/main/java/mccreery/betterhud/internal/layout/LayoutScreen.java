@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
@@ -41,8 +42,12 @@ public class LayoutScreen extends Screen {
         drawCenteredText(matrices, textRenderer, leftText, anchorPoint.getX(), anchorPoint.getY() + 2, color);
         drawCenteredText(matrices, textRenderer, rightText, anchorPoint.getX(), anchorPoint.getY() + textRenderer.fontHeight + 4, color);
 
+        GL11.glLineWidth(client.options.guiScale);
+        int time = (int)(System.currentTimeMillis() * 16 / 1000);
+
         for (Map.Entry<HudElement, Rectangle> bounds : layout.getBoundsLastFrame().entrySet()) {
-            RenderHelper.draw(matrices, bounds.getValue(), new Color(255, 0, 0), 1);
+            RenderHelper.drawDashed(matrices, bounds.getValue(), new Color(255, 0, 0), time, client.options.guiScale / 2);
         }
+        GL11.glLineWidth(1);
     }
 }
