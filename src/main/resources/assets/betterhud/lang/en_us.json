@@ -1,0 +1,5 @@
+{
+  "options.hudLayout": "HUD Layout...",
+  "hudLayout.prompt.left": "Select and move with %s",
+  "hudLayout.prompt.right": "Edit with %s"
+}

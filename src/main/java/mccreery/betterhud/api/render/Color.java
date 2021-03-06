@@ -55,6 +55,6 @@ public final class Color {
      * Converts to Minecraft's internal ARGB packed format (with alpha in the highest bits).
      */
     public int toPackedArgb() {
-        return alpha << 24 | red << 16 | red << 8 | blue;
+        return alpha << 24 | red << 16 | green << 8 | blue;
     }
 }

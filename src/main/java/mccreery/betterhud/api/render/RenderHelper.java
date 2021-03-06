@@ -1,9 +1,7 @@
 package mccreery.betterhud.api.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
@@ -23,20 +21,20 @@ public final class RenderHelper {
         BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
         Matrix4f matrix = matrixStack.peek().getModel();
 
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+        int a = color.getAlpha();
+
         bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
-        bufferBuilder.fixedColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        bufferBuilder.vertex(matrix, rectangle.getX(), rectangle.getMaxY(), 0.0f).next();
-        bufferBuilder.vertex(matrix, rectangle.getMaxX(), rectangle.getMaxY(), 0.0f).next();
-        bufferBuilder.vertex(matrix, rectangle.getMaxX(), rectangle.getY(), 0.0f).next();
-        bufferBuilder.vertex(matrix, rectangle.getX(), rectangle.getY(), 0.0f).next();
+        bufferBuilder.vertex(matrix, rectangle.getX(), rectangle.getMaxY(), 0.0f).color(r, g, b, a).next();
+        bufferBuilder.vertex(matrix, rectangle.getMaxX(), rectangle.getMaxY(), 0.0f).color(r, g, b, a).next();
+        bufferBuilder.vertex(matrix, rectangle.getMaxX(), rectangle.getY(), 0.0f).color(r, g, b, a).next();
+        bufferBuilder.vertex(matrix, rectangle.getX(), rectangle.getY(), 0.0f).color(r, g, b, a).next();
         bufferBuilder.end();
 
         RenderSystem.disableTexture();
         BufferRenderer.draw(bufferBuilder);
         RenderSystem.enableTexture();
-    }
-
-    public static Point getTextSize(TextRenderer textRenderer, String text) {
-        return new Point(textRenderer.getWidth(text), textRenderer.fontHeight);
     }
 }
