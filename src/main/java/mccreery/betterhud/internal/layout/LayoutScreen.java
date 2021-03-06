@@ -1,6 +1,7 @@
 package mccreery.betterhud.internal.layout;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
@@ -11,9 +12,14 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
+import java.util.Map;
+
 public class LayoutScreen extends Screen {
-    public LayoutScreen() {
+    private final HudLayout layout;
+
+    public LayoutScreen(HudLayout layout) {
         super(new TranslatableText("options.hudLayout"));
+        this.layout = layout;
     }
 
     @Override
@@ -34,5 +40,9 @@ public class LayoutScreen extends Screen {
         int color = new Color(255, 255, 255, 255).toPackedArgb();
         drawCenteredText(matrices, textRenderer, leftText, anchorPoint.getX(), anchorPoint.getY() + 2, color);
         drawCenteredText(matrices, textRenderer, rightText, anchorPoint.getX(), anchorPoint.getY() + textRenderer.fontHeight + 4, color);
+
+        for (Map.Entry<HudElement, Rectangle> bounds : layout.getBoundsLastFrame().entrySet()) {
+            RenderHelper.draw(matrices, bounds.getValue(), new Color(255, 0, 0), 1);
+        }
     }
 }

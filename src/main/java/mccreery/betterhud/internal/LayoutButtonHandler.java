@@ -63,6 +63,6 @@ public class LayoutButtonHandler implements ScreenEvents.AfterInit {
 
         // Finally add button
         buttons.add(new ButtonWidget(x, y, 150, 20, new TranslatableText("options.hudLayout"),
-                button -> client.openScreen(new LayoutScreen())));
+                button -> client.openScreen(new LayoutScreen(BetterHud.getInstance().getLayout()))));
     }
 }

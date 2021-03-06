@@ -5,6 +5,7 @@ import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.internal.BetterHud;
 import mccreery.betterhud.internal.HudRenderContext;
 import mccreery.betterhud.internal.HudRenderer;
+import mccreery.betterhud.internal.layout.LayoutScreen;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -78,6 +79,7 @@ public abstract class InGameHudMixin extends DrawableHelper implements HudRender
         context.setTargetEntity(client.player);
         context.setParentBounds(screenBounds);
         // position is populated by individual element tree nodes
+        context.setLayoutMode(client.currentScreen instanceof LayoutScreen);
 
         BetterHud.getInstance().getLayout().render(context);
     }

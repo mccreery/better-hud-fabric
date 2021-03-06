@@ -63,10 +63,12 @@ public abstract class HudElement {
     }
 
     /**
-     * Renders the element if conditions defined by the implementation are met.
+     * Renders the element if conditions defined by the implementation are met. If conditions are not met but
+     * {@link HudRenderContext#isLayoutMode() context.isLayoutMode()} returns {@code true} the element must render
+     * a placeholder.
      *
      * <p>Elements which do not have fixed position should render within the bounds returned by
-     * {@link HudRenderContext#calculateBounds(Point)}.
+     * {@link HudRenderContext#calculateBounds(Point) context.calculateBounds(size)}.
      *
      * @return The bounds within which the element rendered or {@code null} if the element did not render.
      */

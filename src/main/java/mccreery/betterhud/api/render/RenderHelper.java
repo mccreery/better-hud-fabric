@@ -37,4 +37,27 @@ public final class RenderHelper {
         BufferRenderer.draw(bufferBuilder);
         RenderSystem.enableTexture();
     }
+
+    /**
+     * Draws a rectangular border with the specified color. Textures are temporarily disabled and enabled again before
+     * returning.
+     */
+    public static void draw(MatrixStack matrixStack, Rectangle rectangle, Color color, int lineWidth) {
+        // Left
+        fill(matrixStack, new Rectangle(
+                rectangle.getX(), rectangle.getY(),
+                lineWidth, rectangle.getHeight()), color);
+        // Top
+        fill(matrixStack, new Rectangle(
+                rectangle.getX(), rectangle.getY(),
+                rectangle.getWidth(), lineWidth), color);
+        // Right
+        fill(matrixStack, new Rectangle(
+                rectangle.getX() + rectangle.getWidth() - lineWidth, rectangle.getY(),
+                lineWidth, rectangle.getHeight()), color);
+        // Bottom
+        fill(matrixStack, new Rectangle(
+                rectangle.getX(), rectangle.getY() + rectangle.getHeight() - lineWidth,
+                rectangle.getWidth(), lineWidth), color);
+    }
 }
