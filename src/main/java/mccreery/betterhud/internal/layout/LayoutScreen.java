@@ -25,6 +25,75 @@ public class LayoutScreen extends Screen {
         this.layout = layout;
     }
 
+    private HudElementTree selectedTree;
+    private Anchor selectedAnchor;
+
+    private static final double handleRange = 3;
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        double minDistanceSq = handleRange * handleRange;
+
+        // Find closest handle to cursor to select
+        for (HudElementTree root : layout.getRoots()) {
+            for (HudElementTree tree : root.breadthFirst()) {
+                Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
+
+                for (Anchor anchor : Anchor.values()) {
+                    Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);
+
+                    double dx = mouseX - anchorPoint.getX();
+                    double dy = mouseY - anchorPoint.getY();
+                    double distanceSq = dx * dx + dy * dy;
+
+                    if (distanceSq < minDistanceSq) {
+                        selectedTree = tree;
+                        selectedAnchor = anchor;
+                        minDistanceSq = distanceSq;
+                    }
+                }
+            }
+        }
+
+        if (selectedTree != null) {
+            setDragging(true);
+            return true;
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        if (isDragging() && selectedTree != null) {
+            RelativePosition position = selectedTree.getPosition();
+            Rectangle elementBounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
+
+            Point parentAnchorPoint = Anchor.getAnchorPoint(getParentBounds(selectedTree), position.getParentAnchor());
+            Point anchorPoint = Anchor.getAnchorPoint(elementBounds, position.getAnchor());
+            Point selectedAnchorPoint = Anchor.getAnchorPoint(elementBounds, selectedAnchor);
+
+            Point cursor = new Point((int)mouseX, (int)mouseY);
+            Point anchorOffset = anchorPoint.subtract(selectedAnchorPoint);
+
+            position.setOffset(cursor.add(anchorOffset).subtract(parentAnchorPoint));
+        }
+    }
+
+    private Rectangle getParentBounds(HudElementTree tree) {
+        if (tree.getParent() != null) {
+            return layout.getBoundsLastFrame().get(tree.getParent());
+        } else {
+            return new Rectangle(0, 0, width, height);
+        }
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        selectedTree = null;
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         RenderSystem.enableBlend();
@@ -45,6 +114,10 @@ public class LayoutScreen extends Screen {
         RenderSystem.enableBlend();
 
         drawSelection(matrices, layout.getRoots().iterator().next());
+
+//        textRenderer.drawWithShadow(matrices, selectedTree == null ? Text.of("null") : selectedTree.getElement().getName(), 5, 5, 0xffffff);
+//        textRenderer.drawWithShadow(matrices, selectedAnchor == null ? "null" : selectedAnchor.toString(), 5, 20, 0xffffff);
+//        textRenderer.drawWithShadow(matrices, String.valueOf(isDragging()), 5, 35, 0xffffff);
     }
 
     private static final Identifier LAYOUT_WIDGETS = new Identifier(BetterHud.ID, "textures/layout_widgets.png");

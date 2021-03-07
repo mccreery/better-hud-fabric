@@ -1,9 +1,13 @@
 package mccreery.betterhud.internal.layout;
 
 import mccreery.betterhud.api.HudElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 public class HudElementTree {
@@ -65,6 +69,30 @@ public class HudElementTree {
      */
     public void setPosition(RelativePosition position) {
         throw new UnsupportedOperationException("Element is fixed");
+    }
+
+    /**
+     * Returns an iterable view of the tree walking over each node breadth-first.
+     */
+    public Iterable<HudElementTree> breadthFirst() {
+        return () -> {
+            Queue<HudElementTree> queue = new LinkedList<>();
+            queue.add(this);
+
+            return new Iterator<HudElementTree>() {
+                @Override
+                public boolean hasNext() {
+                    return !queue.isEmpty();
+                }
+
+                @Override
+                public HudElementTree next() {
+                    HudElementTree tree = queue.poll();
+                    queue.addAll(tree.getChildren());
+                    return tree;
+                }
+            };
+        };
     }
 
     public static HudElementTree create(HudElement element) {
