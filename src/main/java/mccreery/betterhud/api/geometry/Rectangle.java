@@ -55,6 +55,14 @@ public final class Rectangle {
         return new Point(width, height);
     }
 
+    /**
+     * Tests whether a point lies between the minimum (inclusive) and maximum (exclusive) corners of this rectangle.
+     * @return {@code true} if the point is inside.
+     */
+    public boolean contains(Point point) {
+        return point.getX() >= x && point.getY() >= y && point.getX() < getMaxX() && point.getY() < getMaxY();
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == this) {
