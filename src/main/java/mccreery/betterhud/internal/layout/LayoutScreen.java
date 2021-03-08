@@ -5,6 +5,7 @@ import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.internal.BetterHud;
+import mccreery.betterhud.internal.Bitwise;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -27,62 +28,81 @@ public class LayoutScreen extends Screen {
 
     private HudElementTree selectedTree;
     private Anchor selectedAnchor;
-
-    private static final int HANDLE_RANGE = 3;
+    /**
+     * The offset from the minimum corner of the selected tree's bounds
+     */
+    private Point selectionOffset;
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        int minDistanceSq = HANDLE_RANGE * HANDLE_RANGE;
-        Point cursor = new Point((int)mouseX, (int)mouseY);
+        if (hoveredTree != null) {
+            HandleType handleType = getHandleType(hoveredTree, hoveredAnchor);
 
-        if (!hasShiftDown()) {
-            selectedTree = null;
-        }
+            if (handleType == HandleType.ANCHOR) {
+                setParentAndAnchor();
+            } else {
+                Point cursor = new Point((int) mouseX, (int) mouseY);
+                selectTree(cursor);
 
-        // Find closest handle to cursor to select
-        for (HudElementTree root : layout.getRoots()) {
-            for (HudElementTree tree : root.breadthFirst()) {
-                Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
-
-                for (Anchor anchor : Anchor.values()) {
-                    Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);
-
-                    int distanceSq = anchorPoint.distanceSquared(cursor);
-                    if (distanceSq < minDistanceSq) {
-                        selectedTree = tree;
-                        selectedAnchor = anchor;
-                        minDistanceSq = distanceSq;
-                    }
+                if (handleType == HandleType.SELECTED_HANDLE) {
+                    selectedAnchor = hoveredAnchor;
                 }
             }
-        }
-
-        if (selectedTree != null) {
-            if (hasShiftDown()) {
-                // TODO Reparent to selected anchor
-            } else {
-                setDragging(true);
-            }
             return true;
+        } else {
+            selectedTree = null;
+            selectedAnchor = null;
+            return super.mouseClicked(mouseX, mouseY, button);
         }
+    }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+    /**
+     * Links the selected anchor to the hovered anchor without effectively moving the selected element.
+     */
+    private void setParentAndAnchor() {
+        selectedTree.setParent(hoveredTree);
+
+        RelativePosition position = selectedTree.getPosition();
+        position.setParentAnchor(hoveredAnchor);
+        position.setAnchor(selectedAnchor);
+
+        Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
+        Point anchorPoint = Anchor.getAnchorPoint(bounds, selectedAnchor);
+        Rectangle parentBounds = layout.getBoundsLastFrame().get(hoveredTree.getElement());
+        Point parentAnchorPoint = Anchor.getAnchorPoint(parentBounds, hoveredAnchor);
+
+        position.setOffset(anchorPoint.subtract(parentAnchorPoint));
+    }
+
+    /**
+     * Selects the tree and anchor under the cursor and prepares for dragging.
+     */
+    private void selectTree(Point cursor) {
+        selectedTree = hoveredTree;
+
+        // Keep relative position of cursor on element
+        Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
+        selectionOffset = cursor.subtract(bounds.getPosition());
+
+        // Automatically reset on mouse up
+        setDragging(true);
     }
 
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
+        Point cursor = new Point((int)mouseX, (int)mouseY);
+        updateHovered(cursor);
+
+        // Move dragged element to cursor
         if (isDragging() && selectedTree != null) {
             RelativePosition position = selectedTree.getPosition();
-            Rectangle elementBounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
+            Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
 
+            Point desiredPosition = cursor.subtract(selectionOffset);
+            Point desiredAnchorPosition = desiredPosition.add(Anchor.getAnchorPoint(bounds.getSize(), position.getAnchor()));
             Point parentAnchorPoint = Anchor.getAnchorPoint(getParentBounds(selectedTree), position.getParentAnchor());
-            Point anchorPoint = Anchor.getAnchorPoint(elementBounds, position.getAnchor());
-            Point selectedAnchorPoint = Anchor.getAnchorPoint(elementBounds, selectedAnchor);
 
-            Point cursor = new Point((int)mouseX, (int)mouseY);
-            Point anchorOffset = anchorPoint.subtract(selectedAnchorPoint);
-
-            position.setOffset(cursor.add(anchorOffset).subtract(parentAnchorPoint));
+            position.setOffset(desiredAnchorPosition.subtract(parentAnchorPoint));
         }
     }
 
@@ -94,14 +114,86 @@ public class LayoutScreen extends Screen {
         }
     }
 
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        //selectedTree = null;
-        return super.mouseReleased(mouseX, mouseY, button);
+    private static final int HANDLE_RANGE = 3;
+
+    /**
+     * The tree that is hovered directly or via one of its anchors. {@code null} if nothing is hovered.
+     */
+    private HudElementTree hoveredTree;
+    /**
+     * The anchor that is hovered. {@code null} if nothing is hovered or a tree is hovered directly.
+     */
+    private Anchor hoveredAnchor;
+    /**
+     * The squared distance of the anchor, if any, to the cursor.
+     */
+    private int distanceSquaredToCursor;
+
+    /**
+     * Searches all trees in the layout for the closest anchor in range.
+     */
+    private void updateHovered(Point cursor) {
+        // Start with no hover and max range
+        hoveredTree = null;
+        hoveredAnchor = null;
+        distanceSquaredToCursor = HANDLE_RANGE * HANDLE_RANGE;
+
+        for (HudElementTree root : layout.getRoots()) {
+            for (HudElementTree tree : root.breadthFirst()) {
+                updateHovered(tree, cursor);
+            }
+        }
     }
+
+    /**
+     * Checks a single node in the tree for closer anchors.
+     */
+    private void updateHovered(HudElementTree tree, Point cursor) {
+        Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
+
+        // Look for an anchor in range and closer than any previous
+        for (Anchor anchor : Anchor.values()) {
+            Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);
+            int distanceSquared = anchorPoint.distanceSquared(cursor);
+
+            // Both tree and anchor are set if the anchor is hovered
+            if (distanceSquared < distanceSquaredToCursor) {
+                hoveredTree = tree;
+                hoveredAnchor = anchor;
+                distanceSquaredToCursor = distanceSquared;
+            }
+        }
+
+        // If no anchor is found yet, fall back to tree hover only
+        if (hoveredTree == null && bounds.contains(cursor)) {
+            hoveredTree = tree;
+        }
+    }
+
+    private static final Identifier LAYOUT_WIDGETS = new Identifier(BetterHud.ID, "textures/layout_widgets.png");
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        renderPrompt(matrices);
+
+        if (selectedTree != null) {
+            renderSelectionBox(matrices, selectedTree);
+        }
+        if (hoveredTree != null && hoveredTree != selectedTree) {
+            renderSelectionBox(matrices, hoveredTree);
+        }
+
+        client.getTextureManager().bindTexture(LAYOUT_WIDGETS);
+
+        // Draw handles on all trees
+        for (HudElementTree root : layout.getRoots()) {
+            for (HudElementTree tree : root.breadthFirst()) {
+                renderHandles(matrices, tree);
+            }
+        }
+    }
+
+    private void renderPrompt(MatrixStack matrices) {
         RenderSystem.enableBlend();
 
         Point screenSize = new Point(width, height);
@@ -118,53 +210,55 @@ public class LayoutScreen extends Screen {
         drawCenteredText(matrices, textRenderer, leftText, anchorPoint.getX(), anchorPoint.getY() + 2, 0xffffffff);
         drawCenteredText(matrices, textRenderer, rightText, anchorPoint.getX(), anchorPoint.getY() + textRenderer.fontHeight + 4, 0xffffffff);
         RenderSystem.enableBlend();
+    }
 
-        Point cursor = new Point(mouseX, mouseY);
+    private void renderSelectionBox(MatrixStack matrices, HudElementTree tree) {
+        Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
+        drawDashedRectangle(matrices.peek().getModel(), bounds, 0x7f0071bc);
+    }
 
-        if (selectedTree != null) {
-            drawSelection(matrices, selectedTree, cursor);
-        }
+    private void renderHandles(MatrixStack matrices, HudElementTree tree) {
+        Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
 
-        // Find first tree that isn't the selected tree and is hovered
-        outer:
-        for (HudElementTree root : layout.getRoots()) {
-            for (HudElementTree tree : root.breadthFirst()) {
-                if (tree == selectedTree) continue;
-                Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
+        for (Anchor anchor : Anchor.values()) {
+            Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);
 
-                if (bounds.contains(cursor)) {
-                    drawSelection(matrices, tree, cursor);
-                    break outer;
-                }
+            switch (getHandleType(tree, anchor)) {
+                case HANDLE:
+                    drawTexture(matrices, anchorPoint.getX() - 2, anchorPoint.getY() - 2, 7, 0, 4, 4, 16, 16);
+                    break;
+                case SELECTED_HANDLE:
+                    drawTexture(matrices, anchorPoint.getX() - 2, anchorPoint.getY() - 2, 7, 4, 4, 4, 16, 16);
+                    break;
+                case ANCHOR:
+                    drawTexture(matrices, anchorPoint.getX() - 3, anchorPoint.getY() - 3, 0, 0, 7, 7, 16, 16);
+                    break;
             }
         }
     }
 
-    private static final Identifier LAYOUT_WIDGETS = new Identifier(BetterHud.ID, "textures/layout_widgets.png");
+    /**
+     * Determines the click action and icon corresponding to a handle.
+     */
+    private HandleType getHandleType(HudElementTree tree, Anchor anchor) {
+        boolean hovered = tree == hoveredTree && anchor == hoveredAnchor;
+        boolean treeSelected = tree == selectedTree;
+        boolean selected = treeSelected && anchor == selectedAnchor;
+        boolean anchoring = selectedAnchor != null && hasShiftDown();
 
-    private void drawSelection(MatrixStack matrices, HudElementTree tree, Point cursor) {
-        client.getTextureManager().bindTexture(LAYOUT_WIDGETS);
-
-        // Draw "marching ants"
-        Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
-        drawDashedRectangle(matrices.peek().getModel(), bounds, 0x7f0071bc);
-
-        // Draw selection handles
-        for (Anchor anchor : Anchor.values()) {
-            Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);
-            boolean inRange = cursor.distanceSquared(anchorPoint) < HANDLE_RANGE * HANDLE_RANGE;
-
-            if (inRange && hasShiftDown()) {
-                // Draw anchor
-                drawTexture(matrices, anchorPoint.getX() - 3, anchorPoint.getY() - 3, 0, 0, 7, 7, 16, 16);
-            } else if (inRange || tree == selectedTree && anchor == selectedAnchor) {
-                // Draw highlighted handle
-                drawTexture(matrices, anchorPoint.getX() - 2, anchorPoint.getY() - 2, 7, 4, 4, 4, 16, 16);
-            } else {
-                // Draw handle
-                drawTexture(matrices, anchorPoint.getX() - 2, anchorPoint.getY() - 2, 7, 0, 4, 4, 16, 16);
-            }
+        if (hovered && !treeSelected && anchoring) {
+            return HandleType.ANCHOR;
+        } else if (selected || hovered && !anchoring) {
+            return HandleType.SELECTED_HANDLE;
+        } else {
+            return HandleType.HANDLE;
         }
+    }
+
+    private enum HandleType {
+        HANDLE,
+        SELECTED_HANDLE,
+        ANCHOR
     }
 
     private void drawDashedRectangle(Matrix4f matrix, Rectangle rectangle, int color) {
@@ -172,16 +266,11 @@ public class LayoutScreen extends Screen {
         int scale = (int)client.getWindow().getScaleFactor();
         int textureOffset = (int)(System.currentTimeMillis() % 2000) * 16 / 2000;
 
-        GL11.glLineStipple(scale, rotateRight((short)0xf0f0, textureOffset));
+        GL11.glLineStipple(scale, Bitwise.rotateRight((short)0xf0f0, textureOffset));
 
         GL11.glEnable(GL11.GL_LINE_STIPPLE);
         drawRectangle(matrix, rectangle, color, scale, -0.5f);
         GL11.glDisable(GL11.GL_LINE_STIPPLE);
-    }
-
-    private static short rotateRight(short x, int bits) {
-        bits = bits & 0xf;
-        return (short)((x & 0xffff) >>> bits | (x & 0xffff) << (16 - bits));
     }
 
     /**

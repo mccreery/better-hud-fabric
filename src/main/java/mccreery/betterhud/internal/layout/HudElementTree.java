@@ -1,12 +1,11 @@
 package mccreery.betterhud.internal.layout;
 
 import mccreery.betterhud.api.HudElement;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
@@ -76,7 +75,7 @@ public class HudElementTree {
      */
     public Iterable<HudElementTree> breadthFirst() {
         return () -> {
-            Queue<HudElementTree> queue = new LinkedList<>();
+            Queue<HudElementTree> queue = new ArrayDeque<>();
             queue.add(this);
 
             return new Iterator<HudElementTree>() {
