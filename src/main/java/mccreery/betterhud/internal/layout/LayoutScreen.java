@@ -240,12 +240,15 @@ public class LayoutScreen extends Screen {
      * Determines the click action and icon corresponding to a handle.
      */
     private HandleType getHandleType(HudElementTree tree, Anchor anchor) {
+        boolean anchored = selectedTree != null && tree == selectedTree.getParent()
+                && anchor == selectedTree.getPosition().getParentAnchor();
+
         boolean hovered = tree == hoveredTree && anchor == hoveredAnchor;
         boolean treeSelected = tree == selectedTree;
         boolean selected = treeSelected && anchor == selectedAnchor;
         boolean anchoring = selectedAnchor != null && hasShiftDown();
 
-        if (hovered && !treeSelected && anchoring) {
+        if (anchored || hovered && !treeSelected && anchoring) {
             return HandleType.ANCHOR;
         } else if (selected || hovered && !anchoring) {
             return HandleType.SELECTED_HANDLE;
