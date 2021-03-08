@@ -6,16 +6,14 @@ import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.internal.BetterHud;
 import mccreery.betterhud.internal.Bitwise;
+import mccreery.betterhud.internal.render.Color;
+import mccreery.betterhud.internal.render.DrawingContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 public class LayoutScreen extends Screen {
@@ -127,7 +125,7 @@ public class LayoutScreen extends Screen {
     /**
      * The squared distance of the anchor, if any, to the cursor.
      */
-    private int distanceSquaredToCursor;
+    private double distanceSquaredToCursor;
 
     /**
      * Searches all trees in the layout for the closest anchor in range.
@@ -154,7 +152,7 @@ public class LayoutScreen extends Screen {
         // Look for an anchor in range and closer than any previous
         for (Anchor anchor : Anchor.values()) {
             Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);
-            int distanceSquared = anchorPoint.distanceSquared(cursor);
+            double distanceSquared = anchorPoint.distanceSquared(cursor);
 
             // Both tree and anchor are set if the anchor is hovered
             if (distanceSquared < distanceSquaredToCursor) {
@@ -170,70 +168,71 @@ public class LayoutScreen extends Screen {
         }
     }
 
-    private static final Identifier LAYOUT_WIDGETS = new Identifier(BetterHud.ID, "textures/layout_widgets.png");
-
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        renderPrompt(matrices);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
+        DrawingContext context = new DrawingContext(matrixStack, Tessellator.getInstance().getBuffer());
 
-        if (selectedTree != null) {
-            renderSelectionBox(matrices, selectedTree);
-        }
-        if (hoveredTree != null && hoveredTree != selectedTree) {
-            renderSelectionBox(matrices, hoveredTree);
-        }
-
-        client.getTextureManager().bindTexture(LAYOUT_WIDGETS);
-
-        // Draw handles on all trees
-        for (HudElementTree root : layout.getRoots()) {
-            for (HudElementTree tree : root.breadthFirst()) {
-                renderHandles(matrices, tree);
-            }
-        }
+        renderPrompt(context);
+        renderSelectionBoxes(context);
+        renderHandles(context);
     }
 
-    private void renderPrompt(MatrixStack matrices) {
+    private static final Color TRANSLUCENT = new Color(0, 0, 0, 127);
+
+    private void renderPrompt(DrawingContext context) {
         RenderSystem.enableBlend();
 
         Point screenSize = new Point(width, height);
         Point screenCenter = Anchor.getAnchorPoint(screenSize, Anchor.CENTER);
         Rectangle dialogBounds = Anchor.getAlignedRectangle(screenCenter, Anchor.CENTER, new Point(200, textRenderer.fontHeight * 2 + 6));
 
-        fill(matrices, dialogBounds.getX(), dialogBounds.getY(), dialogBounds.getMaxX(), dialogBounds.getMaxY(), 0x3f000000);
+        context.drawFilledRectangle(dialogBounds, TRANSLUCENT);
 
         Text leftText = new TranslatableText("hudLayout.prompt.left", new TranslatableText("key.mouse.left"));
         Text rightText = new TranslatableText("hudLayout.prompt.right", new TranslatableText("key.mouse.right"));
 
         Point anchorPoint = Anchor.getAnchorPoint(dialogBounds, Anchor.TOP_CENTER);
 
-        drawCenteredText(matrices, textRenderer, leftText, anchorPoint.getX(), anchorPoint.getY() + 2, 0xffffffff);
-        drawCenteredText(matrices, textRenderer, rightText, anchorPoint.getX(), anchorPoint.getY() + textRenderer.fontHeight + 4, 0xffffffff);
+        drawCenteredText(context.getMatrixStack(), textRenderer, leftText, (int)anchorPoint.getX(), (int)anchorPoint.getY() + 2, 0xffffffff);
+        drawCenteredText(context.getMatrixStack(), textRenderer, rightText, (int)anchorPoint.getX(), (int)anchorPoint.getY() + textRenderer.fontHeight + 4, 0xffffffff);
         RenderSystem.enableBlend();
     }
 
-    private void renderSelectionBox(MatrixStack matrices, HudElementTree tree) {
-        Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
-        drawDashedRectangle(matrices.peek().getModel(), bounds, 0x7f0071bc);
+    private static final Color DASH_COLOR = new Color(0, 113, 188, 127);
+
+    private void renderSelectionBoxes(DrawingContext context) {
+        if (selectedTree != null) {
+            drawDashedRectangle(context, layout.getBoundsLastFrame().get(selectedTree.getElement()), DASH_COLOR);
+        }
+        if (hoveredTree != null) {
+            drawDashedRectangle(context, layout.getBoundsLastFrame().get(hoveredTree.getElement()), DASH_COLOR);
+        }
     }
 
-    private void renderHandles(MatrixStack matrices, HudElementTree tree) {
+    private static final Identifier LAYOUT_WIDGETS = new Identifier(BetterHud.ID, "textures/layout_widgets.png");
+    private static final Point LAYOUT_WIDGETS_SIZE = new Point(16, 16);
+
+    private void renderHandles(DrawingContext context) {
+        client.getTextureManager().bindTexture(LAYOUT_WIDGETS);
+
+        // Draw handles on all trees
+        for (HudElementTree root : layout.getRoots()) {
+            for (HudElementTree tree : root.breadthFirst()) {
+                renderHandles(context, tree);
+            }
+        }
+    }
+
+    private void renderHandles(DrawingContext context, HudElementTree tree) {
         Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
 
         for (Anchor anchor : Anchor.values()) {
             Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);
 
-            switch (getHandleType(tree, anchor)) {
-                case HANDLE:
-                    drawTexture(matrices, anchorPoint.getX() - 2, anchorPoint.getY() - 2, 7, 0, 4, 4, 16, 16);
-                    break;
-                case SELECTED_HANDLE:
-                    drawTexture(matrices, anchorPoint.getX() - 2, anchorPoint.getY() - 2, 7, 4, 4, 4, 16, 16);
-                    break;
-                case ANCHOR:
-                    drawTexture(matrices, anchorPoint.getX() - 3, anchorPoint.getY() - 3, 0, 0, 7, 7, 16, 16);
-                    break;
-            }
+            Rectangle handleTexture = getHandleType(tree, anchor).getTexture();
+            context.drawTexturedRectangle(
+                    Anchor.getAlignedRectangle(anchorPoint, Anchor.CENTER, handleTexture.getSize()),
+                    handleTexture, LAYOUT_WIDGETS_SIZE);
         }
     }
 
@@ -256,46 +255,36 @@ public class LayoutScreen extends Screen {
     }
 
     private enum HandleType {
-        HANDLE,
-        SELECTED_HANDLE,
-        ANCHOR
+        HANDLE(new Rectangle(7, 0, 4, 4)),
+        SELECTED_HANDLE(new Rectangle(7, 4, 4, 4)),
+        ANCHOR(new Rectangle(0, 0, 7, 7));
+
+        private final Rectangle texture;
+
+        HandleType(Rectangle texture) {
+            this.texture = texture;
+        }
+
+        public Rectangle getTexture() {
+            return texture;
+        }
     }
 
-    private void drawDashedRectangle(Matrix4f matrix, Rectangle rectangle, int color) {
-        // UV moves left with time = texture appears to move right (clockwise)
+    private void drawDashedRectangle(DrawingContext context, Rectangle rectangle, Color color) {
         int scale = (int)client.getWindow().getScaleFactor();
-        int textureOffset = (int)(System.currentTimeMillis() % 2000) * 16 / 2000;
+        int dashOffset = (int)(System.currentTimeMillis() % 2000) * 16 / 2000;
 
-        GL11.glLineStipple(scale, Bitwise.rotateRight((short)0xf0f0, textureOffset));
+        // Inset rectangle by 0.5 to account for half line outside
+        rectangle = new Rectangle(rectangle.getX() + 0.5, rectangle.getY() + 0.5,
+                rectangle.getWidth() - 1.0, rectangle.getHeight() - 1.0);
 
+        GL11.glLineStipple(scale, Bitwise.rotateRight((short)0xf0f0, dashOffset));
+        GL11.glLineWidth(scale);
         GL11.glEnable(GL11.GL_LINE_STIPPLE);
-        drawRectangle(matrix, rectangle, color, scale, -0.5f);
+
+        context.drawBorderRectangle(rectangle, color);
+
         GL11.glDisable(GL11.GL_LINE_STIPPLE);
-    }
-
-    /**
-     * Draws a rectangular border with the specified color. Textures are temporarily disabled and enabled again before
-     * returning. Line width is restored to 1.0.
-     */
-    private static void drawRectangle(Matrix4f matrix, Rectangle rectangle, int color, float lineWidth, float offset) {
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-
-        int a = color >>> 24;
-        int r = color >>> 16 & 0xff;
-        int g = color >>> 8 & 0xff;
-        int b = color & 0xff;
-
-        bufferBuilder.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
-        bufferBuilder.vertex(matrix, rectangle.getX() - offset, rectangle.getMaxY() + offset, 0.0f).color(r, g, b, a).next();
-        bufferBuilder.vertex(matrix, rectangle.getMaxX() + offset, rectangle.getMaxY() + offset, 0.0f).color(r, g, b, a).next();
-        bufferBuilder.vertex(matrix, rectangle.getMaxX() + offset, rectangle.getY() - offset, 0.0f).color(r, g, b, a).next();
-        bufferBuilder.vertex(matrix, rectangle.getX() - offset, rectangle.getY() - offset, 0.0f).color(r, g, b, a).next();
-        bufferBuilder.end();
-
-        RenderSystem.lineWidth(lineWidth);
-        RenderSystem.disableTexture();
-        BufferRenderer.draw(bufferBuilder);
-        RenderSystem.enableTexture();
-        RenderSystem.lineWidth(1.0f);
+        GL11.glLineWidth(1.0f);
     }
 }

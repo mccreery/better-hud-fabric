@@ -31,18 +31,18 @@ public enum Anchor {
      * @see #getAnchorPoint(Rectangle, Anchor)
      */
     public static Point getAnchorPoint(Point size, Anchor anchor) {
-        int x;
+        double x;
         switch (anchor.ordinal() % 3) {
-            case 0: x = 0; break;
-            case 1: x = size.getX() / 2; break;
+            case 0: x = 0.0; break;
+            case 1: x = size.getX() / 2.0; break;
             case 2: x = size.getX(); break;
             default: throw new IllegalArgumentException("Anchor value " + anchor);
         }
 
-        int y;
+        double y;
         switch (anchor.ordinal() / 3) {
-            case 0: y = 0; break;
-            case 1: y = size.getY() / 2; break;
+            case 0: y = 0.0; break;
+            case 1: y = size.getY() / 2.0; break;
             case 2: y = size.getY(); break;
             default: throw new IllegalArgumentException("Anchor value " + anchor);
         }

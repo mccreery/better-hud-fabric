@@ -1,10 +1,17 @@
 package mccreery.betterhud.api.geometry;
 
+import java.util.Objects;
+
 /**
  * Immutable 2D integer rectangle.
  */
 public final class Rectangle {
-    public Rectangle(int x, int y, int width, int height) {
+    private final double x;
+    private final double y;
+    private final double width;
+    private final double height;
+
+    public Rectangle(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -15,35 +22,27 @@ public final class Rectangle {
         this(position.getX(), position.getY(), size.getX(), size.getY());
     }
 
-    private final int x;
-
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    private final int y;
-
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    private final int width;
-
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
-    private final int height;
-
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public int getMaxX() {
+    public double getMaxX() {
         return x + width;
     }
 
-    public int getMaxY() {
+    public double getMaxY() {
         return y + height;
     }
 
@@ -63,6 +62,13 @@ public final class Rectangle {
         return point.getX() >= x && point.getY() >= y && point.getX() < getMaxX() && point.getY() < getMaxY();
     }
 
+    /**
+     * More intuitive alias for {@link Anchor#getAnchorPoint(Rectangle, Anchor)}.
+     */
+    public Point getAnchorPoint(Anchor anchor) {
+        return Anchor.getAnchorPoint(this, anchor);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == this) {
@@ -77,6 +83,6 @@ public final class Rectangle {
 
     @Override
     public int hashCode() {
-        return 31 * (31 * (31 * (31 + x) + y) + width) + height;
+        return Objects.hash(x, y, width, height);
     }
 }
