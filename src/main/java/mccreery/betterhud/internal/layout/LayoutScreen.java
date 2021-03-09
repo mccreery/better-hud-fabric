@@ -42,7 +42,7 @@ public class LayoutScreen extends Screen {
                 Point cursor = new Point((int) mouseX, (int) mouseY);
                 selectTree(cursor);
 
-                if (handleType == HandleType.SELECTED_HANDLE) {
+                if (handleType == HandleType.SELECTED) {
                     selectedAnchor = hoveredAnchor;
                 }
             }
@@ -240,27 +240,42 @@ public class LayoutScreen extends Screen {
      * Determines the click action and icon corresponding to a handle.
      */
     private HandleType getHandleType(HudElementTree tree, Anchor anchor) {
-        boolean anchored = selectedTree != null && tree == selectedTree.getParent()
-                && anchor == selectedTree.getPosition().getParentAnchor();
+        boolean isParentAnchor;
+        boolean isChildAnchor;
+
+        if (selectedTree != null) {
+            RelativePosition position = selectedTree.getPosition();
+            isParentAnchor = tree == selectedTree.getParent() && anchor == position.getParentAnchor();
+            isChildAnchor = tree == selectedTree && anchor == position.getAnchor();
+        } else {
+            isParentAnchor = false;
+            isChildAnchor = false;
+        }
+
+        boolean anchoring = hasShiftDown();
 
         boolean hovered = tree == hoveredTree && anchor == hoveredAnchor;
-        boolean treeSelected = tree == selectedTree;
-        boolean selected = treeSelected && anchor == selectedAnchor;
-        boolean anchoring = selectedAnchor != null && hasShiftDown();
+        boolean selected = tree == selectedTree && anchor == selectedAnchor;
 
-        if (anchored || hovered && !treeSelected && anchoring) {
+        boolean otherTreeSelected = selectedTree != null && selectedAnchor != null && tree != selectedTree;
+        boolean otherTreeHovered = hoveredTree != null && hoveredAnchor != null && tree != hoveredTree;
+
+        if (isParentAnchor || anchoring && hovered && otherTreeSelected) {
             return HandleType.ANCHOR;
-        } else if (selected || hovered && !anchoring) {
-            return HandleType.SELECTED_HANDLE;
+        } else if (isChildAnchor || anchoring && selected && otherTreeHovered) {
+            return HandleType.LINK;
+        } else if (selected || hovered) {
+            return HandleType.SELECTED;
         } else {
-            return HandleType.HANDLE;
+            return HandleType.NORMAL;
         }
     }
 
     private enum HandleType {
-        HANDLE(new Rectangle(7, 0, 4, 4)),
-        SELECTED_HANDLE(new Rectangle(7, 4, 4, 4)),
-        ANCHOR(new Rectangle(0, 0, 7, 7));
+        NORMAL(new Rectangle(7, 0, 4, 4)),
+        SELECTED(new Rectangle(7, 4, 4, 4)),
+        ANCHOR(new Rectangle(0, 0, 7, 7)),
+        LINK(new Rectangle(0, 7, 7, 7));
 
         private final Rectangle texture;
 
