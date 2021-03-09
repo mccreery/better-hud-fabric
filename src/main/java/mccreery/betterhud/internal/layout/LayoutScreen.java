@@ -42,7 +42,7 @@ public class LayoutScreen extends Screen {
                 Point cursor = new Point((int) mouseX, (int) mouseY);
                 selectTree(cursor);
 
-                if (handleType == HandleType.SELECTED) {
+                if (handleType == HandleType.SELECTED || handleType == HandleType.SELECTED_LINK) {
                     selectedAnchor = hoveredAnchor;
                 }
             }
@@ -263,7 +263,11 @@ public class LayoutScreen extends Screen {
         if (isParentAnchor || anchoring && hovered && otherTreeSelected) {
             return HandleType.ANCHOR;
         } else if (isChildAnchor || anchoring && selected && otherTreeHovered) {
-            return HandleType.LINK;
+            if (selected || hovered) {
+                return HandleType.SELECTED_LINK;
+            } else {
+                return HandleType.LINK;
+            }
         } else if (selected || hovered) {
             return HandleType.SELECTED;
         } else {
@@ -274,6 +278,7 @@ public class LayoutScreen extends Screen {
     private enum HandleType {
         NORMAL(new Rectangle(7, 0, 4, 4)),
         SELECTED(new Rectangle(7, 4, 4, 4)),
+        SELECTED_LINK(new Rectangle(7, 8, 7, 7)),
         ANCHOR(new Rectangle(0, 0, 7, 7)),
         LINK(new Rectangle(0, 7, 7, 7));
 
