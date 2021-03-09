@@ -202,7 +202,13 @@ public class LayoutScreen extends Screen {
 
     private void renderSelectionBoxes(DrawingContext context) {
         if (selectedTree != null) {
-            drawDashedRectangle(context, layout.getBoundsLastFrame().get(selectedTree.getElement()), DASH_COLOR);
+            Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
+            RelativePosition position = selectedTree.getPosition();
+            Rectangle parentBounds = getParentBounds(selectedTree);
+
+            drawDashedRectangle(context, bounds, DASH_COLOR);
+            drawDashedLine(context, bounds.getAnchorPoint(position.getAnchor()),
+                    parentBounds.getAnchorPoint(position.getParentAnchor()), DASH_COLOR);
         }
         if (hoveredTree != null) {
             drawDashedRectangle(context, layout.getBoundsLastFrame().get(hoveredTree.getElement()), DASH_COLOR);
@@ -294,19 +300,31 @@ public class LayoutScreen extends Screen {
     }
 
     private void drawDashedRectangle(DrawingContext context, Rectangle rectangle, Color color) {
-        int scale = (int)client.getWindow().getScaleFactor();
-        int dashOffset = (int)(System.currentTimeMillis() % 2000) * 16 / 2000;
-
         // Inset rectangle by 0.5 to account for half line outside
         rectangle = new Rectangle(rectangle.getX() + 0.5, rectangle.getY() + 0.5,
                 rectangle.getWidth() - 1.0, rectangle.getHeight() - 1.0);
 
+        beginDashed();
+        context.drawBorderRectangle(rectangle, color);
+        endDashed();
+    }
+
+    private void drawDashedLine(DrawingContext context, Point pointA, Point pointB, Color color) {
+        beginDashed();
+        context.drawLine(pointA, pointB, color);
+        endDashed();
+    }
+
+    private void beginDashed() {
+        int scale = (int)client.getWindow().getScaleFactor();
+        int dashOffset = (int)(System.currentTimeMillis() % 2000) * 16 / 2000;
+
         GL11.glLineStipple(scale, Bitwise.rotateRight((short)0xf0f0, dashOffset));
         GL11.glLineWidth(scale);
         GL11.glEnable(GL11.GL_LINE_STIPPLE);
+    }
 
-        context.drawBorderRectangle(rectangle, color);
-
+    private void endDashed() {
         GL11.glDisable(GL11.GL_LINE_STIPPLE);
         GL11.glLineWidth(1.0f);
     }

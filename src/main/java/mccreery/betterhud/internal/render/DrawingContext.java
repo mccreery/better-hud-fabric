@@ -80,4 +80,20 @@ public final class DrawingContext {
         bufferBuilder.end();
         BufferRenderer.draw(bufferBuilder);
     }
+
+    public void drawLine(Point pointA, Point pointB, Color color) {
+        Matrix4f modelMatrix = matrixStack.peek().getModel();
+        bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
+
+        bufferBuilder.vertex(modelMatrix, (float)pointA.getX(), (float)pointA.getY(), 0.0f)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+                .next();
+
+        bufferBuilder.vertex(modelMatrix, (float)pointB.getX(), (float)pointB.getY(), 0.0f)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+                .next();
+
+        bufferBuilder.end();
+        BufferRenderer.draw(bufferBuilder);
+    }
 }
