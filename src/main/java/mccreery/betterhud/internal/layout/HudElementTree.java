@@ -1,6 +1,7 @@
 package mccreery.betterhud.internal.layout;
 
 import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.geometry.Rectangle;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -19,6 +20,16 @@ public class HudElementTree {
 
     public HudElement getElement() {
         return element;
+    }
+
+    private transient Rectangle boundsLastFrame;
+
+    public Rectangle getBoundsLastFrame() {
+        return boundsLastFrame;
+    }
+
+    public void setBoundsLastFrame(Rectangle boundsLastFrame) {
+        this.boundsLastFrame = boundsLastFrame;
     }
 
     protected final Set<HudElementTree> children = new HashSet<>();

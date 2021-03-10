@@ -61,9 +61,9 @@ public class LayoutScreen extends Screen {
         position.setParentAnchor(hoveredAnchor);
         position.setAnchor(selectedAnchor);
 
-        Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
-        Point anchorPoint = Anchor.getAnchorPoint(bounds, selectedAnchor);
-        Rectangle parentBounds = layout.getBoundsLastFrame().get(hoveredTree.getElement());
+        Rectangle bounds = selectedTree.getBoundsLastFrame();
+        Point anchorPoint = bounds.getAnchorPoint(selectedAnchor);
+        Rectangle parentBounds = hoveredTree.getBoundsLastFrame();
         Point parentAnchorPoint = Anchor.getAnchorPoint(parentBounds, hoveredAnchor);
 
         position.setOffset(anchorPoint.subtract(parentAnchorPoint));
@@ -82,7 +82,7 @@ public class LayoutScreen extends Screen {
         selectedTree = hoveredTree;
 
         // Keep relative position of cursor on element
-        Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
+        Rectangle bounds = selectedTree.getBoundsLastFrame();
         selectionOffset = cursor.subtract(bounds.getPosition());
 
         // Automatically reset on mouse up
@@ -97,7 +97,7 @@ public class LayoutScreen extends Screen {
         // Move dragged element to cursor
         if (isDragging() && selectedTree != null) {
             RelativePosition position = selectedTree.getPosition();
-            Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
+            Rectangle bounds = selectedTree.getBoundsLastFrame();
 
             Point desiredPosition = cursor.subtract(selectionOffset);
             Point desiredAnchorPosition = desiredPosition.add(Anchor.getAnchorPoint(bounds.getSize(), position.getAnchor()));
@@ -109,7 +109,7 @@ public class LayoutScreen extends Screen {
 
     private Rectangle getParentBounds(HudElementTree tree) {
         if (tree.getParent() != null) {
-            return layout.getBoundsLastFrame().get(tree.getParent().getElement());
+            return tree.getParent().getBoundsLastFrame();
         } else {
             return new Rectangle(0, 0, width, height);
         }
@@ -150,7 +150,7 @@ public class LayoutScreen extends Screen {
      * Checks a single node in the tree for closer anchors.
      */
     private void updateHovered(HudElementTree tree, Point cursor) {
-        Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
+        Rectangle bounds = tree.getBoundsLastFrame();
 
         // Look for an anchor in range and closer than any previous
         for (Anchor anchor : Anchor.values()) {
@@ -205,7 +205,7 @@ public class LayoutScreen extends Screen {
 
     private void renderSelectionBoxes(DrawingContext context) {
         if (selectedTree != null) {
-            Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
+            Rectangle bounds = selectedTree.getBoundsLastFrame();
             RelativePosition position = selectedTree.getPosition();
             Rectangle parentBounds = getParentBounds(selectedTree);
 
@@ -214,7 +214,7 @@ public class LayoutScreen extends Screen {
                     parentBounds.getAnchorPoint(position.getParentAnchor()), DASH_COLOR);
         }
         if (hoveredTree != null) {
-            drawDashedRectangle(context, layout.getBoundsLastFrame().get(hoveredTree.getElement()), DASH_COLOR);
+            drawDashedRectangle(context, hoveredTree.getBoundsLastFrame(), DASH_COLOR);
         }
     }
 
@@ -233,7 +233,7 @@ public class LayoutScreen extends Screen {
     }
 
     private void renderHandles(DrawingContext context, HudElementTree tree) {
-        Rectangle bounds = layout.getBoundsLastFrame().get(tree.getElement());
+        Rectangle bounds = tree.getBoundsLastFrame();
 
         for (Anchor anchor : Anchor.values()) {
             Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);

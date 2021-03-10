@@ -1,13 +1,9 @@
 package mccreery.betterhud.internal.layout;
 
-import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.internal.HudRenderContext;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class HudLayout {
@@ -18,8 +14,6 @@ public class HudLayout {
     }
 
     public void render(HudRenderContext context) {
-        boundsLastFrame.clear();
-
         for (HudElementTree root : roots) {
             // Defensive copy, renderTree modifies element-specific properties of HudRenderContext
             renderTree(root, new HudRenderContext(context));
@@ -30,7 +24,7 @@ public class HudLayout {
         context.setPosition(tree.getPosition());
 
         Rectangle bounds = tree.getElement().render(context);
-        boundsLastFrame.put(tree.getElement(), bounds);
+        tree.setBoundsLastFrame(bounds);
 
         // Ignore non rendering elements, while still parenting as close as possible up the tree
         if (bounds != null) {
@@ -40,11 +34,5 @@ public class HudLayout {
         for (HudElementTree child : tree.getChildren()) {
             renderTree(child, context);
         }
-    }
-
-    private final Map<HudElement, Rectangle> boundsLastFrame = new HashMap<>();
-
-    public Map<HudElement, Rectangle> getBoundsLastFrame() {
-        return Collections.unmodifiableMap(boundsLastFrame);
     }
 }
