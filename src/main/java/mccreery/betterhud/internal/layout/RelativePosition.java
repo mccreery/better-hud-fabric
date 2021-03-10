@@ -36,14 +36,9 @@ public class RelativePosition {
     }
 
     public Rectangle apply(Rectangle parentBounds, Point size) {
-        Rectangle atOrigin = new Rectangle(0, 0, size.getX(), size.getY());
-        Point anchorPoint = Anchor.getAnchorPoint(atOrigin, anchor);
-        Point parentAnchorPoint = Anchor.getAnchorPoint(parentBounds, parentAnchor);
+        Point anchorPoint = Anchor.getAnchorPoint(size, anchor);
+        Point parentAnchorPoint = parentBounds.getAnchorPoint(parentAnchor);
 
-        return new Rectangle(
-                parentAnchorPoint.getX() + offset.getX() - anchorPoint.getX(),
-                parentAnchorPoint.getY() + offset.getY() - anchorPoint.getY(),
-                size.getX(),
-                size.getY());
+        return new Rectangle(parentAnchorPoint.add(offset).subtract(anchorPoint), size);
     }
 }

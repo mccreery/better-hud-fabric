@@ -32,7 +32,7 @@ public class HudLayout {
         }
 
         for (HudElementTree child : tree.getChildren()) {
-            renderTree(child, context);
+            renderTree(child, new HudRenderContext(context));
         }
     }
 }
