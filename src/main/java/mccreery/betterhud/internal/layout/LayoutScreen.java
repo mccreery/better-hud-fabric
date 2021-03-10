@@ -111,11 +111,17 @@ public class LayoutScreen extends Screen {
     }
 
     private Rectangle getParentBounds(HudElementTree tree) {
-        if (tree.getParent() != null) {
-            return tree.getParent().getBoundsLastFrame();
-        } else {
-            return new Rectangle(0, 0, width, height);
+        // Walk up the tree to find a currently rendering element
+        // This parallels the logic of HudLayout.render and renderTree,
+        // where the element draws relative to its closest rendering ancestor
+        while (tree.getParent() != null) {
+            Rectangle bounds = tree.getParent().getBoundsLastFrame();
+            if (bounds != null) {
+                return bounds;
+            }
+            tree = tree.getParent();
         }
+        return new Rectangle(0, 0, width, height);
     }
 
     private static final int HANDLE_RANGE = 3;
