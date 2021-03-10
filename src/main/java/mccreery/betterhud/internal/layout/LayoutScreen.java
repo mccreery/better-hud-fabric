@@ -72,8 +72,13 @@ public class LayoutScreen extends Screen {
      * Selects the tree and anchor under the cursor and prepares for dragging.
      */
     private void selectTreeAndAnchor(Point cursor) {
+        if (hoveredAnchor != null) {
+            selectedAnchor = hoveredAnchor;
+        } else if (selectedTree != hoveredTree) {
+            // Selected anchor always defaults to linked anchor
+            selectedAnchor = hoveredTree.getPosition().getAnchor();
+        }
         selectedTree = hoveredTree;
-        selectedAnchor = hoveredAnchor != null ? hoveredAnchor : selectedTree.getPosition().getAnchor();
 
         // Keep relative position of cursor on element
         Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
