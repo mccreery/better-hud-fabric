@@ -55,6 +55,7 @@ public class LayoutScreen extends Screen {
      */
     private void setParentAndAnchor() {
         selectedTree.setParent(hoveredTree);
+        layout.getRoots().remove(selectedTree);
 
         RelativePosition position = selectedTree.getPosition();
         position.setParentAnchor(hoveredAnchor);
