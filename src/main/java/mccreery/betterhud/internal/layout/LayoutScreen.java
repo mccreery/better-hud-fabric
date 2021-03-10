@@ -36,15 +36,11 @@ public class LayoutScreen extends Screen {
         if (hoveredTree != null) {
             HandleType handleType = getHandleType(hoveredTree, hoveredAnchor);
 
-            if (handleType == HandleType.ANCHOR) {
+            if (handleType == HandleType.ANCHOR || handleType == HandleType.ANCHOR_SELECTED) {
                 setParentAndAnchor();
             } else {
                 Point cursor = new Point((int) mouseX, (int) mouseY);
-                selectTree(cursor);
-
-                if (handleType == HandleType.SELECTED || handleType == HandleType.SELECTED_LINK) {
-                    selectedAnchor = hoveredAnchor;
-                }
+                selectTreeAndAnchor(cursor);
             }
             return true;
         } else {
@@ -75,8 +71,9 @@ public class LayoutScreen extends Screen {
     /**
      * Selects the tree and anchor under the cursor and prepares for dragging.
      */
-    private void selectTree(Point cursor) {
+    private void selectTreeAndAnchor(Point cursor) {
         selectedTree = hoveredTree;
+        selectedAnchor = hoveredAnchor != null ? hoveredAnchor : selectedTree.getPosition().getAnchor();
 
         // Keep relative position of cursor on element
         Rectangle bounds = layout.getBoundsLastFrame().get(selectedTree.getElement());
@@ -216,7 +213,7 @@ public class LayoutScreen extends Screen {
     }
 
     private static final Identifier LAYOUT_WIDGETS = new Identifier(BetterHud.ID, "textures/layout_widgets.png");
-    private static final Point LAYOUT_WIDGETS_SIZE = new Point(16, 16);
+    private static final Point LAYOUT_WIDGETS_SIZE = new Point(32, 16);
 
     private void renderHandles(DrawingContext context) {
         client.getTextureManager().bindTexture(LAYOUT_WIDGETS);
@@ -236,6 +233,7 @@ public class LayoutScreen extends Screen {
             Point anchorPoint = Anchor.getAnchorPoint(bounds, anchor);
 
             Rectangle handleTexture = getHandleType(tree, anchor).getTexture();
+
             context.drawTexturedRectangle(
                     Anchor.getAlignedRectangle(anchorPoint, Anchor.CENTER, handleTexture.getSize()),
                     handleTexture, LAYOUT_WIDGETS_SIZE);
@@ -267,26 +265,21 @@ public class LayoutScreen extends Screen {
         boolean otherTreeHovered = hoveredTree != null && hoveredAnchor != null && tree != hoveredTree;
 
         if (isParentAnchor || anchoring && hovered && otherTreeSelected) {
-            return HandleType.ANCHOR;
+            return hovered || selected ? HandleType.ANCHOR_SELECTED : HandleType.ANCHOR;
         } else if (isChildAnchor || anchoring && selected && otherTreeHovered) {
-            if (selected || hovered) {
-                return HandleType.SELECTED_LINK;
-            } else {
-                return HandleType.LINK;
-            }
-        } else if (selected || hovered) {
-            return HandleType.SELECTED;
+            return hovered || selected ? HandleType.LINK_SELECTED : HandleType.LINK;
         } else {
-            return HandleType.NORMAL;
+            return hovered || selected ? HandleType.SELECTED : HandleType.NORMAL;
         }
     }
 
     private enum HandleType {
-        NORMAL(new Rectangle(7, 0, 4, 4)),
-        SELECTED(new Rectangle(7, 4, 4, 4)),
-        SELECTED_LINK(new Rectangle(7, 8, 7, 7)),
+        NORMAL(new Rectangle(14, 0, 4, 4)),
+        SELECTED(new Rectangle(14, 4, 4, 4)),
         ANCHOR(new Rectangle(0, 0, 7, 7)),
-        LINK(new Rectangle(0, 7, 7, 7));
+        ANCHOR_SELECTED(new Rectangle(0, 7, 7, 7)),
+        LINK(new Rectangle(7, 0, 7, 7)),
+        LINK_SELECTED(new Rectangle(7, 7, 7, 7));
 
         private final Rectangle texture;
 
