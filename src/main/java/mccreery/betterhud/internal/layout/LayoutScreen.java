@@ -34,7 +34,10 @@ public class LayoutScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (hoveredTree != null) {
-            HandleType handleType = getHandleType(hoveredTree, hoveredAnchor);
+            HandleType handleType = null;
+            if (hoveredAnchor != null) {
+                handleType = getHandleType(hoveredTree, hoveredAnchor);
+            }
 
             if (handleType == HandleType.ANCHOR || handleType == HandleType.ANCHOR_SELECTED) {
                 setParentAndAnchor();
