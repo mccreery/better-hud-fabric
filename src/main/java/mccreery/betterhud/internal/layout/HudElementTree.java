@@ -2,15 +2,15 @@ package mccreery.betterhud.internal.layout;
 
 import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.internal.tree.DefaultTreeIterator;
+import mccreery.betterhud.internal.tree.Tree;
+import mccreery.betterhud.internal.tree.TreeIterator;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Queue;
 import java.util.Set;
 
-public class HudElementTree {
+public class HudElementTree implements Tree<HudElementTree> {
     protected HudElementTree(HudElement element, boolean fixed) {
         this.element = element;
         this.fixed = fixed;
@@ -34,6 +34,7 @@ public class HudElementTree {
 
     protected final Set<HudElementTree> children = new HashSet<>();
 
+    @Override
     public Set<HudElementTree> getChildren() {
         return Collections.unmodifiableSet(children);
     }
@@ -81,35 +82,16 @@ public class HudElementTree {
         throw new UnsupportedOperationException("Element is fixed");
     }
 
-    /**
-     * Returns an iterable view of the tree walking over each node breadth-first.
-     */
-    public Iterable<HudElementTree> breadthFirst() {
-        return () -> {
-            Queue<HudElementTree> queue = new ArrayDeque<>();
-            queue.add(this);
-
-            return new Iterator<HudElementTree>() {
-                @Override
-                public boolean hasNext() {
-                    return !queue.isEmpty();
-                }
-
-                @Override
-                public HudElementTree next() {
-                    HudElementTree tree = queue.poll();
-                    queue.addAll(tree.getChildren());
-                    return tree;
-                }
-            };
-        };
-    }
-
     public static HudElementTree create(HudElement element) {
         if (element.isFixed()) {
             return new HudElementTree(element, true);
         } else {
             return new RelativeHudElementTree(element);
         }
+    }
+
+    @Override
+    public TreeIterator<HudElementTree> iterator() {
+        return new DefaultTreeIterator<>(this);
     }
 }

@@ -149,7 +149,7 @@ public class LayoutScreen extends Screen {
         distanceSquaredToCursor = HANDLE_RANGE * HANDLE_RANGE;
 
         for (HudElementTree root : layout.getRoots()) {
-            for (HudElementTree tree : root.breadthFirst()) {
+            for (HudElementTree tree : root) {
                 updateHovered(tree, cursor);
             }
         }
@@ -235,7 +235,7 @@ public class LayoutScreen extends Screen {
 
         // Draw handles on all trees
         for (HudElementTree root : layout.getRoots()) {
-            for (HudElementTree tree : root.breadthFirst()) {
+            for (HudElementTree tree : root) {
                 renderHandles(context, tree);
             }
         }
