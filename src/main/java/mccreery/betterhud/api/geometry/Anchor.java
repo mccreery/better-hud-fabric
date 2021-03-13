@@ -4,15 +4,27 @@ package mccreery.betterhud.api.geometry;
  * Values corresponding to points in a regular 3x3 grid for rectangle and point alignment.
  */
 public enum Anchor {
-    TOP_LEFT,
-    TOP_CENTER,
-    TOP_RIGHT,
-    CENTER_LEFT,
-    CENTER,
-    CENTER_RIGHT,
-    BOTTOM_LEFT,
-    BOTTOM_CENTER,
-    BOTTOM_RIGHT;
+    TOP_LEFT(0.0, 0.0),
+    TOP_CENTER(0.5, 0.0),
+    TOP_RIGHT(1.0, 0.0),
+    CENTER_LEFT(0.0, 0.5),
+    CENTER(0.5, 0.5),
+    CENTER_RIGHT(1.0, 0.5),
+    BOTTOM_LEFT(0.0, 1.0),
+    BOTTOM_CENTER(0.5, 1.0),
+    BOTTOM_RIGHT(1.0, 1.0);
+
+    private final double xt;
+    private final double yt;
+
+    /**
+     * @param xt The horizontal linear interpolation parameter.
+     * @param yt The vertical linear interpolation parameter.
+     */
+    Anchor(double xt, double yt) {
+        this.xt = xt;
+        this.yt = yt;
+    }
 
     /**
      * Returns an anchor point in a rectangle. The anchor points lie on the minimum, center and maximum points of the
@@ -31,23 +43,7 @@ public enum Anchor {
      * @see #getAnchorPoint(Rectangle, Anchor)
      */
     public static Point getAnchorPoint(Point size, Anchor anchor) {
-        double x;
-        switch (anchor.ordinal() % 3) {
-            case 0: x = 0.0; break;
-            case 1: x = size.getX() / 2.0; break;
-            case 2: x = size.getX(); break;
-            default: throw new IllegalArgumentException("Anchor value " + anchor);
-        }
-
-        double y;
-        switch (anchor.ordinal() / 3) {
-            case 0: y = 0.0; break;
-            case 1: y = size.getY() / 2.0; break;
-            case 2: y = size.getY(); break;
-            default: throw new IllegalArgumentException("Anchor value " + anchor);
-        }
-
-        return new Point(x, y);
+        return new Point(size.getX() * anchor.xt, size.getY() * anchor.yt);
     }
 
     /**
