@@ -17,8 +17,8 @@ public class DefaultTreeIterator<T extends Tree<T>> implements TreeIterator<T> {
 
     @Override
     public boolean hasNext() {
-        // The stack cannot be empty until next() so no null check is needed for nextBranch
-        return !stack.isEmpty() || !nextBranch.getChildren().isEmpty();
+        // nextBranch can be null if pruned
+        return !stack.isEmpty() || nextBranch != null && !nextBranch.getChildren().isEmpty();
     }
 
     @Override
