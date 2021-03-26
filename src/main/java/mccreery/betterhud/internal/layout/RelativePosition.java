@@ -5,6 +5,15 @@ import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
 public class RelativePosition {
+    public RelativePosition() {
+    }
+
+    public RelativePosition(Anchor anchor, Anchor parentAnchor, Point offset) {
+        this.anchor = anchor;
+        this.parentAnchor = parentAnchor;
+        this.offset = offset;
+    }
+
     private Anchor anchor = Anchor.TOP_LEFT;
 
     public Anchor getAnchor() {

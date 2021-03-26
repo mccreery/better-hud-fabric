@@ -63,6 +63,15 @@ public final class Rectangle {
     }
 
     /**
+     * Tests whether this rectangle intersects at any point with another.
+     * @return {@code true} if any point is inside both rectangles.
+     */
+    public boolean overlaps(Rectangle rectangle) {
+        return x < rectangle.getMaxX() && getMaxX() > rectangle.x &&
+                y < rectangle.getMaxY() && getMaxY() > rectangle.y;
+    }
+
+    /**
      * More intuitive alias for {@link Anchor#getAnchorPoint(Rectangle, Anchor)}.
      */
     public Point getAnchorPoint(Anchor anchor) {

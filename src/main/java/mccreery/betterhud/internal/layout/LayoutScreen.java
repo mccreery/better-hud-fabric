@@ -8,6 +8,7 @@ import mccreery.betterhud.internal.BetterHud;
 import mccreery.betterhud.internal.Bitwise;
 import mccreery.betterhud.internal.render.Color;
 import mccreery.betterhud.internal.render.DrawingContext;
+import mccreery.betterhud.internal.tree.TreeIterator;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.math.MatrixStack;
@@ -16,7 +17,16 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 public class LayoutScreen extends Screen {
+    private static final int CURSOR_RANGE = 3;
+    private static final int SNAP_SPACER = 5;
+
     private final HudLayout layout;
 
     public LayoutScreen(HudLayout layout) {
@@ -99,15 +109,21 @@ public class LayoutScreen extends Screen {
 
         // Move dragged element to cursor
         if (isDragging() && selectedTree != null) {
-            RelativePosition position = selectedTree.getPosition();
-            Rectangle bounds = selectedTree.getBoundsLastFrame();
-
-            Point desiredPosition = cursor.subtract(selectionOffset);
-            Point desiredAnchorPosition = desiredPosition.add(Anchor.getAnchorPoint(bounds.getSize(), position.getAnchor()));
-            Point parentAnchorPoint = Anchor.getAnchorPoint(getParentBounds(selectedTree), position.getParentAnchor());
-
-            position.setOffset(desiredAnchorPosition.subtract(parentAnchorPoint));
+            Point position = cursor.subtract(selectionOffset);
+            position = snap(selectedTree, position);
+            move(selectedTree, position);
         }
+    }
+
+    private void move(HudElementTree tree, Point position) {
+        Point size = tree.getBoundsLastFrame().getSize();
+        Point anchorOffset = Anchor.getAnchorPoint(size, tree.getPosition().getAnchor());
+        Point anchorPoint = position.add(anchorOffset);
+
+        Point parentAnchorPoint = getParentBounds(tree)
+                .getAnchorPoint(tree.getPosition().getParentAnchor());
+
+        tree.getPosition().setOffset(anchorPoint.subtract(parentAnchorPoint));
     }
 
     private Rectangle getParentBounds(HudElementTree tree) {
@@ -124,7 +140,100 @@ public class LayoutScreen extends Screen {
         return new Rectangle(0, 0, width, height);
     }
 
-    private static final int HANDLE_RANGE = 3;
+    private static final List<RelativePosition> SNAP_TARGETS = new ArrayList<>();
+
+    // Add snap targets
+    static {
+        // Add horizontal alignment (left, center, right)
+        Map<Anchor, Anchor> rowMirror = new EnumMap<>(Anchor.class);
+        rowMirror.put(Anchor.TOP_LEFT, Anchor.BOTTOM_LEFT);
+        rowMirror.put(Anchor.TOP_CENTER, Anchor.BOTTOM_CENTER);
+        rowMirror.put(Anchor.TOP_RIGHT, Anchor.BOTTOM_RIGHT);
+
+        addSnapTargets(rowMirror, new Point(0, SNAP_SPACER));
+
+        // Add vertical alignment (top, center, bottom)
+        Map<Anchor, Anchor> columnMirror = new EnumMap<>(Anchor.class);
+        columnMirror.put(Anchor.TOP_LEFT, Anchor.TOP_RIGHT);
+        columnMirror.put(Anchor.CENTER_LEFT, Anchor.CENTER_RIGHT);
+        columnMirror.put(Anchor.BOTTOM_LEFT, Anchor.BOTTOM_RIGHT);
+
+        addSnapTargets(columnMirror, new Point(SNAP_SPACER, 0));
+    }
+
+    /**
+     * Adds symmetric snap targets to {@link #SNAP_TARGETS}. For example, an entry in the map TOP_LEFT -> TOP_RIGHT
+     * indicates that a selected element can snap its TOP_LEFT anchor to the TOP_RIGHT anchor of another with the
+     * forward spacer as the offset, and also that it can snap its TOP_RIGHT anchor to the TOP_LEFT anchor of another
+     * with the backward spacer (found by negating the forward spacer) as the offset.
+     */
+    private static void addSnapTargets(Map<Anchor, Anchor> anchorPairs, Point forwardSpacer) {
+        Point backwardSpacer = new Point(-forwardSpacer.getX(), -forwardSpacer.getY());
+
+        for (Entry<Anchor, Anchor> entry : anchorPairs.entrySet()) {
+            SNAP_TARGETS.add(new RelativePosition(entry.getKey(), entry.getValue(), forwardSpacer));
+            SNAP_TARGETS.add(new RelativePosition(entry.getValue(), entry.getKey(), backwardSpacer));
+        }
+    }
+
+    /**
+     * Snaps a tree's position to minimize the distance between any handle on the tree and any handle on another tree.
+     */
+    private Point snap(HudElementTree target, Point position) {
+        Point snappedPosition = position;
+        double snapDistanceSquared = CURSOR_RANGE * CURSOR_RANGE;
+
+        Point size = target.getBoundsLastFrame().getSize();
+
+        // Search all trees for the minimal snap by finding the minumum distance
+        // between snap point and any dragged handle
+        for (HudElementTree snapTree : getSnappableTrees(target)) {
+            Rectangle snapBounds = snapTree.getBoundsLastFrame();
+
+            for (RelativePosition snapTarget : SNAP_TARGETS) {
+                Point snapPosition = snapTarget.apply(snapBounds, size).getPosition();
+
+                double distanceSquared = snapPosition.distanceSquared(position);
+                if (distanceSquared < snapDistanceSquared) {
+                    snappedPosition = snapPosition;
+                    snapDistanceSquared = distanceSquared;
+                }
+            }
+        }
+
+        return snappedPosition;
+    }
+
+    /**
+     * Broad search to find trees that the given tree could snap to.
+     */
+    private List<HudElementTree> getSnappableTrees(HudElementTree target) {
+        List<HudElementTree> closeTrees = new ArrayList<>();
+
+        Rectangle targetBounds = target.getBoundsLastFrame();
+
+        // Any elements within snap range of the bounds can be snapped
+        Rectangle snapTest = expandRectangle(targetBounds, SNAP_SPACER + CURSOR_RANGE);
+
+        for (HudElementTree root : layout.getRoots()) {
+            TreeIterator<HudElementTree> iterator = root.iterator();
+
+            while (iterator.hasNext()) {
+                HudElementTree tree = iterator.next();
+
+                // Don't snap to the target itself or its children
+                if (tree == target) {
+                    iterator.prune();
+                } else {
+                    Rectangle bounds = tree.getBoundsLastFrame();
+                    if (bounds != null && snapTest.overlaps(bounds)) {
+                        closeTrees.add(tree);
+                    }
+                }
+            }
+        }
+        return closeTrees;
+    }
 
     /**
      * The tree that is hovered directly or via one of its anchors. {@code null} if nothing is hovered.
@@ -146,7 +255,7 @@ public class LayoutScreen extends Screen {
         // Start with no hover and max range
         hoveredTree = null;
         hoveredAnchor = null;
-        distanceSquaredToCursor = HANDLE_RANGE * HANDLE_RANGE;
+        distanceSquaredToCursor = CURSOR_RANGE * CURSOR_RANGE;
 
         for (HudElementTree root : layout.getRoots()) {
             for (HudElementTree tree : root) {
@@ -309,8 +418,7 @@ public class LayoutScreen extends Screen {
 
     private void drawDashedRectangle(DrawingContext context, Rectangle rectangle, Color color) {
         // Inset rectangle by 0.5 to account for half line outside
-        rectangle = new Rectangle(rectangle.getX() + 0.5, rectangle.getY() + 0.5,
-                rectangle.getWidth() - 1.0, rectangle.getHeight() - 1.0);
+        rectangle = expandRectangle(rectangle, -0.5);
 
         beginDashed();
         context.drawBorderRectangle(rectangle, color);
@@ -335,5 +443,10 @@ public class LayoutScreen extends Screen {
     private void endDashed() {
         GL11.glDisable(GL11.GL_LINE_STIPPLE);
         GL11.glLineWidth(1.0f);
+    }
+
+    private static Rectangle expandRectangle(Rectangle rectangle, double radius) {
+        return new Rectangle(rectangle.getX() - radius, rectangle.getY() - radius,
+                rectangle.getWidth() + radius * 2, rectangle.getHeight() + radius * 2);
     }
 }
