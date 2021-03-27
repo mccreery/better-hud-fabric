@@ -1,5 +1,8 @@
 package mccreery.betterhud.api.geometry;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -78,5 +81,39 @@ public final class Point {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    /**
+     * Returns the componentwise maximum between points.
+     * @throws NoSuchElementException if points has no elements.
+     */
+    public static Point max(Point... points) {
+        return max(Arrays.asList(points));
+    }
+
+    /**
+     * Returns the componentwise maximum between points.
+     * @throws NoSuchElementException if points has no elements.
+     */
+    public static Point max(Iterable<Point> points) {
+        Iterator<Point> iterator = points.iterator();
+
+        // There must be at least one point
+        Point first = iterator.next();
+        double x = first.getX();
+        double y = first.getY();
+
+        // Compare to remaining points
+        while (iterator.hasNext()) {
+            Point point = iterator.next();
+
+            if (point.getX() > x) {
+                x = point.getX();
+            }
+            if (point.getY() > y) {
+                y = point.getY();
+            }
+        }
+        return new Point(x, y);
     }
 }
