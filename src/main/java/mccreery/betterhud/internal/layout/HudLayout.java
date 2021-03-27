@@ -22,7 +22,9 @@ public class HudLayout {
 
     private void renderTree(HudElementTree tree, HudRenderContext context) {
         context.setPosition(tree.getPosition());
+
         Rectangle bounds = tree.getElement().render(context);
+        tree.setBoundsLastFrame(bounds);
 
         // Ignore non rendering elements, while still parenting as close as possible up the tree
         if (bounds != null) {
@@ -30,7 +32,7 @@ public class HudLayout {
         }
 
         for (HudElementTree child : tree.getChildren()) {
-            renderTree(child, context);
+            renderTree(child, new HudRenderContext(context));
         }
     }
 }

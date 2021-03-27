@@ -1,12 +1,16 @@
 package mccreery.betterhud.internal.layout;
 
 import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.internal.tree.DefaultTreeIterator;
+import mccreery.betterhud.internal.tree.Tree;
+import mccreery.betterhud.internal.tree.TreeIterator;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class HudElementTree {
+public class HudElementTree implements Tree<HudElementTree> {
     protected HudElementTree(HudElement element, boolean fixed) {
         this.element = element;
         this.fixed = fixed;
@@ -18,8 +22,19 @@ public class HudElementTree {
         return element;
     }
 
+    private transient Rectangle boundsLastFrame;
+
+    public Rectangle getBoundsLastFrame() {
+        return boundsLastFrame;
+    }
+
+    public void setBoundsLastFrame(Rectangle boundsLastFrame) {
+        this.boundsLastFrame = boundsLastFrame;
+    }
+
     protected final Set<HudElementTree> children = new HashSet<>();
 
+    @Override
     public Set<HudElementTree> getChildren() {
         return Collections.unmodifiableSet(children);
     }
@@ -73,5 +88,10 @@ public class HudElementTree {
         } else {
             return new RelativeHudElementTree(element);
         }
+    }
+
+    @Override
+    public TreeIterator<HudElementTree> iterator() {
+        return new DefaultTreeIterator<>(this);
     }
 }

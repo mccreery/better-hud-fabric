@@ -1,26 +1,66 @@
 package mccreery.betterhud.api.geometry;
 
+import java.util.Objects;
+
 /**
- * Immutable 2D integer point.
+ * Immutable 2D point of doubles.
  */
 public final class Point {
     public static final Point ZERO = new Point(0, 0);
 
-    public Point(int x, int y) {
+    private final double x;
+    private final double y;
+
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    private final int x;
-
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    private final int y;
-
-    public int getY() {
+    public double getY() {
         return y;
+    }
+
+    public Point add(Point point) {
+        return new Point(x + point.x, y + point.y);
+    }
+
+    public Point subtract(Point point) {
+        return new Point(x - point.x, y - point.y);
+    }
+
+    public Point scale(Point point) {
+        return new Point(x * point.x, y * point.y);
+    }
+
+    public Point scale(double factor) {
+        return new Point(x * factor, y * factor);
+    }
+
+    /**
+     * Returns the squared Euclidean distance between this and another point.
+     * <p>This is more efficient than {@link #distance(Point)} and retains the order of distances, so it can be used
+     * in place of distance in cases such as range checking.
+     */
+    public double distanceSquared(Point point) {
+        double dx = x - point.x;
+        double dy = y - point.y;
+        return dx * dx + dy * dy;
+    }
+
+    /**
+     * Returns the Euclidean distance between this and another point.
+     * @see #distanceSquared(Point)
+     */
+    public double distance(Point point) {
+        return Math.sqrt(distanceSquared(point));
+    }
+
+    public Point round() {
+        return new Point(Math.round(x), Math.round(y));
     }
 
     @Override
@@ -37,6 +77,6 @@ public final class Point {
 
     @Override
     public int hashCode() {
-        return 31 * (31 + x) + y;
+        return Objects.hash(x, y);
     }
 }

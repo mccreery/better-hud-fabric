@@ -8,13 +8,14 @@ import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.mojang.serialization.Lifecycle;
 import mccreery.betterhud.api.BetterHudInitializer;
 import mccreery.betterhud.api.HudElement;
-import mccreery.betterhud.internal.typeadapter.HudElementTreeTypeAdapterFactory;
-import mccreery.betterhud.internal.typeadapter.SchemaTypeAdapterFactory;
+import mccreery.betterhud.internal.layout.HudLayout;
 import mccreery.betterhud.internal.schema.SchemaProperty;
 import mccreery.betterhud.internal.schema.ToggleSchemaProperty;
 import mccreery.betterhud.internal.typeadapter.EnumTypeAdapterFactory;
-import mccreery.betterhud.internal.layout.HudLayout;
+import mccreery.betterhud.internal.typeadapter.HudElementTreeTypeAdapterFactory;
+import mccreery.betterhud.internal.typeadapter.SchemaTypeAdapterFactory;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
@@ -67,6 +68,7 @@ public class BetterHud implements ModInitializer {
         EntrypointUtils.invoke(ID, BetterHudInitializer.class, callback ->
                 callback.onBetterHudInitialize(elementRegistry));
 
+        ScreenEvents.AFTER_INIT.register(new LayoutButtonHandler());
         initializeGson();
         loadLayout();
     }

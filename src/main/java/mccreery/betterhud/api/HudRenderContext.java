@@ -30,4 +30,6 @@ public interface HudRenderContext {
     LivingEntity getTargetEntity();
 
     Rectangle calculateBounds(Point size);
+
+    boolean isLayoutMode();
 }

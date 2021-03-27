@@ -17,6 +17,7 @@ public final class HudRenderContext implements mccreery.betterhud.api.HudRenderC
         this.targetEntity = context.targetEntity;
         this.parentBounds = context.parentBounds;
         this.position = context.position;
+        this.layoutMode = context.layoutMode;
     }
 
     private Phase phase;
@@ -87,5 +88,16 @@ public final class HudRenderContext implements mccreery.betterhud.api.HudRenderC
     @Override
     public Rectangle calculateBounds(Point size) {
         return position.apply(parentBounds, size);
+    }
+
+    private boolean layoutMode;
+
+    @Override
+    public boolean isLayoutMode() {
+        return layoutMode;
+    }
+
+    public void setLayoutMode(boolean layoutMode) {
+        this.layoutMode = layoutMode;
     }
 }
