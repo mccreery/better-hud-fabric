@@ -3,7 +3,7 @@ package mccreery.betterhud.api.geometry;
 import java.util.Objects;
 
 /**
- * Immutable 2D integer rectangle.
+ * Immutable 2D rectangle.
  */
 public final class Rectangle {
     private final double x;
@@ -72,10 +72,45 @@ public final class Rectangle {
     }
 
     /**
-     * More intuitive alias for {@link Anchor#getAnchorPoint(Rectangle, Anchor)}.
+     * Interpolation parameter.
      */
-    public Point getAnchorPoint(Anchor anchor) {
-        return Anchor.getAnchorPoint(this, anchor);
+    public static final Point
+            TOP_LEFT = new Point(0.0, 0.0),
+            TOP_CENTER = new Point(0.5, 0.0),
+            TOP_RIGHT = new Point(1.0, 0.0),
+            CENTER_LEFT = new Point(0.0, 0.5),
+            CENTER = new Point(0.5, 0.5),
+            CENTER_RIGHT = new Point(1.0, 0.5),
+            BOTTOM_LEFT = new Point(0.0, 1.0),
+            BOTTOM_CENTER = new Point(0.5, 1.0),
+            BOTTOM_RIGHT = new Point(1.0, 1.0);
+
+    /**
+     * Interpolates between the minimum and maximum points.
+     * @param t The linear interpolation parameter.
+     */
+    public Point interpolate(Point t) {
+        return getPosition().add(getSize().scale(t));
+    }
+
+    /**
+     * Aligns a point inside the rectangle with an anchor point.
+     * @param anchor The fixed anchor point.
+     * @param t The linear interpolation parameter.
+     * @return A new rectangle.
+     */
+    public Rectangle align(Point anchor, Point t) {
+        return new Rectangle(anchor.subtract(getSize().scale(t)), getSize());
+    }
+
+    /**
+     * Aligns a point inside the rectangle with the corresponding point in a container.
+     * @param container The container.
+     * @param t The linear interpolation parameter.
+     * @return A new rectangle.
+     */
+    public Rectangle align(Rectangle container, Point t) {
+        return align(container.interpolate(t), t);
     }
 
     @Override

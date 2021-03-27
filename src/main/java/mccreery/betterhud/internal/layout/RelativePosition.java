@@ -1,6 +1,5 @@
 package mccreery.betterhud.internal.layout;
 
-import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
@@ -8,30 +7,30 @@ public class RelativePosition {
     public RelativePosition() {
     }
 
-    public RelativePosition(Anchor anchor, Anchor parentAnchor, Point offset) {
-        this.anchor = anchor;
-        this.parentAnchor = parentAnchor;
+    public RelativePosition(HandlePosition handle, HandlePosition parentHandle, Point offset) {
+        this.handle = handle;
+        this.parentHandle = parentHandle;
         this.offset = offset;
     }
 
-    private Anchor anchor = Anchor.TOP_LEFT;
+    private HandlePosition handle = HandlePosition.TOP_LEFT;
 
-    public Anchor getAnchor() {
-        return anchor;
+    public HandlePosition getHandle() {
+        return handle;
     }
 
-    public void setAnchor(Anchor anchor) {
-        this.anchor = anchor;
+    public void setHandle(HandlePosition handle) {
+        this.handle = handle;
     }
 
-    private Anchor parentAnchor = Anchor.TOP_LEFT;
+    private HandlePosition parentHandle = HandlePosition.TOP_LEFT;
 
-    public Anchor getParentAnchor() {
-        return parentAnchor;
+    public HandlePosition getParentHandle() {
+        return parentHandle;
     }
 
-    public void setParentAnchor(Anchor parentAnchor) {
-        this.parentAnchor = parentAnchor;
+    public void setParentHandle(HandlePosition parentHandle) {
+        this.parentHandle = parentHandle;
     }
 
     private Point offset = Point.ZERO;
@@ -45,9 +44,7 @@ public class RelativePosition {
     }
 
     public Rectangle apply(Rectangle parentBounds, Point size) {
-        Point anchorPoint = Anchor.getAnchorPoint(size, anchor);
-        Point parentAnchorPoint = parentBounds.getAnchorPoint(parentAnchor);
-
-        return new Rectangle(parentAnchorPoint.add(offset).subtract(anchorPoint), size);
+        Point anchor = parentBounds.interpolate(parentHandle.getT());
+        return new Rectangle(Point.ZERO, size).align(anchor.add(offset), handle.getT());
     }
 }

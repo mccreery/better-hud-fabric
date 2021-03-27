@@ -32,6 +32,14 @@ public final class Point {
         return new Point(x - point.x, y - point.y);
     }
 
+    public Point scale(Point point) {
+        return new Point(x * point.x, y * point.y);
+    }
+
+    public Point scale(double factor) {
+        return new Point(x * factor, y * factor);
+    }
+
     /**
      * Returns the squared Euclidean distance between this and another point.
      * <p>This is more efficient than {@link #distance(Point)} and retains the order of distances, so it can be used

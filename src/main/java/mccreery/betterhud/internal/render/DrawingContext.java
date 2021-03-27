@@ -1,6 +1,5 @@
 package mccreery.betterhud.internal.render;
 
-import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import net.minecraft.client.render.BufferBuilder;
@@ -11,11 +10,11 @@ import net.minecraft.util.math.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 public final class DrawingContext {
-    private static final Anchor[] COUNTERCLOCKWISE_WINDING = {
-        Anchor.BOTTOM_LEFT,
-        Anchor.BOTTOM_RIGHT,
-        Anchor.TOP_RIGHT,
-        Anchor.TOP_LEFT
+    private static final Point[] COUNTERCLOCKWISE_WINDING = {
+        Rectangle.BOTTOM_LEFT,
+        Rectangle.BOTTOM_RIGHT,
+        Rectangle.TOP_RIGHT,
+        Rectangle.TOP_LEFT
     };
 
     private final MatrixStack matrixStack;
@@ -46,8 +45,8 @@ public final class DrawingContext {
         Matrix4f modelMatrix = matrixStack.peek().getModel();
         bufferBuilder.begin(drawMode, VertexFormats.POSITION_COLOR);
 
-        for (Anchor anchor : COUNTERCLOCKWISE_WINDING) {
-            Point vertex = rectangle.getAnchorPoint(anchor);
+        for (Point t : COUNTERCLOCKWISE_WINDING) {
+            Point vertex = rectangle.interpolate(t);
 
             bufferBuilder.vertex(modelMatrix, (float)vertex.getX(), (float)vertex.getY(), 0.0f)
                     .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
@@ -68,9 +67,9 @@ public final class DrawingContext {
         Matrix4f modelMatrix = matrixStack.peek().getModel();
         bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
 
-        for (Anchor anchor : COUNTERCLOCKWISE_WINDING) {
-            Point vertex = rectangle.getAnchorPoint(anchor);
-            Point textureVertex = normalizedTexture.getAnchorPoint(anchor);
+        for (Point t : COUNTERCLOCKWISE_WINDING) {
+            Point vertex = rectangle.interpolate(t);
+            Point textureVertex = normalizedTexture.interpolate(t);
 
             bufferBuilder.vertex(modelMatrix, (float)vertex.getX(), (float)vertex.getY(), 0.0f)
                     .texture((float)textureVertex.getX(), (float)textureVertex.getY())
