@@ -1,61 +1,77 @@
 package mccreery.betterhud.api.layout;
 
+import mccreery.betterhud.api.geometry.Point;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
-import jobicade.betterhud.geom.Size;
+public class Grid extends LayoutBox {
+    private final List<LayoutBox> cells;
 
-public class Grid<T extends Boxed> extends DefaultBoxed {
-    private List<T> source;
-    private Rect shape;
+    private final int rowCount;
+    private final int columnCount;
 
-    private Size gutter = Size.zero();
+    private double rowGutter;
+    private double columnGutter;
+
     private boolean stretch = false;
     private Direction alignment = Direction.NORTH_WEST;
     private Direction cellAlignment = Direction.CENTER;
 
-    public Grid(Point shape) {
-        this(shape, new ArrayList<>(Collections.nCopies(shape.getX() * shape.getY(), null)));
+    public Grid(int rowCount, int columnCount) {
+        this.rowCount = rowCount;
+        this.columnCount = columnCount;
+        this.cells = new ArrayList<>(Collections.nCopies(rowCount * columnCount, null)));
     }
 
-    public Grid(Point shape, List<T> source) {
-        super();
-        this.shape = new Rect(shape);
-        this.source = source;
+    /**
+     * Converts the row count and column count to a double-precision point.
+     * @return The size of the grid in cells.
+     */
+    private Point getShape() {
+        return new Point(columnCount, rowCount);
     }
 
-    public Grid<T> setSource(List<T> source) {
-        this.source = source;
-        return this;
+    /**
+     * Converts the row and column gutters to a point.
+     * @return The size of the gutter.
+     */
+    private Point getGutter() {
+        return new Point(columnGutter, rowGutter);
     }
 
-    public List<T> getSource() {
-        return source;
+    public double getRowGutter() {
+        return rowGutter;
     }
 
-    public List<T> flatten() {
-        return source.subList(0, shape.getWidth() * shape.getHeight());
+    public void setRowGutter(double rowGutter) {
+        this.rowGutter = rowGutter;
     }
 
-    public T getCell(Point position) {
-        return source.get(getCellIndex(position));
+    public double getColumnGutter() {
+        return columnGutter;
     }
 
-    public Grid<T> setCell(Point position, T element) {
-        source.set(getCellIndex(position), element);
-        return this;
+    public void setColumnGutter(double columnGutter) {
+        this.columnGutter = columnGutter;
     }
 
-    private int getCellIndex(Point position) {
-        if(!shape.contains(position)) {
-            throw new IndexOutOfBoundsException("Grid coordinates " + position);
+    public LayoutBox getCell(int row, int column) {
+        int index = getCellIndex(row, column);
+        return cells.get(index);
+    }
+
+    public LayoutBox setCell(int row, int column, LayoutBox cell) {
+        int index = getCellIndex(row, column);
+        return cells.set(index, cell);
+    }
+
+    private int getCellIndex(int row, int column) {
+        if (row < 0 || row >= rowCount || column < 0 || column >= columnCount) {
+            throw new IndexOutOfBoundsException("Invalid cell position");
         }
-        return position.getY() * shape.getWidth() + position.getX();
+        return row * columnCount + column;
     }
 
     public Rect getCellBounds(Rect bounds, Point position) {
@@ -65,15 +81,6 @@ public class Grid<T extends Boxed> extends DefaultBoxed {
         Direction flow = alignment.mirror();
         Point offset = new Point((flow.getCol() - 1) * position.getX(), (flow.getRow() - 1) * position.getY()).scale(cellSize.add(gutter));
         return new Rect(cellSize).anchor(bounds, alignment).translate(offset);
-    }
-
-    public Size getGutter() {
-        return gutter;
-    }
-
-    public Grid<T> setGutter(Point gutter) {
-        this.gutter = gutter instanceof Size ? (Size)gutter : new Size(gutter);
-        return this;
     }
 
     public boolean hasStretch() {
