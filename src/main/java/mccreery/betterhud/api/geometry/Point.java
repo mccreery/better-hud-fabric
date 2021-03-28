@@ -83,6 +83,11 @@ public final class Point {
         return Objects.hash(x, y);
     }
 
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
+
     /**
      * Returns the componentwise maximum between points.
      * @throws NoSuchElementException if points has no elements.

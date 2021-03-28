@@ -129,4 +129,9 @@ public final class Rectangle {
     public int hashCode() {
         return Objects.hash(x, y, width, height);
     }
+
+    @Override
+    public String toString() {
+        return "Rectangle{position=" + getPosition() + ", size=" + getSize() + "}";
+    }
 }
