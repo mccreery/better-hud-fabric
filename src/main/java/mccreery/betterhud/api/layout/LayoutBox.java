@@ -1,29 +1,33 @@
 package mccreery.betterhud.api.layout;
 
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
-import jobicade.betterhud.geom.Size;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 
 /**
  * An object which can be rendered within a bounding box.
  */
-public interface Boxed {
+public abstract class LayoutBox {
+    private Rectangle bounds;
+
     /**
      * Set the current bounds to a given value.
      * @param bounds The new bounding box.
-     * @return {@code this}
      * @see #getBounds()
      */
-    Boxed setBounds(Rect bounds);
+    public void setBounds(Rectangle bounds) {
+        this.bounds = bounds;
+    }
 
     /**
      * Gets the current bounds. The initial bounds should be a valid size, and
      * its top-left corner should be the origin.
      *
      * @return The current bounds.
-     * @see #setBounds(Rect)
+     * @see #setBounds(Rectangle)
      */
-    Rect getBounds();
+    public Rectangle getBounds() {
+        return bounds;
+    }
 
     /**
      * Renders the object inside the current bounds.
@@ -34,7 +38,7 @@ public interface Boxed {
      * will be rendered correctly. Implementations may throw an
      * exception if the given bounds are undesirable.
      */
-    void render();
+    public abstract void render();
 
     /**
      * Responds to a size offer with the offer itself or a counter offer.
@@ -49,8 +53,8 @@ public interface Boxed {
      * @param size The proposed size to render with.
      * @return The argument or a counter offer size to render with.
      */
-    default Size negotiateSize(Point size) {
-        return size.toSize();
+    public Point negotiateSize(Point size) {
+        return size;
     }
 
     /**
@@ -61,7 +65,7 @@ public interface Boxed {
      *
      * @return The preferred size of the object.
      */
-    default Size getPreferredSize() {
-        return negotiateSize(Size.zero());
+    public Point getPreferredSize() {
+        return negotiateSize(Point.ZERO);
     }
 }
