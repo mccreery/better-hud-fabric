@@ -11,10 +11,10 @@ import org.lwjgl.opengl.GL11;
 
 public final class DrawingContext {
     private static final Point[] COUNTERCLOCKWISE_WINDING = {
-        Rectangle.BOTTOM_LEFT,
-        Rectangle.BOTTOM_RIGHT,
-        Rectangle.TOP_RIGHT,
-        Rectangle.TOP_LEFT
+        Rectangle.Node.BOTTOM_LEFT.getT(),
+        Rectangle.Node.BOTTOM_RIGHT.getT(),
+        Rectangle.Node.TOP_RIGHT.getT(),
+        Rectangle.Node.TOP_LEFT.getT()
     };
 
     private final MatrixStack matrixStack;

@@ -34,7 +34,7 @@ public class LayoutScreen extends Screen {
     }
 
     private HudElementTree selectedTree;
-    private HandlePosition selectedAnchor;
+    private Rectangle.Node selectedAnchor;
     /**
      * The offset from the minimum corner of the selected tree's bounds
      */
@@ -143,18 +143,18 @@ public class LayoutScreen extends Screen {
     // Add snap targets
     static {
         // Add horizontal alignment (left, center, right)
-        Map<HandlePosition, HandlePosition> rowMirror = new EnumMap<>(HandlePosition.class);
-        rowMirror.put(HandlePosition.TOP_LEFT, HandlePosition.BOTTOM_LEFT);
-        rowMirror.put(HandlePosition.TOP_CENTER, HandlePosition.BOTTOM_CENTER);
-        rowMirror.put(HandlePosition.TOP_RIGHT, HandlePosition.BOTTOM_RIGHT);
+        Map<Rectangle.Node, Rectangle.Node> rowMirror = new EnumMap<>(Rectangle.Node.class);
+        rowMirror.put(Rectangle.Node.TOP_LEFT, Rectangle.Node.BOTTOM_LEFT);
+        rowMirror.put(Rectangle.Node.TOP_CENTER, Rectangle.Node.BOTTOM_CENTER);
+        rowMirror.put(Rectangle.Node.TOP_RIGHT, Rectangle.Node.BOTTOM_RIGHT);
 
         addSnapTargets(rowMirror, new Point(0, SNAP_SPACER));
 
         // Add vertical alignment (top, center, bottom)
-        Map<HandlePosition, HandlePosition> columnMirror = new EnumMap<>(HandlePosition.class);
-        columnMirror.put(HandlePosition.TOP_LEFT, HandlePosition.TOP_RIGHT);
-        columnMirror.put(HandlePosition.CENTER_LEFT, HandlePosition.CENTER_RIGHT);
-        columnMirror.put(HandlePosition.BOTTOM_LEFT, HandlePosition.BOTTOM_RIGHT);
+        Map<Rectangle.Node, Rectangle.Node> columnMirror = new EnumMap<>(Rectangle.Node.class);
+        columnMirror.put(Rectangle.Node.TOP_LEFT, Rectangle.Node.TOP_RIGHT);
+        columnMirror.put(Rectangle.Node.CENTER_LEFT, Rectangle.Node.CENTER_RIGHT);
+        columnMirror.put(Rectangle.Node.BOTTOM_LEFT, Rectangle.Node.BOTTOM_RIGHT);
 
         addSnapTargets(columnMirror, new Point(SNAP_SPACER, 0));
     }
@@ -165,10 +165,10 @@ public class LayoutScreen extends Screen {
      * forward spacer as the offset, and also that it can snap its TOP_RIGHT anchor to the TOP_LEFT anchor of another
      * with the backward spacer (found by negating the forward spacer) as the offset.
      */
-    private static void addSnapTargets(Map<HandlePosition, HandlePosition> anchorPairs, Point forwardSpacer) {
+    private static void addSnapTargets(Map<Rectangle.Node, Rectangle.Node> anchorPairs, Point forwardSpacer) {
         Point backwardSpacer = new Point(-forwardSpacer.getX(), -forwardSpacer.getY());
 
-        for (Entry<HandlePosition, HandlePosition> entry : anchorPairs.entrySet()) {
+        for (Entry<Rectangle.Node, Rectangle.Node> entry : anchorPairs.entrySet()) {
             SNAP_TARGETS.add(new RelativePosition(entry.getKey(), entry.getValue(), forwardSpacer));
             SNAP_TARGETS.add(new RelativePosition(entry.getValue(), entry.getKey(), backwardSpacer));
         }
@@ -240,7 +240,7 @@ public class LayoutScreen extends Screen {
     /**
      * The anchor that is hovered. {@code null} if nothing is hovered or a tree is hovered directly.
      */
-    private HandlePosition hoveredAnchor;
+    private Rectangle.Node hoveredAnchor;
     /**
      * The squared distance of the anchor, if any, to the cursor.
      */
@@ -269,7 +269,7 @@ public class LayoutScreen extends Screen {
         Rectangle bounds = tree.getBoundsLastFrame();
 
         // Look for an anchor in range and closer than any previous
-        for (HandlePosition anchor : HandlePosition.values()) {
+        for (Rectangle.Node anchor : Rectangle.Node.values()) {
             Point anchorPoint = bounds.interpolate(anchor.getT());
             double distanceSquared = anchorPoint.distanceSquared(cursor);
 
@@ -302,14 +302,14 @@ public class LayoutScreen extends Screen {
         RenderSystem.enableBlend();
 
         Rectangle screen = new Rectangle(0, 0, width, height);
-        Rectangle dialogBounds = new Rectangle(0, 0, 200, textRenderer.fontHeight * 2 + 6).align(screen, Rectangle.CENTER);
+        Rectangle dialogBounds = new Rectangle(0, 0, 200, textRenderer.fontHeight * 2 + 6).align(screen, Rectangle.Node.CENTER);
 
         context.drawFilledRectangle(dialogBounds, TRANSLUCENT);
 
         Text leftText = new TranslatableText("hudLayout.prompt.left", new TranslatableText("key.mouse.left"));
         Text rightText = new TranslatableText("hudLayout.prompt.right", new TranslatableText("key.mouse.right"));
 
-        Point anchorPoint = dialogBounds.interpolate(Rectangle.TOP_CENTER);
+        Point anchorPoint = dialogBounds.interpolate(Rectangle.Node.TOP_CENTER);
 
         drawCenteredText(context.getMatrixStack(), textRenderer, leftText, (int)anchorPoint.getX(), (int)anchorPoint.getY() + 2, 0xffffffff);
         drawCenteredText(context.getMatrixStack(), textRenderer, rightText, (int)anchorPoint.getX(), (int)anchorPoint.getY() + textRenderer.fontHeight + 4, 0xffffffff);
@@ -350,13 +350,13 @@ public class LayoutScreen extends Screen {
     private void renderHandles(DrawingContext context, HudElementTree tree) {
         Rectangle bounds = tree.getBoundsLastFrame();
 
-        for (HandlePosition anchor : HandlePosition.values()) {
+        for (Rectangle.Node anchor : Rectangle.Node.values()) {
             Point anchorPoint = bounds.interpolate(anchor.getT());
 
             Rectangle handleTexture = getHandleType(tree, anchor).getTexture();
 
             context.drawTexturedRectangle(
-                    handleTexture.align(anchorPoint, Rectangle.CENTER),
+                    handleTexture.align(anchorPoint, Rectangle.Node.CENTER),
                     handleTexture, LAYOUT_WIDGETS_SIZE);
         }
     }
@@ -364,7 +364,7 @@ public class LayoutScreen extends Screen {
     /**
      * Determines the click action and icon corresponding to a handle.
      */
-    private HandleIcon getHandleType(HudElementTree tree, HandlePosition anchor) {
+    private HandleIcon getHandleType(HudElementTree tree, Rectangle.Node anchor) {
         boolean isParentAnchor;
         boolean isChildAnchor;
 

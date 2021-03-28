@@ -7,29 +7,29 @@ public class RelativePosition {
     public RelativePosition() {
     }
 
-    public RelativePosition(HandlePosition handle, HandlePosition parentHandle, Point offset) {
+    public RelativePosition(Rectangle.Node handle, Rectangle.Node parentHandle, Point offset) {
         this.handle = handle;
         this.parentHandle = parentHandle;
         this.offset = offset;
     }
 
-    private HandlePosition handle = HandlePosition.TOP_LEFT;
+    private Rectangle.Node handle = Rectangle.Node.TOP_LEFT;
 
-    public HandlePosition getHandle() {
+    public Rectangle.Node getHandle() {
         return handle;
     }
 
-    public void setHandle(HandlePosition handle) {
+    public void setHandle(Rectangle.Node handle) {
         this.handle = handle;
     }
 
-    private HandlePosition parentHandle = HandlePosition.TOP_LEFT;
+    private Rectangle.Node parentHandle = Rectangle.Node.TOP_LEFT;
 
-    public HandlePosition getParentHandle() {
+    public Rectangle.Node getParentHandle() {
         return parentHandle;
     }
 
-    public void setParentHandle(HandlePosition parentHandle) {
+    public void setParentHandle(Rectangle.Node parentHandle) {
         this.parentHandle = parentHandle;
     }
 
