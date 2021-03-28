@@ -94,7 +94,15 @@ public class Grid extends LayoutBox {
                         bounds.getPosition().add(cellStep.scale(new Point(row, column))),
                         cellSize
                     );
-                    cell.setBounds(cellBounds);
+
+                    if (stretch) {
+                        cell.setBounds(cellBounds);
+                    } else {
+                        AlignmentBox alignmentBox = new AlignmentBox(cell, cellAlignment);
+                        alignmentBox.setBounds(cellBounds);
+                        alignmentBox.render();
+                    }
+                    cell.render();
                 }
             }
         }
