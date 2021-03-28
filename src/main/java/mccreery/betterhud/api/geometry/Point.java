@@ -1,8 +1,5 @@
 package mccreery.betterhud.api.geometry;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -89,36 +86,30 @@ public final class Point {
     }
 
     /**
-     * Returns the componentwise maximum between points.
-     * @throws NoSuchElementException if points has no elements.
+     * Returns the component-wise minimum between two points.
+     *
+     * @param a The first point.
+     * @param b The second point.
+     * @return The component-wise minimum between two points.
      */
-    public static Point max(Point... points) {
-        return max(Arrays.asList(points));
+    public static Point min(Point a, Point b) {
+        return new Point(
+            Math.min(a.getX(), b.getX()),
+            Math.min(a.getY(), b.getY())
+        );
     }
 
     /**
-     * Returns the componentwise maximum between points.
-     * @throws NoSuchElementException if points has no elements.
+     * Returns the component-wise maximum between two points.
+     *
+     * @param a The first point.
+     * @param b The second point.
+     * @return The component-wise maximum between two points.
      */
-    public static Point max(Iterable<Point> points) {
-        Iterator<Point> iterator = points.iterator();
-
-        // There must be at least one point
-        Point first = iterator.next();
-        double x = first.getX();
-        double y = first.getY();
-
-        // Compare to remaining points
-        while (iterator.hasNext()) {
-            Point point = iterator.next();
-
-            if (point.getX() > x) {
-                x = point.getX();
-            }
-            if (point.getY() > y) {
-                y = point.getY();
-            }
-        }
-        return new Point(x, y);
+    public static Point max(Point a, Point b) {
+        return new Point(
+            Math.max(a.getX(), b.getX()),
+            Math.max(a.getY(), b.getY())
+        );
     }
 }

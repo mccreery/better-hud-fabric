@@ -6,6 +6,9 @@ import mccreery.betterhud.api.geometry.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class Grid extends LayoutBox {
     private final List<LayoutBox> cells;
@@ -20,6 +23,9 @@ public class Grid extends LayoutBox {
     private Point cellAlignment = Rectangle.Node.CENTER.getT();
 
     public Grid(int rowCount, int columnCount) {
+        // Sizing is handled dynamically
+        super(Point.ZERO);
+
         if (rowCount < 1 || columnCount < 1) {
             throw new IllegalArgumentException("Minimum 1 row and 1 column");
         }
@@ -71,19 +77,44 @@ public class Grid extends LayoutBox {
     }
 
     @Override
-    public Point getPreferredSize() {
-        Point cellSize = getCellSize();
+    protected Point getMinSize() {
+        return getSize(LayoutBox::getMinSize);
+    }
+
+    @Override
+    public Point getDefaultSize() {
+        return getSize(LayoutBox::getDefaultSize);
+    }
+
+    @Override
+    protected Point getMaxSize() {
+        return getSize(LayoutBox::getMaxSize);
+    }
+
+    private Point getSize(Function<LayoutBox, Point> sizeGetter) {
+        Point cellSize = getCellSize(sizeGetter);
         Point gutter = getGutter();
         Point shape = getShape();
 
         return cellSize.add(gutter).scale(shape).subtract(gutter);
     }
 
+    private Point getCellSize(Function<LayoutBox, Point> sizeGetter) {
+        Optional<Point> optional = cells.stream()
+                .filter(Objects::nonNull)
+                .map(sizeGetter)
+                .filter(Objects::nonNull)
+                .reduce(Point::max);
+
+        assert optional.isPresent();
+        return optional.get();
+    }
+
     @Override
     public void render() {
-        Point cellSize = getCellSize();
-        Point cellStep = cellSize.add(getGutter());
         Rectangle bounds = getBounds();
+        Point cellSize = bounds.getSize().add(getGutter()).scale(new Point(1.0 / columnCount, 1.0 / rowCount));
+        Point cellStep = cellSize.add(getGutter());
 
         for (int row = 0; row < rowCount; row++) {
             for (int column = 0; column < columnCount; column++) {
@@ -114,10 +145,6 @@ public class Grid extends LayoutBox {
      */
     private Point getShape() {
         return new Point(columnCount, rowCount);
-    }
-
-    private Point getCellSize() {
-        return Point.max(cells.stream().map(LayoutBox::getPreferredSize)::iterator);
     }
 
     /**
