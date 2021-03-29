@@ -15,7 +15,7 @@ import jobicade.betterhud.render.Color;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.resources.I18n;
 
-public class Legend extends Setting {
+public class Legend extends Property {
     public Legend(String name) {
         super(name);
     }

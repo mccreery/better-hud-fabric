@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import jobicade.betterhud.geom.Point;
 import jobicade.betterhud.gui.GuiElementSettings.Populator;
 
-public class SettingInteger extends Setting {
+public class SettingInteger extends Property {
     private int value;
 
     public SettingInteger(String name) {

@@ -14,14 +14,14 @@ import jobicade.betterhud.gui.GuiElementSettings.Populator;
 /**
  * A setting which can have children.
  */
-public class ParentSetting extends Setting {
-    private final List<Setting> children = new ArrayList<>();
+public class ParentSetting extends Property {
+    private final List<Property> children = new ArrayList<>();
 
     public ParentSetting(String name) {
         super(name);
     }
 
-    public void addChild(Setting setting) {
+    public void addChild(Property setting) {
         children.add(setting);
         setting.parent = this;
     }
@@ -34,7 +34,7 @@ public class ParentSetting extends Setting {
     public JsonElement saveJson(Gson gson) {
         JsonObject element = new JsonObject();
 
-        for (Setting childSetting : children) {
+        for (Property childSetting : children) {
             element.add(childSetting.getName(), childSetting.saveJson(gson));
         }
         return element;
@@ -56,7 +56,7 @@ public class ParentSetting extends Setting {
         }
         JsonObject object = element.getAsJsonObject();
 
-        for (Setting child : children) {
+        for (Property child : children) {
             JsonElement childElement = object.get(child.getName());
 
             if (childElement != null) {
@@ -67,7 +67,7 @@ public class ParentSetting extends Setting {
 
     @Override
     public Point getGuiParts(Populator populator, Point topAnchor) {
-        for (Setting setting : children) {
+        for (Property setting : children) {
             if (!setting.getHidden()) {
                 topAnchor = setting.getGuiParts(populator, topAnchor);
             }
@@ -77,14 +77,14 @@ public class ParentSetting extends Setting {
 
     @Override
     public void draw() {
-        for (Setting child : children) {
+        for (Property child : children) {
             child.draw();
         }
     }
 
     @Override
     public void updateGuiParts() {
-        for (Setting child : children) {
+        for (Property child : children) {
             child.updateGuiParts();
         }
     }

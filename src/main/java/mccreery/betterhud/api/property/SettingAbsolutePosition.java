@@ -14,7 +14,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 
-public class SettingAbsolutePosition extends Setting {
+public class SettingAbsolutePosition extends Property {
     public TextFieldWidget xBox, yBox;
     public Button pick;
     private Button xUp, xDown, yUp, yDown;

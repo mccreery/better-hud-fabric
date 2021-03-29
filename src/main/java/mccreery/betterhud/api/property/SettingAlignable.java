@@ -10,7 +10,7 @@ import jobicade.betterhud.geom.Point;
 import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.gui.GuiElementSettings;
 
-public abstract class SettingAlignable extends Setting {
+public abstract class SettingAlignable extends Property {
     protected Direction alignment = Direction.CENTER;
 
     public SettingAlignable(String name) {
@@ -42,6 +42,6 @@ public abstract class SettingAlignable extends Setting {
         return alignment != Direction.WEST;
     }
 
-    /** @see Setting#getGuiParts(List, Map, Point) */
+    /** @see Property#getGuiParts(List, Map, Point) */
     public abstract void getGuiParts(GuiElementSettings.Populator populator, Rect bounds);
 }
