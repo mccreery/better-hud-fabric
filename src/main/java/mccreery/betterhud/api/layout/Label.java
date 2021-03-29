@@ -9,6 +9,7 @@ import jobicade.betterhud.geom.Point;
 import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.geom.Size;
 import jobicade.betterhud.util.GlUtil;
+import mccreery.betterhud.api.ScreenRenderContext;
 import net.minecraft.client.gui.AbstractGui;
 
 public class Label extends DefaultBoxed {
@@ -64,7 +65,7 @@ public class Label extends DefaultBoxed {
     }
 
     @Override
-    public void render() {
+    public void render(ScreenRenderContext context) {
         if (background != null) {
             GlUtil.drawRect(bounds, background);
         }

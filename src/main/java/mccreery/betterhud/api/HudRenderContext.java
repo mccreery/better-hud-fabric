@@ -2,10 +2,9 @@ package mccreery.betterhud.api;
 
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-public interface HudRenderContext {
+public interface HudRenderContext extends ScreenRenderContext {
     Phase getPhase();
 
     enum Phase {
@@ -19,10 +18,6 @@ public interface HudRenderContext {
          */
         LIVING_ENTITY_BILLBOARD
     }
-
-    MatrixStack getMatrixStack();
-
-    float getTickDelta();
 
     /**
      * @return The entity carrying the billboard for phase {@link mccreery.betterhud.internal.HudRenderContext.Phase#LIVING_ENTITY_BILLBOARD}, otherwise the player.

@@ -1,5 +1,6 @@
 package mccreery.betterhud.api.layout;
 
+import mccreery.betterhud.api.ScreenRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
@@ -64,5 +65,5 @@ public abstract class LayoutBox {
     /**
      * Renders the content inside the bounding box. Must not be called before {@link #applyLayout(Rectangle)}.
      */
-    public abstract void render();
+    public abstract void render(ScreenRenderContext context);
 }

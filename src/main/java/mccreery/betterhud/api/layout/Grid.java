@@ -1,5 +1,6 @@
 package mccreery.betterhud.api.layout;
 
+import mccreery.betterhud.api.ScreenRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
@@ -85,8 +86,10 @@ public class Grid extends LayoutBox {
     }
 
     @Override
-    public void render() {
-        cells.forEach(LayoutBox::render);
+    public void render(ScreenRenderContext context) {
+        for (LayoutBox cell : cells) {
+            cell.render(context);
+        }
     }
 
     /**
