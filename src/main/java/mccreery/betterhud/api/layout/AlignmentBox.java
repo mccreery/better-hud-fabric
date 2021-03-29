@@ -27,8 +27,13 @@ public class AlignmentBox extends LayoutBox {
     }
 
     @Override
+    public void applyLayout(Rectangle bounds) {
+        super.applyLayout(bounds);
+        content.applyLayout(new Rectangle(Point.ZERO, content.getPreferredSize()).align(getBounds(), alignment));
+    }
+
+    @Override
     public void render() {
-        content.setBounds(new Rectangle(Point.ZERO, content.getPreferredSize()).align(getBounds(), alignment));
         content.render();
     }
 }

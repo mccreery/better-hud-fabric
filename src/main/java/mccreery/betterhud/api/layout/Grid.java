@@ -66,8 +66,7 @@ public class Grid extends LayoutBox {
     }
 
     @Override
-    public void render() {
-        Rectangle bounds = getBounds();
+    public void applyLayout(Rectangle bounds) {
         Point cellStep = cellSize.add(getGutter());
 
         for (int row = 0; row < rowCount; row++) {
@@ -76,15 +75,18 @@ public class Grid extends LayoutBox {
 
                 if (cell != null) {
                     Rectangle cellBounds = new Rectangle(
-                        bounds.getPosition().add(cellStep.scale(new Point(row, column))),
-                        cellSize
+                            bounds.getPosition().add(cellStep.scale(new Point(row, column))),
+                            cellSize
                     );
-
-                    cell.setBounds(cellBounds);
-                    cell.render();
+                    cell.applyLayout(cellBounds);
                 }
             }
         }
+    }
+
+    @Override
+    public void render() {
+        cells.forEach(LayoutBox::render);
     }
 
     /**

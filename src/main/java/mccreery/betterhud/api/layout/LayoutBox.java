@@ -4,34 +4,44 @@ import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
 /**
- * An object which can be rendered within a bounding box.
+ * A box with renderable content that can be moved and resized. It may also be responsible for moving, resizing and
+ * rendering a number of children.
  */
 public abstract class LayoutBox {
     private Rectangle bounds;
 
     /**
-     * Gets the current bounds. The initial bounds should be a valid size, and
-     * its top-left corner should be the origin.
-     *
-     * @return The current bounds.
-     * @see #setBounds(Rectangle)
+     * Returns the bounding box set by {@link #applyLayout(Rectangle)}. Its initial value is undefined.
+     * @return The bounding box.
      */
     public final Rectangle getBounds() {
         return bounds;
     }
 
     /**
-     * Set the current bounds to a given value.
+     * Called by {@link #applyLayout(Rectangle)} to set the bounding box.
      * @param bounds The new bounding box.
-     * @see #getBounds()
      */
-    public final void setBounds(Rectangle bounds) {
+    private void setBounds(Rectangle bounds) {
         Point size = bounds.getSize();
         if (!negotiateSize(size).equals(size)) {
             throw new IllegalArgumentException("Invalid size");
         }
 
         this.bounds = bounds;
+    }
+
+    /**
+     * Sets bounding boxes for this box (the parent) and its children.
+     *
+     * <p>Implementations must call {@code super.applyLayout(bounds)} to set the parent bounds. The layout cascades to
+     * the children by calling their own {@code applyLayout} methods. Child bounding boxes must not overflow the parent
+     * bounding box.
+     *
+     * @param bounds The bounding box to set for the parent (this).
+     */
+    public void applyLayout(Rectangle bounds) {
+        setBounds(bounds);
     }
 
     public abstract Point getPreferredSize();
