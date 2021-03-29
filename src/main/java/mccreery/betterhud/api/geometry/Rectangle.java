@@ -12,6 +12,10 @@ public final class Rectangle {
     private final double height;
 
     public Rectangle(double x, double y, double width, double height) {
+        if (width < 0 || height < 0) {
+            throw new IllegalArgumentException("Negative size");
+        }
+
         this.x = x;
         this.y = y;
         this.width = width;
