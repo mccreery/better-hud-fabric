@@ -4,19 +4,19 @@ import jobicade.betterhud.geom.Direction;
 import net.minecraft.client.resources.I18n;
 
 public class SettingWarnings extends ParentSetting {
-    private final SettingSlider[] sliders;
+    private final DoubleProperty[] sliders;
 
     public SettingWarnings(String name, int warnings) {
         super(name);
 
         addChild(new Legend("damageWarning"));
-        sliders = new SettingSlider[warnings];
+        sliders = new DoubleProperty[warnings];
         populateSliders();
     }
 
     private void populateSliders() {
         for(int i = 0; i < sliders.length; i++) {
-            SettingSlider slider = new WarningSlider(i);
+            DoubleProperty slider = new WarningSlider(i);
 
             if ((i & 1) == 1) {
                 slider.setAlignment(Direction.EAST);
@@ -54,7 +54,7 @@ public class SettingWarnings extends ParentSetting {
         return 0;
     }
 
-    private final class WarningSlider extends SettingSlider {
+    private final class WarningSlider extends DoubleProperty {
         private final int index;
 
         private WarningSlider(int index) {
@@ -66,7 +66,7 @@ public class SettingWarnings extends ParentSetting {
 
         @Override
         public String getDisplayValue(double value) {
-            SettingSlider next = next();
+            DoubleProperty next = next();
 
             if(next == null || next.getValue() < getValue()) {
                 return super.getDisplayValue(value);
@@ -77,16 +77,16 @@ public class SettingWarnings extends ParentSetting {
 
         @Override
         public void setValue(float value) {
-            SettingSlider next = next();
+            DoubleProperty next = next();
             super.setValue(next != null ? Math.max(value, next.getValue()) : value);
 
             for(int i = index - 1; i >= 0; i--) {
-                SettingSlider slider = sliders[i];
+                DoubleProperty slider = sliders[i];
                 if(slider != null) slider.setValue(Math.max(slider.getValue(), getValue()));
             }
         }
 
-        private SettingSlider next() {
+        private DoubleProperty next() {
             return index == sliders.length - 1 ? null : sliders[index + 1];
         }
 
