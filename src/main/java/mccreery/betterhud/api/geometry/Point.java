@@ -112,4 +112,33 @@ public final class Point {
             Math.max(a.getY(), b.getY())
         );
     }
+
+    /**
+     * Individually clamps the X and Y components of a point between a minimum and a maximum.
+     * @param min The lower bound.
+     * @param max The upper bound.
+     * @param point The point to clamp.
+     * @return The point {@code point} clamped between {@code min} and {@code max}.
+     * @throws IllegalArgumentException If min > max in either component.
+     */
+    public static Point clamp(Point min, Point max, Point point) {
+        if (min.getX() > max.getX() || min.getY() > max.getY()) {
+            throw new IllegalArgumentException("min > max");
+        }
+
+        return new Point(
+            Math.max(min.getX(), Math.min(max.getX(), point.getX())),
+            Math.max(min.getY(), Math.min(max.getY(), point.getY()))
+        );
+    }
+
+    /**
+     * Clamps the X and Y components of a point so it is inside a rectangle.
+     * @param bounds The bounds.
+     * @param point The point to clamp.
+     * @return The point {@code point} clamped between the edges of {@code bounds}.
+     */
+    public static Point clamp(Rectangle bounds, Point point) {
+        return clamp(bounds.getPosition(), bounds.getPosition().add(bounds.getSize()), point);
+    }
 }
