@@ -14,7 +14,7 @@ public class SettingPosition extends ParentSetting {
     private boolean edge = false;
     private int postSpacer = SPACER;
 
-    private final SettingChoose mode;
+    private final EnumProperty mode;
 
     private final SettingDirection direction;
     private final SettingAbsolutePosition offset;
@@ -26,7 +26,7 @@ public class SettingPosition extends ParentSetting {
     {
         addChild(new Legend("position"));
 
-        mode = new SettingChoose("position", "preset", "custom");
+        mode = new EnumProperty("position", "preset", "custom");
         BooleanSupplier isPreset = () -> mode.getIndex() == 0;
         BooleanSupplier isCustom = () -> mode.getIndex() == 1;
         addChild(mode);
