@@ -2,12 +2,17 @@ package mccreery.betterhud.api;
 
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.Property;
 import mccreery.betterhud.internal.BetterHud;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class HudElement {
     /**
@@ -47,6 +52,16 @@ public abstract class HudElement {
      */
     protected void setFixed(boolean fixed) {
         this.fixed = fixed;
+    }
+
+    private final List<Property> properties = new ArrayList<>();
+
+    public List<Property> getProperties() {
+        return Collections.unmodifiableList(properties);
+    }
+
+    protected void addProperty(Property property) {
+        properties.add(property);
     }
 
     private HudRenderContext.Phase renderPhase = HudRenderContext.Phase.OVERLAY;
