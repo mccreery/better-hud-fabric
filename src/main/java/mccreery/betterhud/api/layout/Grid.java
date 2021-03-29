@@ -1,12 +1,16 @@
 package mccreery.betterhud.api.layout;
 
 import mccreery.betterhud.api.ScreenRenderContext;
+import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A grid layout with a fixed cell size and number of rows and columns.
@@ -107,5 +111,51 @@ public class Grid extends LayoutBox {
      */
     private Point getGutter() {
         return new Point(columnGutter, rowGutter);
+    }
+
+    /**
+     * Creates a grid for lines of text separated by a small space.
+     * @param lines The lines of text.
+     * @param alignment The alignment of the lines.
+     * @return A grid containing labels of each line.
+     */
+    public static Grid ofLabels(ScreenRenderContext context, Anchor alignment, String... lines) {
+        return ofLabels(context, alignment, Arrays.asList(lines));
+    }
+
+    /**
+     * Creates a grid for lines of text separated by a small space.
+     * @param lines The lines of text.
+     * @param alignment The alignment of the lines.
+     * @return A grid containing labels of each line.
+     */
+    public static Grid ofLabels(ScreenRenderContext context, Anchor alignment, Iterable<String> lines) {
+        List<Label> labels = new ArrayList<>();
+
+        for (String line : lines) {
+            labels.add(new Label(context, line, 0xffffffff, true));
+        }
+        Point cellSize = getMaxSize(labels);
+
+        Grid grid = new Grid(context, labels.size(), 1, cellSize);
+        for (int i = 0; i < labels.size(); i++) {
+            grid.setCell(i, 0, new AlignmentBox(context, labels.get(i), alignment));
+        }
+
+        return grid;
+    }
+
+    private static Point getMaxSize(Collection<? extends LayoutBox> boxes) {
+        if (boxes.isEmpty()) {
+            throw new IllegalArgumentException("Cannot get max size from empty collection");
+        }
+
+        Optional<Point> optional = boxes.stream()
+                .map(LayoutBox::getPreferredSize)
+                .reduce(Point::max);
+
+        // Since the collection is not empty there must be a value
+        assert optional.isPresent();
+        return optional.get();
     }
 }
