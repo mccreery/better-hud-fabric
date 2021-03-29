@@ -3,8 +3,8 @@ package mccreery.betterhud.internal.element.vanilla;
 import static jobicade.betterhud.BetterHud.MC;
 
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.geom.Size;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.render.DefaultBoxed;
@@ -34,14 +34,14 @@ public class PotionIcon extends DefaultBoxed {
     @Override
     public void render() {
         Color iconColor = getIconColor();
-        Rect background = getIconBackground();
-        Rect iconBounds = background.anchor(bounds, Direction.NORTH);
+        Rectangle background = getIconBackground();
+        Rectangle iconBounds = background.anchor(bounds, Direction.NORTH);
 
         MC.getTextureManager().bindTexture(ContainerScreen.INVENTORY_BACKGROUND);
         new Quad().setTexture(background).setBounds(iconBounds).render();
 
         iconColor.apply();
-        Rect iconInnerBounds = new Rect(18, 18).anchor(iconBounds, Direction.CENTER);
+        Rectangle iconInnerBounds = new Rectangle(18, 18).anchor(iconBounds, Direction.CENTER);
 
         if(effect.isShowIcon()) {
             TextureAtlasSprite sprite = MC.getPotionSpriteUploader().getSprite(potion);
@@ -52,13 +52,13 @@ public class PotionIcon extends DefaultBoxed {
         String levelLabel = getLevelLabel();
         if(levelLabel != null) {
             Label label = new Label(levelLabel);
-            label.setBounds(new Rect(label.getPreferredSize()).anchor(iconInnerBounds, Direction.SOUTH_EAST)).render();
+            label.setBounds(new Rectangle(label.getPreferredSize()).anchor(iconInnerBounds, Direction.SOUTH_EAST)).render();
         }
 
         String durationLabel = getDurationLabel();
         if(durationLabel != null) {
             Label label = new Label(durationLabel);
-            label.setBounds(new Rect(label.getPreferredSize()).anchor(iconBounds.grow(2), Direction.SOUTH, true)).render();
+            label.setBounds(new Rectangle(label.getPreferredSize()).anchor(iconBounds.grow(2), Direction.SOUTH, true)).render();
         }
 
         MC.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
@@ -110,7 +110,7 @@ public class PotionIcon extends DefaultBoxed {
         }
     }
 
-    private Rect getIconBackground() {
-        return new Rect(effect.isAmbient() ? 165 : 141, 166, 24, 24);
+    private Rectangle getIconBackground() {
+        return new Rectangle(effect.isAmbient() ? 165 : 141, 166, 24, 24);
     }
 }

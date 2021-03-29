@@ -12,16 +12,16 @@ import java.util.Map;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 
 import jobicade.betterhud.BetterHud;
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingBoolean;
 import jobicade.betterhud.element.text.TextElement;
-import jobicade.betterhud.events.OverlayContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.network.InventoryNameQuery;
 import jobicade.betterhud.registry.HudElements;
 import jobicade.betterhud.util.GlUtil;
@@ -43,7 +43,7 @@ import net.minecraftforge.registries.ForgeRegistry;
  * @see BetterHud#onBlockBreak(net.minecraftforge.event.world.BlockEvent.BreakEvent)
  */
 public class BlockViewer extends TextElement {
-    private SettingBoolean showBlock, showIds, invNames;
+    private BooleanProperty showBlock, showIds, invNames;
     private BlockRayTraceResult trace;
     private BlockState state;
     private ItemStack stack;
@@ -52,15 +52,15 @@ public class BlockViewer extends TextElement {
         super("blockViewer");
         addSetting(new Legend("misc"));
 
-        showBlock = new SettingBoolean("showItem");
-        showBlock.setValuePrefix(SettingBoolean.VISIBLE);
+        showBlock = new BooleanProperty("showItem");
+        showBlock.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(showBlock);
 
-        showIds = new SettingBoolean("showIds");
-        showIds.setValuePrefix(SettingBoolean.VISIBLE);
+        showIds = new BooleanProperty("showIds");
+        showIds.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(showIds);
 
-        invNames = new SettingBoolean("invNames");
+        invNames = new BooleanProperty("invNames");
         invNames.setEnableOn(() -> {
             VersionRange versionRange;
             try {
@@ -75,7 +75,7 @@ public class BlockViewer extends TextElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         RayTraceResult traceResult = MC.getRenderViewEntity().pick(HudElements.GLOBAL.getBillboardDistance(), 1f, false);
 
         if(traceResult != null && traceResult.getType() == RayTraceResult.Type.BLOCK) {
@@ -101,10 +101,10 @@ public class BlockViewer extends TextElement {
     }
 
     @Override
-    protected Rect getPadding() {
+    protected Rectangle getPadding() {
         int vPad = 20 - MC.fontRenderer.FONT_HEIGHT;
         int bottom = vPad / 2;
-        Rect bounds = Rect.createPadding(5, vPad - bottom, 5, bottom);
+        Rectangle bounds = Rectangle.createPadding(5, vPad - bottom, 5, bottom);
 
         if(stack != null && showBlock.get()) {
             if(position.getContentAlignment() == Direction.EAST) {
@@ -117,26 +117,26 @@ public class BlockViewer extends TextElement {
     }
 
     @Override
-    protected void drawBorder(Rect bounds, Rect padding, Rect margin) {
+    protected void drawBorder(Rectangle bounds, Rectangle padding, Rectangle margin) {
         GlUtil.drawTooltipBox(bounds);
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         RenderSystem.disableDepthTest();
         return super.render(context);
     }
 
     @Override
-    protected void drawExtras(Rect bounds) {
+    protected void drawExtras(Rectangle bounds) {
         if(stack != null && showBlock.get()) {
-            Rect stackRect = new Rect(16, 16).anchor(bounds.grow(-5, -2, -5, -2), position.getContentAlignment());
+            Rectangle stackRect = new Rectangle(16, 16).anchor(bounds.grow(-5, -2, -5, -2), position.getContentAlignment());
             GlUtil.renderSingleItem(stack, stackRect.getPosition());
         }
     }
 
     @Override
-    protected Rect moveRect(Rect bounds) {
+    protected Rectangle moveRect(Rectangle bounds) {
         if(position.isDirection(Direction.CENTER)) {
             return bounds.align(MANAGER.getScreen().getAnchor(Direction.CENTER).add(0, -SPACER), Direction.SOUTH);
         } else {

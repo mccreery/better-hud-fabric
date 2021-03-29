@@ -7,10 +7,10 @@ import jobicade.betterhud.element.OverlayElement;
 import jobicade.betterhud.element.settings.DirectionOptions;
 import jobicade.betterhud.element.settings.SettingColor;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.render.Grid;
 import jobicade.betterhud.render.Label;
@@ -38,25 +38,25 @@ public abstract class TextElement extends OverlayElement {
         return color.get();
     }
 
-    protected Rect getPadding() {
-        return border ? Rect.createPadding(BetterHud.SPACER) : Rect.empty();
+    protected Rectangle getPadding() {
+        return border ? Rectangle.createPadding(BetterHud.SPACER) : Rectangle.empty();
     }
 
-    protected Rect getMargin() {
-        return Rect.empty();
+    protected Rectangle getMargin() {
+        return Rectangle.empty();
     }
 
-    protected Rect moveRect(Rect bounds) {
+    protected Rectangle moveRect(Rectangle bounds) {
         return position.applyTo(bounds);
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         List<String> text = getText();
         return text == null || text.isEmpty() ? null : render(context, text);
     }
 
-    protected Rect render(OverlayContext event, List<String> text) {
+    protected Rectangle render(HudRenderContext event, List<String> text) {
         Grid<Label> grid = new Grid<Label>(new Point(1, text.size()))
             .setGutter(new Point(2, 2));
 
@@ -67,10 +67,10 @@ public abstract class TextElement extends OverlayElement {
             grid.setCell(new Point(0, i), new Label(text.get(i)).setColor(color.get()));
         }
 
-        Rect padding = getPadding();
-        Rect margin = getMargin();
+        Rectangle padding = getPadding();
+        Rectangle margin = getMargin();
 
-        Rect bounds = moveRect(new Rect(grid.getPreferredSize().add(padding.getSize()).add(margin.getSize())));
+        Rectangle bounds = moveRect(new Rectangle(grid.getPreferredSize().add(padding.getSize()).add(margin.getSize())));
 
         drawBorder(bounds, padding, margin);
         grid.setBounds(bounds.grow(margin.grow(padding).invert())).render();
@@ -79,10 +79,10 @@ public abstract class TextElement extends OverlayElement {
         return bounds;
     }
 
-    protected void drawBorder(Rect bounds, Rect padding, Rect margin) {
+    protected void drawBorder(Rectangle bounds, Rectangle padding, Rectangle margin) {
         if(border) GlUtil.drawRect(bounds.grow(margin.invert()), Color.TRANSLUCENT);
     }
 
     protected abstract List<String> getText();
-    protected void drawExtras(Rect bounds) {}
+    protected void drawExtras(Rectangle bounds) {}
 }

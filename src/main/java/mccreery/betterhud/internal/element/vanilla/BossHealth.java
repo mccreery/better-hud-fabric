@@ -3,9 +3,9 @@ package mccreery.betterhud.internal.element.vanilla;
 import static jobicade.betterhud.BetterHud.MC;
 
 import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Rectangle;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 
@@ -15,13 +15,13 @@ public class BossHealth extends OverlayElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return ForgeIngameGui.renderBossHealth
             && !OverlayHook.pre(context.getEvent(), ElementType.BOSSHEALTH);
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         // Vanilla stores current boss bars in a private map so the size cannot
         // be determined and the bars cannot be moved
         MC.ingameGUI.getBossOverlay().render();

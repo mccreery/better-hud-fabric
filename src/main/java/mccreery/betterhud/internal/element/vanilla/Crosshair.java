@@ -9,14 +9,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import jobicade.betterhud.element.OverlayElement;
 import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.element.settings.SettingChoose;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.EnumProperty;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
 import jobicade.betterhud.events.OverlayHook;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.registry.OverlayElements;
 import jobicade.betterhud.util.GlUtil;
 import net.minecraft.block.BlockState;
@@ -33,8 +33,8 @@ import net.minecraftforge.client.gui.ForgeIngameGui;
 
 public class Crosshair extends OverlayElement {
     private SettingPosition position;
-    private SettingBoolean attackIndicator;
-    private SettingChoose indicatorType;
+    private BooleanProperty attackIndicator;
+    private EnumProperty indicatorType;
 
     public Crosshair() {
         super("crosshair");
@@ -44,7 +44,7 @@ public class Crosshair extends OverlayElement {
         position.setContentOptions(DirectionOptions.NONE);
         addSetting(position);
 
-        attackIndicator = new SettingBoolean("attackIndicator") {
+        attackIndicator = new BooleanProperty("attackIndicator") {
             @Override
             public boolean get() {
                 return MC.gameSettings.attackIndicator != AttackIndicatorStatus.OFF;
@@ -61,11 +61,11 @@ public class Crosshair extends OverlayElement {
                 return "options.attackIndicator";
             }
         };
-        attackIndicator.setValuePrefix(SettingBoolean.VISIBLE);
+        attackIndicator.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(attackIndicator);
         position.setEnableOn(attackIndicator::get);
 
-        indicatorType = new SettingChoose("indicatorType", 2) {
+        indicatorType = new EnumProperty("indicatorType", 2) {
             @Override
             public int getIndex() {
                 return Math.max(MC.gameSettings.attackIndicator.getId() - 1, 0);
@@ -88,7 +88,7 @@ public class Crosshair extends OverlayElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return ForgeIngameGui.renderCrosshairs
             && !OverlayHook.pre(context.getEvent(), ElementType.CROSSHAIRS)
             && MC.gameSettings.thirdPersonView == 0
@@ -110,16 +110,16 @@ public class Crosshair extends OverlayElement {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
-        Rect bounds = null;
+    public Rectangle render(HudRenderContext context) {
+        Rectangle bounds = null;
 
         if(MC.gameSettings.showDebugInfo && !MC.gameSettings.reducedDebugInfo && !MC.player.hasReducedDebug()) {
             renderAxes(MANAGER.getScreen().getAnchor(Direction.CENTER), context.getPartialTicks());
         } else {
-            Rect texture = new Rect(16, 16);
+            Rectangle texture = new Rectangle(16, 16);
 
             // Vanilla crosshair is offset by (1, 1) for some reason
-            Rect crosshair = new Rect(texture).anchor(MANAGER.getScreen(), Direction.CENTER).translate(1, 1);
+            Rectangle crosshair = new Rectangle(texture).anchor(MANAGER.getScreen(), Direction.CENTER).translate(1, 1);
 
             RenderSystem.blendFunc(SourceFactor.ONE_MINUS_DST_COLOR, DestFactor.ONE_MINUS_SRC_COLOR);
             RenderSystem.enableAlphaTest();
@@ -136,8 +136,8 @@ public class Crosshair extends OverlayElement {
         return bounds;
     }
 
-    private Rect renderAttackIndicator() {
-        Rect bounds = indicatorType.getIndex() == 0 ? new Rect(16, 8) : new Rect(18, 18);
+    private Rectangle renderAttackIndicator() {
+        Rectangle bounds = indicatorType.getIndex() == 0 ? new Rectangle(16, 8) : new Rectangle(18, 18);
 
         if(position.isDirection(Direction.SOUTH)) {
             Direction primary = MC.player.getPrimaryHand() == HandSide.RIGHT ? Direction.EAST : Direction.WEST;
@@ -158,14 +158,14 @@ public class Crosshair extends OverlayElement {
                     && ((LivingEntity)MC.pointedEntity).isAlive()
                     && MC.player.getCooldownPeriod() > 5
                 ) {
-                    GlUtil.drawRect(bounds.resize(16, 16), new Rect(68, 94, 16, 16));
+                    GlUtil.drawRect(bounds.resize(16, 16), new Rectangle(68, 94, 16, 16));
                 }
             } else {
-                GlUtil.drawTexturedProgressBar(bounds.getPosition(), new Rect(36, 94, 16, 8), new Rect(52, 94, 16, 8), attackStrength, Direction.EAST);
+                GlUtil.drawTexturedProgressBar(bounds.getPosition(), new Rectangle(36, 94, 16, 8), new Rectangle(52, 94, 16, 8), attackStrength, Direction.EAST);
             }
         } else if(attackStrength < 1) {
             GlUtil.blendFuncSafe(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ZERO, DestFactor.ONE);
-            GlUtil.drawTexturedProgressBar(bounds.getPosition(), new Rect(0, 94, 18, 18), new Rect(18, 94, 18, 18), attackStrength, Direction.NORTH);
+            GlUtil.drawTexturedProgressBar(bounds.getPosition(), new Rectangle(0, 94, 18, 18), new Rectangle(18, 94, 18, 18), attackStrength, Direction.NORTH);
         }
         return bounds;
     }

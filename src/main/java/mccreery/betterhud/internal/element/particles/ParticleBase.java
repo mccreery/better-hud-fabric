@@ -7,8 +7,8 @@ import java.util.Random;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.util.GlUtil;
 import jobicade.betterhud.util.RandomWrapper;
@@ -17,15 +17,15 @@ import net.minecraft.client.gui.AbstractGui;
 
 public class ParticleBase implements Particle {
     protected Point position;
-    protected Rect texture;
+    protected Rectangle texture;
 
     protected float opacity, size, rotation;
 
     protected ParticleBase(Point position, int iconIndex, float opacity, float size, float rotation) {
-        this(position, new Rect((iconIndex % 16) * 16, (iconIndex / 16) * 16, 16, 16), opacity, size, rotation);
+        this(position, new Rectangle((iconIndex % 16) * 16, (iconIndex / 16) * 16, 16, 16), opacity, size, rotation);
     }
 
-    protected ParticleBase(Point position, Rect texture, float opacity, float size, float rotation) {
+    protected ParticleBase(Point position, Rectangle texture, float opacity, float size, float rotation) {
         this.position = position;
         this.texture = texture;
 
@@ -62,7 +62,7 @@ public class ParticleBase implements Particle {
         RenderSystem.scalef(this.size, this.size, 1.0F);
 
         Color color = Color.WHITE.withAlpha(Math.round(opacity * 255));
-        Rect bounds = texture.align(Point.zero(), Direction.CENTER);
+        Rectangle bounds = texture.align(Point.zero(), Direction.CENTER);
         GlUtil.drawRect(bounds, texture, color);
 
         RenderSystem.popMatrix();

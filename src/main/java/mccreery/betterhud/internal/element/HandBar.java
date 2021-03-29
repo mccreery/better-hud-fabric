@@ -4,19 +4,19 @@ import static jobicade.betterhud.BetterHud.MC;
 
 import jobicade.betterhud.element.settings.DirectionOptions;
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingBoolean;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.util.GlUtil;
 import net.minecraft.item.ItemStack;
 
 public class HandBar extends EquipmentDisplay {
     private SettingPosition position;
-    private SettingBoolean showItem, offHand, showBars, showNonTools;
+    private BooleanProperty showItem, offHand, showBars, showNonTools;
 
     public HandBar() {
         super("handBar");
@@ -28,16 +28,16 @@ public class HandBar extends EquipmentDisplay {
 
         addSetting(new Legend("misc"));
 
-        showItem = new SettingBoolean("showItem");
-        showItem.setValuePrefix(SettingBoolean.VISIBLE);
+        showItem = new BooleanProperty("showItem");
+        showItem.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(showItem);
 
-        showBars = new SettingBoolean("bars");
+        showBars = new BooleanProperty("bars");
         addSetting(showBars);
-        offHand = new SettingBoolean("offhand");
+        offHand = new BooleanProperty("offhand");
         addSetting(offHand);
 
-        showNonTools = new SettingBoolean("showNonTools");
+        showNonTools = new BooleanProperty("showNonTools");
         showNonTools.setValuePrefix("betterHud.value.nonTools");
         addSetting(showNonTools);
     }
@@ -69,14 +69,14 @@ public class HandBar extends EquipmentDisplay {
 
         if(isTool && showBars.get()) {
             MC.getProfiler().startSection("bars");
-            GlUtil.drawDamageBar(new Rect(x, y + 16, 180, 2), stack, false);
+            GlUtil.drawDamageBar(new Rectangle(x, y + 16, 180, 2), stack, false);
             MC.getProfiler().endSection();
         }
     }
 
     @Override
-    public Rect render(OverlayContext context) {
-        Rect bounds = position.applyTo(new Rect(180, offHand.get() ? 41 : 18));
+    public Rectangle render(HudRenderContext context) {
+        Rectangle bounds = position.applyTo(new Rectangle(180, offHand.get() ? 41 : 18));
         renderBar(MC.player.getHeldItemMainhand(), bounds.getX(), bounds.getBottom() - 18);
 
         if(offHand.get()) {

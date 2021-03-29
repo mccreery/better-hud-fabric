@@ -5,15 +5,15 @@ import static jobicade.betterhud.BetterHud.MC;
 import java.util.Arrays;
 import java.util.List;
 
-import jobicade.betterhud.element.settings.SettingBoolean;
+import mccreery.betterhud.api.property.BooleanProperty;
 
 public class FpsCount extends TextElement {
-    private SettingBoolean numberOnly;
+    private BooleanProperty numberOnly;
 
     public FpsCount() {
         super("fpsCount");
 
-        numberOnly = new SettingBoolean("numberOnly");
+        numberOnly = new BooleanProperty("numberOnly");
         addSetting(numberOnly);
     }
 

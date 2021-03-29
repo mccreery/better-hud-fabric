@@ -9,12 +9,12 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.element.settings.SettingChoose;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.EnumProperty;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Point;
 import jobicade.betterhud.util.GlUtil;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -24,32 +24,32 @@ import net.minecraftforge.common.extensions.IForgeDimension.SleepResult;
 public class GameClock extends Clock {
     private static final ItemStack BED = new ItemStack(Items.RED_BED);
 
-    private SettingBoolean showDays;
-    private SettingBoolean showSleepIndicator;
-    private SettingChoose requireItem;
+    private BooleanProperty showDays;
+    private BooleanProperty showSleepIndicator;
+    private EnumProperty requireItem;
 
     public GameClock() {
         super("gameClock");
 
-        showDays = new SettingBoolean("showDays");
-        showDays.setValuePrefix(SettingBoolean.VISIBLE);
+        showDays = new BooleanProperty("showDays");
+        showDays.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(showDays);
 
-        showSleepIndicator = new SettingBoolean("showSleepIndicator");
-        showSleepIndicator.setValuePrefix(SettingBoolean.VISIBLE);
+        showSleepIndicator = new BooleanProperty("showSleepIndicator");
+        showSleepIndicator.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(showSleepIndicator);
 
-        requireItem = new SettingChoose("requireItem", "disabled", "inventory", "hand");
+        requireItem = new EnumProperty("requireItem", "disabled", "inventory", "hand");
         addSetting(requireItem);
     }
 
     @Override
-    protected Rect getMargin() {
-        return new Rect(0, 0, 21, 0).align(Point.zero(), position.getContentAlignment());
+    protected Rectangle getMargin() {
+        return new Rectangle(0, 0, 21, 0).align(Point.zero(), position.getContentAlignment());
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         switch(requireItem.getIndex()) {
             case 1:
                 return MC.player.inventory.hasItemStack(new ItemStack(Items.CLOCK));
@@ -61,12 +61,12 @@ public class GameClock extends Clock {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
-        Rect bounds = super.render(context);
+    public Rectangle render(HudRenderContext context) {
+        Rectangle bounds = super.render(context);
 
         if(showSleepIndicator(context.getPartialTicks())) {
             Direction bedAnchor = DirectionOptions.WEST_EAST.apply(position.getContentAlignment().mirrorCol());
-            Rect bed = new Rect(16, 16).anchor(bounds, bedAnchor);
+            Rectangle bed = new Rectangle(16, 16).anchor(bounds, bedAnchor);
 
             GlUtil.renderSingleItem(BED, bed.getPosition());
         }

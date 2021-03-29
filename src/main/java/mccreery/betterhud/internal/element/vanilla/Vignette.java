@@ -7,10 +7,10 @@ import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 
 import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
 import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.util.GlUtil;
 import net.minecraft.client.Minecraft;
@@ -24,26 +24,26 @@ import net.minecraftforge.client.gui.ForgeIngameGui;
 public class Vignette extends OverlayElement {
     private static final ResourceLocation VIGNETTE_TEX_PATH = new ResourceLocation("textures/misc/vignette.png");
 
-    private SettingBoolean warnings;
+    private BooleanProperty warnings;
     private float brightness = 1;
 
     public Vignette() {
         super("vignette");
 
-        warnings = new SettingBoolean("warnings");
-        warnings.setValuePrefix(SettingBoolean.VISIBLE);
+        warnings = new BooleanProperty("warnings");
+        warnings.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(warnings);
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return ForgeIngameGui.renderVignette
             && Minecraft.isFancyGraphicsEnabled()
             && !OverlayHook.pre(context.getEvent(), ElementType.VIGNETTE);
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         WorldBorder border = MC.world.getWorldBorder();
 
         float f = 0;
@@ -71,7 +71,7 @@ public class Vignette extends OverlayElement {
         GlUtil.blendFuncSafe(SourceFactor.ZERO, DestFactor.ONE_MINUS_SRC_COLOR, SourceFactor.ONE, DestFactor.ZERO);
         MC.getTextureManager().bindTexture(VIGNETTE_TEX_PATH);
 
-        GlUtil.drawRect(MANAGER.getScreen(), new Rect(256, 256), color);
+        GlUtil.drawRect(MANAGER.getScreen(), new Rectangle(256, 256), color);
 
         MC.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
         GlUtil.blendFuncSafe(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ZERO, DestFactor.ONE);

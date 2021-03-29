@@ -3,13 +3,13 @@ package mccreery.betterhud.internal.element;
 import static jobicade.betterhud.BetterHud.MC;
 
 import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.element.settings.SettingChoose;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.EnumProperty;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.geom.Size;
 import jobicade.betterhud.render.Boxed;
 import jobicade.betterhud.render.DefaultBoxed;
@@ -24,8 +24,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ArmorBars extends EquipmentDisplay {
     private SettingPosition position;
-    private SettingChoose barType;
-    private SettingBoolean alwaysVisible;
+    private EnumProperty barType;
+    private BooleanProperty alwaysVisible;
 
     public ArmorBars() {
         super("armorBars");
@@ -35,14 +35,14 @@ public class ArmorBars extends EquipmentDisplay {
         position.setContentOptions(DirectionOptions.WEST_EAST);
         addSetting(position);
 
-        barType = new SettingChoose("bars", "visible.off", "smallBars", "largeBars");
+        barType = new EnumProperty("bars", "visible.off", "smallBars", "largeBars");
         addSetting(barType);
-        alwaysVisible = new SettingBoolean("alwaysVisible");
+        alwaysVisible = new BooleanProperty("alwaysVisible");
         addSetting(alwaysVisible);
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         if(alwaysVisible.get()) return true;
 
         for(int i = 0; i < 4; i++) {
@@ -64,7 +64,7 @@ public class ArmorBars extends EquipmentDisplay {
     };
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         Grid<Boxed> grid = new Grid<>(new Point(1, 4)).setStretch(true);
 
         for(int i = 0; i < 4; i++) {
@@ -74,7 +74,7 @@ public class ArmorBars extends EquipmentDisplay {
             grid.setCell(new Point(0, i), new SlotDisplay(stack, empty));
         }
 
-        Rect bounds = position.applyTo(new Rect(grid.getPreferredSize()));
+        Rectangle bounds = position.applyTo(new Rectangle(grid.getPreferredSize()));
         grid.setBounds(bounds).render();
         return bounds;
     }
@@ -105,10 +105,10 @@ public class ArmorBars extends EquipmentDisplay {
         @Override
         public void render() {
             Direction contentAlignment = position.getContentAlignment();
-            Rect textBarArea = bounds.withWidth(bounds.getWidth() - 20)
+            Rectangle textBarArea = bounds.withWidth(bounds.getWidth() - 20)
                 .anchor(bounds, contentAlignment.mirrorCol());
 
-            Rect item = new Rect(16, 16).anchor(bounds, contentAlignment);
+            Rectangle item = new Rectangle(16, 16).anchor(bounds, contentAlignment);
             if(stack.isEmpty()) {
                 MC.getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 
@@ -121,11 +121,11 @@ public class ArmorBars extends EquipmentDisplay {
             }
 
             Label label = getLabel();
-            label.setBounds(new Rect(label.getPreferredSize()).anchor(textBarArea, contentAlignment)).render();
+            label.setBounds(new Rectangle(label.getPreferredSize()).anchor(textBarArea, contentAlignment)).render();
 
             int barTypeIndex = barType.getIndex();
             if(barTypeIndex != 0 && showDurability(stack)) {
-                Rect bar;
+                Rectangle bar;
 
                 if(barTypeIndex == 2) {
                     Direction barAlignment = label.getText() != null ? Direction.SOUTH : Direction.CENTER;

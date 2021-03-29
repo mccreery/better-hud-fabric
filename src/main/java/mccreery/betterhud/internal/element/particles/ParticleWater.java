@@ -7,8 +7,8 @@ import java.util.Random;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.util.GlUtil;
 import jobicade.betterhud.util.RandomWrapper;
@@ -46,7 +46,7 @@ public class ParticleWater extends ParticleBase {
         RenderSystem.scalef(size, size, 1);
 
         Color color = Color.WHITE.withAlpha(Math.round(opacity * 255));
-        Rect bounds = texture.align(Point.zero(), Direction.CENTER);
+        Rectangle bounds = texture.align(Point.zero(), Direction.CENTER);
         GlUtil.drawRect(bounds, texture, color);
 
         RenderSystem.popMatrix();

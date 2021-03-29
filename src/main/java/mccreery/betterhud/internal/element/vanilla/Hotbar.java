@@ -7,10 +7,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import jobicade.betterhud.element.OverlayElement;
 import jobicade.betterhud.element.settings.DirectionOptions;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.events.OverlayHook;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.util.GlUtil;
 import jobicade.betterhud.util.Textures;
 import net.minecraft.client.Minecraft;
@@ -34,7 +34,7 @@ public class Hotbar extends OverlayElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         final Minecraft mc = MC;
 
         return ForgeIngameGui.renderHotbar
@@ -46,7 +46,7 @@ public class Hotbar extends OverlayElement {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         final Minecraft mc = MC;
 
         if (MC.playerController.isSpectatorMode()) {
@@ -55,26 +55,26 @@ public class Hotbar extends OverlayElement {
             spectator.renderTooltip(context.getPartialTicks());
             spectator.renderSelectedItem();
 
-            return new Rect(182, 22).anchor(context.getLayoutManager().getScreen(), Direction.SOUTH);
+            return new Rectangle(182, 22).anchor(context.getLayoutManager().getScreen(), Direction.SOUTH);
         } else {
             return renderHotbar(context, mc);
         }
     }
 
-    private Rect renderHotbar(OverlayContext context, Minecraft mc) {
-        Rect barTexture = new Rect(182, 22);
-        Rect bounds = position.applyTo(new Rect(barTexture));
+    private Rectangle renderHotbar(HudRenderContext context, Minecraft mc) {
+        Rectangle barTexture = new Rectangle(182, 22);
+        Rectangle bounds = position.applyTo(new Rectangle(barTexture));
 
         MC.getTextureManager().bindTexture(Textures.WIDGETS);
         GlUtil.drawRect(bounds, barTexture);
 
-        Rect slot = bounds.grow(-3).withWidth(16);
+        Rectangle slot = bounds.grow(-3).withWidth(16);
 
         float partialTicks = context.getPartialTicks();
         for(int i = 0; i < 9; i++, slot = slot.translate(Direction.EAST.scale(20))) {
             if(i == MC.player.inventory.currentItem) {
                 MC.getTextureManager().bindTexture(Textures.WIDGETS);
-                GlUtil.drawRect(slot.grow(4), new Rect(0, 22, 24, 24));
+                GlUtil.drawRect(slot.grow(4), new Rectangle(0, 22, 24, 24));
             }
 
             GlUtil.renderHotbarItem(slot, MC.player.inventory.mainInventory.get(i), partialTicks);

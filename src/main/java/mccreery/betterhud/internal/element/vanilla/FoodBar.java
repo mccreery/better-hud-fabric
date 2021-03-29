@@ -2,21 +2,21 @@ package mccreery.betterhud.internal.element.vanilla;
 
 import static jobicade.betterhud.BetterHud.MC;
 
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.util.bars.StatBarFood;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 
 public class FoodBar extends Bar {
-    private SettingBoolean hideMount;
+    private BooleanProperty hideMount;
 
     public FoodBar() {
         super("food", new StatBarFood());
 
-        hideMount = new SettingBoolean("hideMount");
+        hideMount = new BooleanProperty("hideMount");
         addSetting(hideMount);
     }
 
@@ -25,7 +25,7 @@ public class FoodBar extends Bar {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return OverlayHook.shouldRenderBars()
             && ForgeIngameGui.renderFood
             && !OverlayHook.pre(context.getEvent(), ElementType.FOOD)
@@ -33,8 +33,8 @@ public class FoodBar extends Bar {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
-        Rect rect = super.render(context);
+    public Rectangle render(HudRenderContext context) {
+        Rectangle rect = super.render(context);
         OverlayHook.post(context.getEvent(), ElementType.FOOD);
         return rect;
     }

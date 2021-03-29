@@ -7,8 +7,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import jobicade.betterhud.element.OverlayElement;
 import jobicade.betterhud.element.settings.DirectionOptions;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.geom.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.NewChatGui;
@@ -28,12 +28,12 @@ public class Chat extends OverlayElement {
         addSetting(position);
     }
 
-    private Rect bounds;
+    private Rectangle bounds;
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         final int fontHeight = MC.fontRenderer.FONT_HEIGHT;
-        bounds = position.applyTo(new Rect(getChatSize(getChatGui())));
+        bounds = position.applyTo(new Rectangle(getChatSize(getChatGui())));
 
         RenderGameOverlayEvent.Chat chatEvent = new RenderGameOverlayEvent.Chat(
             context.getEvent(),
@@ -42,7 +42,7 @@ public class Chat extends OverlayElement {
         );
 
         boolean canceled = MinecraftForge.EVENT_BUS.post(chatEvent);
-        bounds = new Rect(
+        bounds = new Rectangle(
             chatEvent.getPosX(),
             chatEvent.getPosY() + fontHeight - bounds.getHeight(),
             bounds.getWidth(),
@@ -52,7 +52,7 @@ public class Chat extends OverlayElement {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         Minecraft mc = MC;
 
         RenderSystem.pushMatrix();

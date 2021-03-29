@@ -9,9 +9,9 @@ import java.util.stream.Stream;
 
 import jobicade.betterhud.element.settings.DirectionOptions;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.render.Grid;
 import jobicade.betterhud.render.Label;
@@ -35,16 +35,16 @@ public class SignReader extends OverlayElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return getSign() != null;
     }
 
     @Override
-    public Rect render(OverlayContext context) {
-        Rect bounds = position.applyTo(new Rect(96, 48));
+    public Rectangle render(HudRenderContext context) {
+        Rectangle bounds = position.applyTo(new Rectangle(96, 48));
 
         MC.getTextureManager().bindTexture(SIGN_TEXTURE);
-        new Quad().setTexture(new Rect(2, 2, 24, 12).scale(4, 8)).setBounds(bounds).render();
+        new Quad().setTexture(new Rectangle(2, 2, 24, 12).scale(4, 8)).setBounds(bounds).render();
 
         List<Label> labels = Stream.of(getSign().signText)
             .map(line -> new Label(line.getFormattedText()).setColor(Color.BLACK).setShadow(false))

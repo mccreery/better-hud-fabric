@@ -8,26 +8,26 @@ import java.util.Arrays;
 import java.util.List;
 
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingChoose;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.EnumProperty;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Rect;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockRayTraceResult;
 
 public class Distance extends TextElement {
-    private SettingChoose mode;
+    private EnumProperty mode;
 
     public Distance() {
         super("distance");
 
         addSetting(new Legend("misc"));
-        mode = new SettingChoose("mode", 3);
+        mode = new EnumProperty("mode", 3);
         addSetting(mode);
     }
 
     @Override
-    protected Rect moveRect(Rect bounds) {
+    protected Rectangle moveRect(Rectangle bounds) {
         if(position.isDirection(Direction.CENTER)) {
             return bounds.align(MANAGER.getScreen().getAnchor(Direction.CENTER).sub(SPACER, SPACER), Direction.SOUTH_EAST);
         } else {
@@ -36,12 +36,12 @@ public class Distance extends TextElement {
     }
 
     @Override
-    protected Rect getPadding() {
-        return Rect.createPadding(border ? 2 : 0);
+    protected Rectangle getPadding() {
+        return Rectangle.createPadding(border ? 2 : 0);
     }
 
     @Override
-    protected Rect render(OverlayContext context, List<String> text) {
+    protected Rectangle render(HudRenderContext context, List<String> text) {
         border = mode.getIndex() == 2;
         return super.render(context, text);
     }

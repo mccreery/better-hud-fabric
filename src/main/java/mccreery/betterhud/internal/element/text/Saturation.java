@@ -5,7 +5,7 @@ import static jobicade.betterhud.BetterHud.MC;
 import java.util.Arrays;
 import java.util.List;
 
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.util.MathUtil;
 import net.minecraft.client.resources.I18n;
 
@@ -15,7 +15,7 @@ public class Saturation extends TextElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return MC.playerController.gameIsSurvivalOrAdventure();
     }
 

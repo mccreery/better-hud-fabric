@@ -3,11 +3,11 @@ package mccreery.betterhud.internal.element.entityinfo;
 import java.util.ArrayList;
 
 import jobicade.betterhud.BetterHud;
-import jobicade.betterhud.element.settings.SettingBoolean;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
 import jobicade.betterhud.events.BillboardContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.render.Grid;
 import jobicade.betterhud.render.Label;
@@ -17,14 +17,14 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.horse.HorseEntity;
 
 public class HorseInfo extends BillboardElement {
-    private SettingBoolean jump, speed;
+    private BooleanProperty jump, speed;
 
     public HorseInfo() {
         super("horseInfo");
 
-        jump = new SettingBoolean("jump");
+        jump = new BooleanProperty("jump");
         addSetting(jump);
-        speed = new SettingBoolean("speed");
+        speed = new BooleanProperty("speed");
         addSetting(speed);
     }
 
@@ -34,7 +34,7 @@ public class HorseInfo extends BillboardElement {
     }
 
     @Override
-    public Rect render(BillboardContext context) {
+    public Rectangle render(BillboardContext context) {
         ArrayList<Label> infoParts = new ArrayList<Label>();
         HorseEntity entity = (HorseEntity)context.getPointedEntity();
 
@@ -46,11 +46,11 @@ public class HorseInfo extends BillboardElement {
         }
 
         Grid<Label> grid = new Grid<Label>(new Point(1, infoParts.size()), infoParts).setGutter(new Point(2, 2));
-        Rect bounds = new Rect(grid.getPreferredSize().add(10, 10));
+        Rectangle bounds = new Rectangle(grid.getPreferredSize().add(10, 10));
         bounds = BetterHud.MANAGER.position(Direction.SOUTH, bounds);
 
         GlUtil.drawRect(bounds, Color.TRANSLUCENT);
-        grid.setBounds(new Rect(grid.getPreferredSize()).anchor(bounds, Direction.CENTER)).render();
+        grid.setBounds(new Rectangle(grid.getPreferredSize()).anchor(bounds, Direction.CENTER)).render();
         return null;
     }
 

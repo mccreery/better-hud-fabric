@@ -6,41 +6,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingBoolean;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
 import jobicade.betterhud.element.text.TextElement;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Point;
 import jobicade.betterhud.registry.OverlayElements;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.util.GlUtil;
 
 public class ExperienceInfo extends TextElement {
-    private SettingBoolean total;
-    private SettingBoolean lifetime;
+    private BooleanProperty total;
+    private BooleanProperty lifetime;
 
     public ExperienceInfo() {
         super("experienceInfo");
 
         addSetting(new Legend("misc"));
 
-        total = new SettingBoolean("showTotalExp");
-        total.setValuePrefix(SettingBoolean.VISIBLE);
+        total = new BooleanProperty("showTotalExp");
+        total.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(total);
 
-        lifetime = new SettingBoolean("showLifetimeExp");
-        lifetime.setValuePrefix(SettingBoolean.VISIBLE);
+        lifetime = new BooleanProperty("showLifetimeExp");
+        lifetime.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(lifetime);
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return MC.playerController.gameIsSurvivalOrAdventure();
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         int fullBar = getExperienceWithinLevel(MC.player.experienceLevel);
 
         int has = (int)(MC.player.experience * fullBar);
@@ -49,12 +49,12 @@ public class ExperienceInfo extends TextElement {
         String hasDisplay = String.valueOf(has);
         String neededDisplay = String.valueOf(needed);
 
-        Rect bar = OverlayElements.EXPERIENCE.getLastBounds();
+        Rectangle bar = OverlayElements.EXPERIENCE.getLastBounds();
 
-        Point text = new Rect(GlUtil.getStringSize(hasDisplay).sub(0, 2)).anchor(bar, Direction.WEST).getPosition();
+        Point text = new Rectangle(GlUtil.getStringSize(hasDisplay).sub(0, 2)).anchor(bar, Direction.WEST).getPosition();
         GlUtil.drawBorderedString(hasDisplay, text.getX(), text.getY(), Color.WHITE);
 
-        text = new Rect(GlUtil.getStringSize(neededDisplay).sub(0, 2)).anchor(bar, Direction.EAST).getPosition();
+        text = new Rectangle(GlUtil.getStringSize(neededDisplay).sub(0, 2)).anchor(bar, Direction.EAST).getPosition();
         GlUtil.drawBorderedString(neededDisplay, text.getX(), text.getY(), Color.WHITE);
 
         return super.render(context);

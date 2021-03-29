@@ -10,12 +10,12 @@ import java.util.List;
 
 import jobicade.betterhud.element.OverlayElement;
 import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingBoolean;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.render.Boxed;
 import jobicade.betterhud.render.Grid;
 import net.minecraft.client.gui.AbstractGui;
@@ -26,7 +26,7 @@ public class PotionBar extends OverlayElement {
     public static final ResourceLocation INVENTORY = new ResourceLocation("textures/gui/container/inventory.png");
 
     private SettingPosition position;
-    private SettingBoolean showDuration;
+    private BooleanProperty showDuration;
 
     public PotionBar() {
         super("potionBar");
@@ -36,21 +36,21 @@ public class PotionBar extends OverlayElement {
         position.setContentOptions(DirectionOptions.CORNERS);
         addSetting(position);
 
-        showDuration = new SettingBoolean("duration");
-        showDuration.setValuePrefix(SettingBoolean.VISIBLE);
+        showDuration = new BooleanProperty("duration");
+        showDuration.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(showDuration);
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return !MC.player.getActivePotionEffects().isEmpty();
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         Boxed grid = getGrid();
 
-        Rect bounds = new Rect(grid.getPreferredSize());
+        Rectangle bounds = new Rectangle(grid.getPreferredSize());
         if(position.isDirection(Direction.CENTER)) {
             bounds = bounds.align(MANAGER.getScreen().getAnchor(Direction.CENTER).add(SPACER, SPACER), Direction.NORTH_WEST);
         } else {

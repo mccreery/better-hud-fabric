@@ -1,30 +1,30 @@
 package mccreery.betterhud.internal.element;
 
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.element.settings.SettingSlider;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.DoubleProperty;
+import mccreery.betterhud.api.geometry.Rectangle;
 
 public class GlobalSettings extends HudElement<Object> {
-    private SettingSlider billboardScale;
-    private SettingSlider billboardDistance;
-    private SettingBoolean hideOnDebug;
-    private SettingBoolean debugMode;
+    private DoubleProperty billboardScale;
+    private DoubleProperty billboardDistance;
+    private BooleanProperty hideOnDebug;
+    private BooleanProperty debugMode;
 
     public GlobalSettings() {
         super("global");
 
-        billboardScale = new SettingSlider("billboardScale", 0, 1);
+        billboardScale = new DoubleProperty("billboardScale", 0, 1);
         billboardScale.setDisplayPercent();
         addSetting(billboardScale);
 
-        billboardDistance = new SettingSlider("rayDistance", 5, 200);
+        billboardDistance = new DoubleProperty("rayDistance", 5, 200);
         billboardDistance.setUnlocalizedValue("betterHud.hud.meters");
         addSetting(billboardDistance);
 
-        hideOnDebug = new SettingBoolean("hideOnDebug");
+        hideOnDebug = new BooleanProperty("hideOnDebug");
         addSetting(hideOnDebug);
 
-        debugMode = new SettingBoolean("debugMode");
+        debugMode = new BooleanProperty("debugMode");
         addSetting(debugMode);
     }
 
@@ -45,7 +45,7 @@ public class GlobalSettings extends HudElement<Object> {
     }
 
     @Override
-    public Rect render(Object context) {
+    public Rectangle render(Object context) {
         return null;
     }
 }

@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 import jobicade.betterhud.element.OverlayElement;
 import jobicade.betterhud.element.settings.DirectionOptions;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.geom.Size;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.render.Grid;
@@ -42,13 +42,13 @@ public class Sidebar extends OverlayElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return ForgeIngameGui.renderObjective
             && getObjective(MC.player) != null;
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         ScoreObjective objective = getObjective(MC.player);
         List<Score> scores = getScores(objective);
 
@@ -76,22 +76,22 @@ public class Sidebar extends OverlayElement {
         int tWidth = title.getPreferredSize().getWidth();
         if(tWidth > size.getWidth()) size = size.withWidth(tWidth);
 
-        Rect padding = Rect.createPadding(1, MC.fontRenderer.FONT_HEIGHT + 1, 1, 1);
-        Rect bounds = new Rect(size).grow(padding);
+        Rectangle padding = Rectangle.createPadding(1, MC.fontRenderer.FONT_HEIGHT + 1, 1, 1);
+        Rectangle bounds = new Rectangle(size).grow(padding);
 
         if(!position.isCustom() && position.getDirection().getRow() == 1) {
             bounds = bounds.anchor(MANAGER.getScreen(), position.getDirection());
         } else {
             bounds = position.applyTo(bounds);
         }
-        Rect inner = bounds.grow(padding.invert());
+        Rectangle inner = bounds.grow(padding.invert());
 
         // Translucent background
         int titleBottom = inner.getTop() - 1;
         GlUtil.drawRect(bounds.withBottom(titleBottom), new Color(96, 0, 0, 0));
         GlUtil.drawRect(bounds.withTop(titleBottom), new Color(80, 0, 0, 0));
 
-        title.setBounds(new Rect(title.getPreferredSize()).anchor(bounds.grow(-1), Direction.NORTH)).render();
+        title.setBounds(new Rectangle(title.getPreferredSize()).anchor(bounds.grow(-1), Direction.NORTH)).render();
         namesGroup.setBounds(inner).render();
         valuesGroup.setBounds(inner).render();
         return bounds;

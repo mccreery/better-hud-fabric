@@ -5,18 +5,18 @@ import static jobicade.betterhud.BetterHud.MC;
 
 import jobicade.betterhud.element.OverlayElement;
 import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingChoose;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.EnumProperty;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.util.bars.StatBar;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 
 public abstract class Bar extends OverlayElement {
     protected SettingPosition position;
-    protected SettingChoose side;
+    protected EnumProperty side;
 
     private StatBar<? super ClientPlayerEntity> bar;
 
@@ -29,13 +29,13 @@ public abstract class Bar extends OverlayElement {
         position.setContentOptions(DirectionOptions.CORNERS);
         addSetting(position);
 
-        side = new SettingChoose("side", "west", "east");
+        side = new EnumProperty("side", "west", "east");
         side.setEnableOn(() -> position.isDirection(Direction.SOUTH));
         addSetting(side);
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         bar.setHost(MC.player);
         return bar.shouldRender();
     }
@@ -50,11 +50,11 @@ public abstract class Bar extends OverlayElement {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         MC.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
         Direction contentAlignment = getContentAlignment();
 
-        Rect bounds = new Rect(bar.getPreferredSize());
+        Rectangle bounds = new Rectangle(bar.getPreferredSize());
 
         if(position.isDirection(Direction.SOUTH)) {
             bounds = MANAGER.positionBar(bounds, contentAlignment.withRow(1), 1);

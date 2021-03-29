@@ -7,28 +7,28 @@ import java.util.Date;
 import java.util.List;
 
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.element.settings.SettingChoose;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.EnumProperty;
 
 public abstract class Clock extends TextElement {
-    private SettingBoolean twentyFour, showSeconds, fullYear;
-    private SettingChoose dateType;
+    private BooleanProperty twentyFour, showSeconds, fullYear;
+    private EnumProperty dateType;
 
     public Clock(String name) {
         super(name);
 
         addSetting(new Legend("misc"));
-        twentyFour = new SettingBoolean("24hr");
+        twentyFour = new BooleanProperty("24hr");
         addSetting(twentyFour);
-        showSeconds = new SettingBoolean("showSeconds");
+        showSeconds = new BooleanProperty("showSeconds");
         addSetting(showSeconds);
-        showSeconds.setValuePrefix(SettingBoolean.VISIBLE);
+        showSeconds.setValuePrefix(BooleanProperty.VISIBLE);
 
-        dateType = new SettingChoose("dateType", "dmy", "mdy", "ymd");
+        dateType = new EnumProperty("dateType", "dmy", "mdy", "ymd");
         addSetting(dateType);
-        fullYear = new SettingBoolean("fullYear");
+        fullYear = new BooleanProperty("fullYear");
         addSetting(fullYear);
-        fullYear.setValuePrefix(SettingBoolean.VISIBLE);
+        fullYear.setValuePrefix(BooleanProperty.VISIBLE);
 
         border = true;
     }

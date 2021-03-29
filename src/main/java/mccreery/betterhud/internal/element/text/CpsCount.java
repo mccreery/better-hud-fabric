@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.element.settings.SettingSlider;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.DoubleProperty;
 import jobicade.betterhud.util.MathUtil;
 import jobicade.betterhud.util.Tickable;
 import net.minecraft.client.resources.I18n;
 
 public class CpsCount extends TextElement implements Tickable {
-    private SettingSlider timeoutMax;
-    private SettingBoolean showBurst, remember;
+    private DoubleProperty timeoutMax;
+    private BooleanProperty showBurst, remember;
 
     private int[] clickHistory = new int[10];
     private int i = 0;
@@ -29,14 +29,14 @@ public class CpsCount extends TextElement implements Tickable {
 
         addSetting(new Legend("misc"));
 
-        timeoutMax = new SettingSlider("timeout", 1, 10);
+        timeoutMax = new DoubleProperty("timeout", 1, 10);
         timeoutMax.setInterval(1);
         timeoutMax.setUnlocalizedValue("betterHud.hud.seconds");
         addSetting(timeoutMax);
 
-        showBurst = new SettingBoolean("showBurst");
+        showBurst = new BooleanProperty("showBurst");
         addSetting(showBurst);
-        remember = new SettingBoolean("remember");
+        remember = new BooleanProperty("remember");
         addSetting(remember);
     }
 

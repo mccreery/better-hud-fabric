@@ -4,9 +4,9 @@ import static jobicade.betterhud.BetterHud.MANAGER;
 import static jobicade.betterhud.BetterHud.MC;
 
 import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.util.MathUtil;
 import net.minecraft.block.Blocks;
@@ -24,7 +24,7 @@ public class PortalOverlay extends OverlayElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return ForgeIngameGui.renderPortal
             && !MC.player.isPotionActive(Effects.NAUSEA)
             && !OverlayHook.pre(context.getEvent(), ElementType.PORTAL)
@@ -38,7 +38,7 @@ public class PortalOverlay extends OverlayElement {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         float timeInPortal = getTimeInPortal(context.getPartialTicks());
 
         if(timeInPortal < 1) {
@@ -52,7 +52,7 @@ public class PortalOverlay extends OverlayElement {
         MC.getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 
         TextureAtlasSprite texture = MC.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.NETHER_PORTAL.getDefaultState(), MC.world, BlockPos.ZERO);
-        Rect screen = MANAGER.getScreen();
+        Rectangle screen = MANAGER.getScreen();
         AbstractGui.blit(0, 0, 0, screen.getWidth(), screen.getHeight(), texture);
 
         OverlayHook.post(context.getEvent(), ElementType.PORTAL);

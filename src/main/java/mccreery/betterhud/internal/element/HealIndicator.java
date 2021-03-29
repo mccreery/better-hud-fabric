@@ -5,11 +5,11 @@ import static jobicade.betterhud.BetterHud.SPACER;
 
 import jobicade.betterhud.element.settings.DirectionOptions;
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingChoose;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.EnumProperty;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.registry.OverlayElements;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.util.GlUtil;
@@ -19,7 +19,7 @@ import net.minecraft.world.GameRules;
 
 public class HealIndicator extends OverlayElement {
     private SettingPosition position;
-    private SettingChoose mode;
+    private EnumProperty mode;
 
     public HealIndicator() {
         super("healIndicator");
@@ -30,14 +30,14 @@ public class HealIndicator extends OverlayElement {
         addSetting(position);
 
         addSetting(new Legend("misc"));
-        mode = new SettingChoose("mode", 2);
+        mode = new EnumProperty("mode", 2);
         addSetting(mode);
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
             String healIndicator = I18n.format("betterHud.hud.healIndicator");
-            Rect bounds = mode.getIndex() == 0 ? new Rect(MC.fontRenderer.getStringWidth(healIndicator), MC.fontRenderer.FONT_HEIGHT) : new Rect(9, 9);
+            Rectangle bounds = mode.getIndex() == 0 ? new Rectangle(MC.fontRenderer.getStringWidth(healIndicator), MC.fontRenderer.FONT_HEIGHT) : new Rectangle(9, 9);
 
             if(position.isCustom()) {
                 bounds = position.applyTo(bounds);
@@ -57,7 +57,7 @@ public class HealIndicator extends OverlayElement {
 
     /** @see net.minecraft.util.FoodStats#onUpdate(net.minecraft.entity.player.EntityPlayer) */
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return MC.playerController.gameIsSurvivalOrAdventure()
             && MC.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)
             && MC.player.getFoodStats().getFoodLevel() >= 18

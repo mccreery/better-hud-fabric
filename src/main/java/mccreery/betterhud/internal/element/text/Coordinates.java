@@ -9,35 +9,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.element.settings.SettingSlider;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.DoubleProperty;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Point;
 import jobicade.betterhud.geom.Size;
 import jobicade.betterhud.render.Grid;
 import jobicade.betterhud.render.Label;
 import net.minecraft.client.resources.I18n;
 
 public class Coordinates extends TextElement {
-    private SettingBoolean spaced;
-    private SettingSlider decimalPlaces;
+    private BooleanProperty spaced;
+    private DoubleProperty decimalPlaces;
 
     public Coordinates() {
         super("coordinates");
 
         addSetting(new Legend("misc"));
-        spaced = new SettingBoolean("spaced");
+        spaced = new BooleanProperty("spaced");
         addSetting(spaced);
-        decimalPlaces = new SettingSlider("precision", 0, 5);
+        decimalPlaces = new DoubleProperty("precision", 0, 5);
         decimalPlaces.setInterval(1);
         decimalPlaces.setUnlocalizedValue("betterHud.value.places");
         addSetting(decimalPlaces);
     }
 
     @Override
-    public Rect render(OverlayContext context, List<String> text) {
+    public Rectangle render(HudRenderContext context, List<String> text) {
         if(!spaced.get() || !position.isDirection(Direction.NORTH) && !position.isDirection(Direction.SOUTH)) {
             return super.render(context, text);
         }
@@ -47,7 +47,7 @@ public class Coordinates extends TextElement {
 
         Size size = grid.getPreferredSize();
         if(size.getX() < 150) size = size.withX(150);
-        Rect bounds = MANAGER.position(position.getDirection(), new Rect(size));
+        Rectangle bounds = MANAGER.position(position.getDirection(), new Rectangle(size));
 
         grid.setBounds(bounds).render();
         return bounds;

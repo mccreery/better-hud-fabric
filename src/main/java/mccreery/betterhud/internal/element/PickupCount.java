@@ -8,11 +8,11 @@ import java.util.List;
 
 import jobicade.betterhud.element.settings.DirectionOptions;
 import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.element.settings.SettingSlider;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.DoubleProperty;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.geom.Size;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.render.DefaultBoxed;
@@ -25,7 +25,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class PickupCount extends OverlayElement {
     private SettingPosition position;
-    private SettingSlider maxStacks, fadeAfter;
+    private DoubleProperty maxStacks, fadeAfter;
     public final List<StackNode> stacks = new ArrayList<>();
 
     public PickupCount() {
@@ -37,13 +37,13 @@ public class PickupCount extends OverlayElement {
         position.setContentOptions(DirectionOptions.CORNERS);
         addSetting(position);
 
-        fadeAfter = new SettingSlider("fadeAfter", 20, 600);
+        fadeAfter = new DoubleProperty("fadeAfter", 20, 600);
         fadeAfter.setInterval(20);
         fadeAfter.setDisplayScale(0.05);
         fadeAfter.setUnlocalizedValue("betterHud.hud.seconds");
         addSetting(fadeAfter);
 
-        maxStacks = new SettingSlider("maxStacks", 1, 11) {
+        maxStacks = new DoubleProperty("maxStacks", 1, 11) {
             @Override
             public String getDisplayValue(double scaledValue) {
                 return scaledValue == getMaximum() ? I18n.format("betterHud.value.unlimited") : super.getDisplayValue(scaledValue);
@@ -103,16 +103,16 @@ public class PickupCount extends OverlayElement {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         List<StackNode> stacks = getStacks();
-        Rect bounds;
+        Rectangle bounds;
 
         synchronized(this) {
             Grid<StackNode> grid = new Grid<>(new Point(1, stacks.size()), stacks)
                 .setAlignment(position.getContentAlignment())
                 .setCellAlignment(position.getContentAlignment());
 
-            bounds = new Rect(grid.getPreferredSize());
+            bounds = new Rectangle(grid.getPreferredSize());
 
             if(position.isDirection(Direction.CENTER)) {
                 bounds = bounds.align(MANAGER.getScreen().getAnchor(Direction.CENTER).add(5, 5), Direction.NORTH_WEST);
@@ -159,10 +159,10 @@ public class PickupCount extends OverlayElement {
         @Override
         public void render() {
             Direction alignment = position.getContentAlignment().withRow(1);
-            GlUtil.renderSingleItem(stack, new Rect(16, 16).anchor(bounds, alignment).getPosition());
+            GlUtil.renderSingleItem(stack, new Rectangle(16, 16).anchor(bounds, alignment).getPosition());
 
             Label label = getLabel();
-            label.setBounds(new Rect(label.getPreferredSize()).anchor(bounds, alignment.mirrorCol())).render();
+            label.setBounds(new Rectangle(label.getPreferredSize()).anchor(bounds, alignment.mirrorCol())).render();
         }
     }
 }

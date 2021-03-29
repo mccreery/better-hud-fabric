@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 
-import jobicade.betterhud.element.settings.SettingSlider;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.DoubleProperty;
 import jobicade.betterhud.events.BillboardContext;
 import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Point;
-import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.render.Grid;
 import jobicade.betterhud.render.Label;
@@ -30,12 +30,12 @@ import net.minecraft.util.text.TextFormatting;
 public class PlayerInfo extends BillboardElement {
     private StatBar<? super PlayerEntity> bar = new StatBarArmor();
 
-    private SettingSlider tooltipLines;
+    private DoubleProperty tooltipLines;
 
     public PlayerInfo() {
         super("playerInfo");
 
-        tooltipLines = new SettingSlider("tooltipLines", -1, 10) {
+        tooltipLines = new DoubleProperty("tooltipLines", -1, 10) {
             @Override
             public String getDisplayValue(double scaledValue) {
                 if(scaledValue == -1) {
@@ -55,7 +55,7 @@ public class PlayerInfo extends BillboardElement {
     }
 
     @Override
-    public Rect render(BillboardContext context) {
+    public Rectangle render(BillboardContext context) {
         PlayerEntity player = (PlayerEntity)context.getPointedEntity();
         bar.setHost(player);
         List<String> tooltip = new ArrayList<String>();
@@ -76,14 +76,14 @@ public class PlayerInfo extends BillboardElement {
         Grid<Label> grid = new Grid<Label>(new Point(1, tooltip.size()), tooltipLabels)
             .setCellAlignment(Direction.WEST).setGutter(new Point(2, 2));
 
-        Rect bounds = new Rect(grid.getPreferredSize().add(10, 10));
+        Rectangle bounds = new Rectangle(grid.getPreferredSize().add(10, 10));
         if(bar.shouldRender()) bounds = bounds.grow(0, 0, 0, bar.getPreferredSize().getY() + 2);
         bounds = MANAGER.position(Direction.SOUTH, bounds);
         GlUtil.drawRect(bounds, Color.TRANSLUCENT);
 
-        Rect inner = bounds.grow(-5);
-        grid.setBounds(new Rect(grid.getPreferredSize()).anchor(inner, Direction.NORTH_WEST)).render();
-        if(bar.shouldRender()) bar.setBounds(new Rect(bar.getPreferredSize()).anchor(inner, Direction.SOUTH_WEST)).render();
+        Rectangle inner = bounds.grow(-5);
+        grid.setBounds(new Rectangle(grid.getPreferredSize()).anchor(inner, Direction.NORTH_WEST)).render();
+        if(bar.shouldRender()) bar.setBounds(new Rectangle(bar.getPreferredSize()).anchor(inner, Direction.SOUTH_WEST)).render();
 
         return null;
     }

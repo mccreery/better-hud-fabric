@@ -8,18 +8,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jobicade.betterhud.BetterHud;
 import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.SettingChoose;
-import jobicade.betterhud.events.OverlayContext;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.property.EnumProperty;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.util.Tickable;
 
 public abstract class ParticleOverlay extends OverlayElement implements Tickable {
-    protected SettingChoose density;
+    protected EnumProperty density;
     protected final List<Particle> particles = new CopyOnWriteArrayList<Particle>();
 
     public ParticleOverlay(String name) {
         super(name);
-        density = new SettingChoose("density", "sparse", "normal", "dense", "denser");
+        density = new EnumProperty("density", "sparse", "normal", "dense", "denser");
         addSetting(density);
     }
 
@@ -39,7 +39,7 @@ public abstract class ParticleOverlay extends OverlayElement implements Tickable
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         for(Particle particle : particles) {
             particle.render(context.getPartialTicks());
         }
@@ -47,7 +47,7 @@ public abstract class ParticleOverlay extends OverlayElement implements Tickable
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return !particles.isEmpty();
     }
 }

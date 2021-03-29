@@ -2,8 +2,8 @@ package mccreery.betterhud.internal.element;
 
 import java.util.ArrayList;
 
-import jobicade.betterhud.element.settings.SettingBoolean;
-import jobicade.betterhud.element.settings.SettingChoose;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.EnumProperty;
 import jobicade.betterhud.element.settings.SettingWarnings;
 import jobicade.betterhud.geom.Direction;
 import jobicade.betterhud.util.MathUtil;
@@ -11,28 +11,28 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 
 public abstract class EquipmentDisplay extends OverlayElement {
-    private SettingBoolean showName;
-    private SettingBoolean showDurability;
+    private BooleanProperty showName;
+    private BooleanProperty showDurability;
     private SettingWarnings warnings;
-    private SettingChoose durabilityMode;
-    private SettingBoolean showUndamaged;
+    private EnumProperty durabilityMode;
+    private BooleanProperty showUndamaged;
 
     public EquipmentDisplay(String name) {
         super(name);
 
-        showName = new SettingBoolean("showName");
+        showName = new BooleanProperty("showName");
         addSetting(showName);
 
-        showDurability = new SettingBoolean("showDurability");
+        showDurability = new BooleanProperty("showDurability");
         showDurability.setAlignment(Direction.WEST);
         addSetting(showDurability);
 
-        durabilityMode = new SettingChoose("durabilityFormat", "points", "percentage");
+        durabilityMode = new EnumProperty("durabilityFormat", "points", "percentage");
         durabilityMode.setAlignment(Direction.EAST);
         durabilityMode.setEnableOn(showDurability::get);
         addSetting(durabilityMode);
 
-        showUndamaged = new SettingBoolean("showUndamaged");
+        showUndamaged = new BooleanProperty("showUndamaged");
         showUndamaged.setEnableOn(showDurability::get);
         showUndamaged.setValuePrefix("betterHud.value.visible");
         addSetting(showUndamaged);

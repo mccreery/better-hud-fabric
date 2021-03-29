@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jobicade.betterhud.element.settings.Legend;
-import jobicade.betterhud.element.settings.SettingBoolean;
+import mccreery.betterhud.api.property.BooleanProperty;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
 import net.minecraft.client.resources.I18n;
 
 public class Connection extends TextElement {
-    private SettingBoolean playerCount, showIp, latency;
+    private BooleanProperty playerCount, showIp, latency;
 
     private String ip = "localServer";
 
@@ -21,13 +21,13 @@ public class Connection extends TextElement {
 
         addSetting(new Legend("misc"));
 
-        playerCount = new SettingBoolean("playerCount");
-        playerCount.setValuePrefix(SettingBoolean.VISIBLE);
+        playerCount = new BooleanProperty("playerCount");
+        playerCount.setValuePrefix(BooleanProperty.VISIBLE);
         addSetting(playerCount);
 
-        showIp = new SettingBoolean("showIp");
+        showIp = new BooleanProperty("showIp");
         addSetting(showIp);
-        latency = new SettingBoolean("latency");
+        latency = new BooleanProperty("latency");
         addSetting(latency);
     }
 

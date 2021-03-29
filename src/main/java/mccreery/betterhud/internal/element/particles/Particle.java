@@ -1,6 +1,6 @@
 package mccreery.betterhud.internal.element.particles;
 
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.util.Tickable;
 
 import static jobicade.betterhud.BetterHud.MANAGER;
@@ -10,11 +10,11 @@ public interface Particle extends Tickable {
     public boolean shouldRender();
     public void render(float partialTicks);
 
-    public static Rect getScreen() {
+    public static Rectangle getScreen() {
         if(MANAGER != null) {
-            Rect bounds = MANAGER.getScreen();
+            Rectangle bounds = MANAGER.getScreen();
             if(bounds != null) return bounds;
         }
-        return Rect.empty();
+        return Rectangle.empty();
     }
 }

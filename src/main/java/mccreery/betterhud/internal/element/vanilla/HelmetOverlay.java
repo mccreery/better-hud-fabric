@@ -4,9 +4,9 @@ import static jobicade.betterhud.BetterHud.MANAGER;
 import static jobicade.betterhud.BetterHud.MC;
 
 import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.events.OverlayContext;
+import mccreery.betterhud.api.HudRenderContext;
 import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Rect;
+import mccreery.betterhud.api.geometry.Rectangle;
 import jobicade.betterhud.render.Color;
 import jobicade.betterhud.util.GlUtil;
 import net.minecraft.block.Blocks;
@@ -24,7 +24,7 @@ public class HelmetOverlay extends OverlayElement {
     }
 
     @Override
-    public boolean shouldRender(OverlayContext context) {
+    public boolean shouldRender(HudRenderContext context) {
         return ForgeIngameGui.renderHelmet
             && !OverlayHook.pre(context.getEvent(), ElementType.HELMET)
             && MC.gameSettings.thirdPersonView == 0
@@ -32,13 +32,13 @@ public class HelmetOverlay extends OverlayElement {
     }
 
     @Override
-    public Rect render(OverlayContext context) {
+    public Rectangle render(HudRenderContext context) {
         ItemStack stack = MC.player.inventory.armorItemInSlot(3);
 
         if (MC.gameSettings.thirdPersonView == 0 && !stack.isEmpty()) {
             if (stack.getItem() == Blocks.CARVED_PUMPKIN.asItem()) {
                 MC.getTextureManager().bindTexture(PUMPKIN_BLUR_TEX_PATH);
-                GlUtil.drawRect(MANAGER.getScreen(), new Rect(256, 256), Color.RED);
+                GlUtil.drawRect(MANAGER.getScreen(), new Rectangle(256, 256), Color.RED);
                 MC.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
             } else {
                 stack.getItem().renderHelmetOverlay(stack, MC.player, MC.getMainWindow().getScaledWidth(), MC.getMainWindow().getScaledHeight(), context.getPartialTicks());
