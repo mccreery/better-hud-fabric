@@ -8,8 +8,6 @@ public class AlignmentBox extends LayoutBox {
     private final Point alignment;
 
     public AlignmentBox(LayoutBox content, Point t) {
-        // Layout is dynamic
-        super(Point.ZERO);
         this.content = content;
         this.alignment = t;
     }
@@ -19,23 +17,18 @@ public class AlignmentBox extends LayoutBox {
     }
 
     @Override
-    protected Point getMinSize() {
-        return content.getMinSize();
+    public Point getPreferredSize() {
+        return content.getPreferredSize();
     }
 
     @Override
-    public Point getDefaultSize() {
-        return content.getDefaultSize();
-    }
-
-    @Override
-    protected Point getMaxSize() {
-        return null;
+    public Point negotiateSize(Point size) {
+        return Point.max(getPreferredSize(), size);
     }
 
     @Override
     public void render() {
-        content.setBounds(new Rectangle(Point.ZERO, content.getDefaultSize()).align(getBounds(), alignment));
+        content.setBounds(new Rectangle(Point.ZERO, content.getPreferredSize()).align(getBounds(), alignment));
         content.render();
     }
 }

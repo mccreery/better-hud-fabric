@@ -6,26 +6,21 @@ import mccreery.betterhud.api.geometry.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
 
+/**
+ * A grid layout with a fixed cell size and number of rows and columns.
+ */
 public class Grid extends LayoutBox {
     private final List<LayoutBox> cells;
 
     private final int rowCount;
     private final int columnCount;
+    private final Point cellSize;
 
     private double rowGutter;
     private double columnGutter;
 
-    private boolean stretch;
-    private Point cellAlignment = Rectangle.Node.CENTER.getT();
-
-    public Grid(int rowCount, int columnCount) {
-        // Sizing is handled dynamically
-        super(Point.ZERO);
-
+    public Grid(int rowCount, int columnCount, Point cellSize) {
         if (rowCount < 1 || columnCount < 1) {
             throw new IllegalArgumentException("Minimum 1 row and 1 column");
         }
@@ -33,6 +28,8 @@ public class Grid extends LayoutBox {
         this.rowCount = rowCount;
         this.columnCount = columnCount;
         this.cells = new ArrayList<>(Collections.nCopies(rowCount * columnCount, null));
+
+        this.cellSize = cellSize;
     }
 
     public void setRowGutter(double rowGutter) {
@@ -41,22 +38,6 @@ public class Grid extends LayoutBox {
 
     public void setColumnGutter(double columnGutter) {
         this.columnGutter = columnGutter;
-    }
-
-    public void setStretch(boolean stretch) {
-        this.stretch = stretch;
-    }
-
-    /**
-     * Sets the cell alignment.
-     * @param t An interpolation parameter.
-     */
-    public void setCellAlignment(Point t) {
-        this.cellAlignment = t;
-    }
-
-    public void setCellAlignment(Rectangle.Node node) {
-        setCellAlignment(node.getT());
     }
 
     public LayoutBox getCell(int row, int column) {
@@ -77,43 +58,16 @@ public class Grid extends LayoutBox {
     }
 
     @Override
-    protected Point getMinSize() {
-        return getSize(LayoutBox::getMinSize);
-    }
-
-    @Override
-    public Point getDefaultSize() {
-        return getSize(LayoutBox::getDefaultSize);
-    }
-
-    @Override
-    protected Point getMaxSize() {
-        return getSize(LayoutBox::getMaxSize);
-    }
-
-    private Point getSize(Function<LayoutBox, Point> sizeGetter) {
-        Point cellSize = getCellSize(sizeGetter);
+    public Point getPreferredSize() {
         Point gutter = getGutter();
         Point shape = getShape();
 
         return cellSize.add(gutter).scale(shape).subtract(gutter);
     }
 
-    private Point getCellSize(Function<LayoutBox, Point> sizeGetter) {
-        Optional<Point> optional = cells.stream()
-                .filter(Objects::nonNull)
-                .map(sizeGetter)
-                .filter(Objects::nonNull)
-                .reduce(Point::max);
-
-        assert optional.isPresent();
-        return optional.get();
-    }
-
     @Override
     public void render() {
         Rectangle bounds = getBounds();
-        Point cellSize = bounds.getSize().add(getGutter()).scale(new Point(1.0 / columnCount, 1.0 / rowCount));
         Point cellStep = cellSize.add(getGutter());
 
         for (int row = 0; row < rowCount; row++) {
@@ -126,13 +80,7 @@ public class Grid extends LayoutBox {
                         cellSize
                     );
 
-                    if (stretch) {
-                        cell.setBounds(cellBounds);
-                    } else {
-                        AlignmentBox alignmentBox = new AlignmentBox(cell, cellAlignment);
-                        alignmentBox.setBounds(cellBounds);
-                        alignmentBox.render();
-                    }
+                    cell.setBounds(cellBounds);
                     cell.render();
                 }
             }
