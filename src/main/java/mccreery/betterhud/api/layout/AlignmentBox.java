@@ -1,6 +1,7 @@
 package mccreery.betterhud.api.layout;
 
 import mccreery.betterhud.api.ScreenRenderContext;
+import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
@@ -14,8 +15,8 @@ public class AlignmentBox extends LayoutBox {
         this.alignment = t;
     }
 
-    public AlignmentBox(ScreenRenderContext context, LayoutBox content, Rectangle.Node node) {
-        this(context, content, node.getT());
+    public AlignmentBox(ScreenRenderContext context, LayoutBox content, Anchor anchor) {
+        this(context, content, anchor.getT());
     }
 
     @Override

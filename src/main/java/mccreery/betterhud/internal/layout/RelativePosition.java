@@ -1,5 +1,6 @@
 package mccreery.betterhud.internal.layout;
 
+import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
@@ -7,30 +8,30 @@ public class RelativePosition {
     public RelativePosition() {
     }
 
-    public RelativePosition(Rectangle.Node handle, Rectangle.Node parentHandle, Point offset) {
-        this.handle = handle;
-        this.parentHandle = parentHandle;
+    public RelativePosition(Anchor anchor, Anchor parentAnchor, Point offset) {
+        this.anchor = anchor;
+        this.parentAnchor = parentAnchor;
         this.offset = offset;
     }
 
-    private Rectangle.Node handle = Rectangle.Node.TOP_LEFT;
+    private Anchor anchor = Anchor.TOP_LEFT;
 
-    public Rectangle.Node getHandle() {
-        return handle;
+    public Anchor getAnchor() {
+        return anchor;
     }
 
-    public void setHandle(Rectangle.Node handle) {
-        this.handle = handle;
+    public void setAnchor(Anchor anchor) {
+        this.anchor = anchor;
     }
 
-    private Rectangle.Node parentHandle = Rectangle.Node.TOP_LEFT;
+    private Anchor parentAnchor = Anchor.TOP_LEFT;
 
-    public Rectangle.Node getParentHandle() {
-        return parentHandle;
+    public Anchor getParentAnchor() {
+        return parentAnchor;
     }
 
-    public void setParentHandle(Rectangle.Node parentHandle) {
-        this.parentHandle = parentHandle;
+    public void setParentAnchor(Anchor parentAnchor) {
+        this.parentAnchor = parentAnchor;
     }
 
     private Point offset = Point.ZERO;
@@ -44,7 +45,7 @@ public class RelativePosition {
     }
 
     public Rectangle apply(Rectangle parentBounds, Point size) {
-        Point anchor = parentBounds.interpolate(parentHandle.getT());
-        return new Rectangle(Point.ZERO, size).align(anchor.add(offset), handle.getT());
+        Point anchor = parentBounds.interpolate(parentAnchor.getT());
+        return new Rectangle(Point.ZERO, size).align(anchor.add(offset), this.anchor.getT());
     }
 }

@@ -1,5 +1,6 @@
 package mccreery.betterhud.internal.render;
 
+import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import net.minecraft.client.render.BufferBuilder;
@@ -11,10 +12,10 @@ import org.lwjgl.opengl.GL11;
 
 public final class DrawingContext {
     private static final Point[] COUNTERCLOCKWISE_WINDING = {
-        Rectangle.Node.BOTTOM_LEFT.getT(),
-        Rectangle.Node.BOTTOM_RIGHT.getT(),
-        Rectangle.Node.TOP_RIGHT.getT(),
-        Rectangle.Node.TOP_LEFT.getT()
+        Anchor.BOTTOM_LEFT.getT(),
+        Anchor.BOTTOM_RIGHT.getT(),
+        Anchor.TOP_RIGHT.getT(),
+        Anchor.TOP_LEFT.getT()
     };
 
     private final MatrixStack matrixStack;

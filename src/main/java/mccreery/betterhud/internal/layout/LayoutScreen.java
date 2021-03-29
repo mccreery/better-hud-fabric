@@ -1,6 +1,7 @@
 package mccreery.betterhud.internal.layout;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.internal.BetterHud;
@@ -34,7 +35,7 @@ public class LayoutScreen extends Screen {
     }
 
     private HudElementTree selectedTree;
-    private Rectangle.Node selectedAnchor;
+    private Anchor selectedAnchor;
     /**
      * The offset from the minimum corner of the selected tree's bounds
      */
@@ -70,8 +71,8 @@ public class LayoutScreen extends Screen {
         layout.getRoots().remove(selectedTree);
 
         RelativePosition position = selectedTree.getPosition();
-        position.setParentHandle(hoveredAnchor);
-        position.setHandle(selectedAnchor);
+        position.setParentAnchor(hoveredAnchor);
+        position.setAnchor(selectedAnchor);
 
         Rectangle bounds = selectedTree.getBoundsLastFrame();
         Point anchorPoint = bounds.interpolate(selectedAnchor.getT());
@@ -89,7 +90,7 @@ public class LayoutScreen extends Screen {
             selectedAnchor = hoveredAnchor;
         } else if (selectedTree != hoveredTree) {
             // Selected anchor always defaults to linked anchor
-            selectedAnchor = hoveredTree.getPosition().getHandle();
+            selectedAnchor = hoveredTree.getPosition().getAnchor();
         }
         selectedTree = hoveredTree;
 
@@ -116,10 +117,10 @@ public class LayoutScreen extends Screen {
 
     private void move(HudElementTree tree, Point position) {
         Point size = tree.getBoundsLastFrame().getSize();
-        Point anchorOffset = size.scale(tree.getPosition().getHandle().getT());
+        Point anchorOffset = size.scale(tree.getPosition().getAnchor().getT());
         Point anchorPoint = position.add(anchorOffset);
 
-        Point parentAnchorPoint = getParentBounds(tree).interpolate(tree.getPosition().getParentHandle().getT());
+        Point parentAnchorPoint = getParentBounds(tree).interpolate(tree.getPosition().getParentAnchor().getT());
 
         tree.getPosition().setOffset(anchorPoint.subtract(parentAnchorPoint));
     }
@@ -143,18 +144,18 @@ public class LayoutScreen extends Screen {
     // Add snap targets
     static {
         // Add horizontal alignment (left, center, right)
-        Map<Rectangle.Node, Rectangle.Node> rowMirror = new EnumMap<>(Rectangle.Node.class);
-        rowMirror.put(Rectangle.Node.TOP_LEFT, Rectangle.Node.BOTTOM_LEFT);
-        rowMirror.put(Rectangle.Node.TOP_CENTER, Rectangle.Node.BOTTOM_CENTER);
-        rowMirror.put(Rectangle.Node.TOP_RIGHT, Rectangle.Node.BOTTOM_RIGHT);
+        Map<Anchor, Anchor> rowMirror = new EnumMap<>(Anchor.class);
+        rowMirror.put(Anchor.TOP_LEFT, Anchor.BOTTOM_LEFT);
+        rowMirror.put(Anchor.TOP_CENTER, Anchor.BOTTOM_CENTER);
+        rowMirror.put(Anchor.TOP_RIGHT, Anchor.BOTTOM_RIGHT);
 
         addSnapTargets(rowMirror, new Point(0, SNAP_SPACER));
 
         // Add vertical alignment (top, center, bottom)
-        Map<Rectangle.Node, Rectangle.Node> columnMirror = new EnumMap<>(Rectangle.Node.class);
-        columnMirror.put(Rectangle.Node.TOP_LEFT, Rectangle.Node.TOP_RIGHT);
-        columnMirror.put(Rectangle.Node.CENTER_LEFT, Rectangle.Node.CENTER_RIGHT);
-        columnMirror.put(Rectangle.Node.BOTTOM_LEFT, Rectangle.Node.BOTTOM_RIGHT);
+        Map<Anchor, Anchor> columnMirror = new EnumMap<>(Anchor.class);
+        columnMirror.put(Anchor.TOP_LEFT, Anchor.TOP_RIGHT);
+        columnMirror.put(Anchor.CENTER_LEFT, Anchor.CENTER_RIGHT);
+        columnMirror.put(Anchor.BOTTOM_LEFT, Anchor.BOTTOM_RIGHT);
 
         addSnapTargets(columnMirror, new Point(SNAP_SPACER, 0));
     }
@@ -165,10 +166,10 @@ public class LayoutScreen extends Screen {
      * forward spacer as the offset, and also that it can snap its TOP_RIGHT anchor to the TOP_LEFT anchor of another
      * with the backward spacer (found by negating the forward spacer) as the offset.
      */
-    private static void addSnapTargets(Map<Rectangle.Node, Rectangle.Node> anchorPairs, Point forwardSpacer) {
+    private static void addSnapTargets(Map<Anchor, Anchor> anchorPairs, Point forwardSpacer) {
         Point backwardSpacer = new Point(-forwardSpacer.getX(), -forwardSpacer.getY());
 
-        for (Entry<Rectangle.Node, Rectangle.Node> entry : anchorPairs.entrySet()) {
+        for (Entry<Anchor, Anchor> entry : anchorPairs.entrySet()) {
             SNAP_TARGETS.add(new RelativePosition(entry.getKey(), entry.getValue(), forwardSpacer));
             SNAP_TARGETS.add(new RelativePosition(entry.getValue(), entry.getKey(), backwardSpacer));
         }
@@ -240,7 +241,7 @@ public class LayoutScreen extends Screen {
     /**
      * The anchor that is hovered. {@code null} if nothing is hovered or a tree is hovered directly.
      */
-    private Rectangle.Node hoveredAnchor;
+    private Anchor hoveredAnchor;
     /**
      * The squared distance of the anchor, if any, to the cursor.
      */
@@ -269,7 +270,7 @@ public class LayoutScreen extends Screen {
         Rectangle bounds = tree.getBoundsLastFrame();
 
         // Look for an anchor in range and closer than any previous
-        for (Rectangle.Node anchor : Rectangle.Node.values()) {
+        for (Anchor anchor : Anchor.values()) {
             Point anchorPoint = bounds.interpolate(anchor.getT());
             double distanceSquared = anchorPoint.distanceSquared(cursor);
 
@@ -302,14 +303,14 @@ public class LayoutScreen extends Screen {
         RenderSystem.enableBlend();
 
         Rectangle screen = new Rectangle(0, 0, width, height);
-        Rectangle dialogBounds = new Rectangle(0, 0, 200, textRenderer.fontHeight * 2 + 6).align(screen, Rectangle.Node.CENTER);
+        Rectangle dialogBounds = new Rectangle(0, 0, 200, textRenderer.fontHeight * 2 + 6).align(screen, Anchor.CENTER);
 
         context.drawFilledRectangle(dialogBounds, TRANSLUCENT);
 
         Text leftText = new TranslatableText("hudLayout.prompt.left", new TranslatableText("key.mouse.left"));
         Text rightText = new TranslatableText("hudLayout.prompt.right", new TranslatableText("key.mouse.right"));
 
-        Point anchorPoint = dialogBounds.interpolate(Rectangle.Node.TOP_CENTER);
+        Point anchorPoint = dialogBounds.interpolate(Anchor.TOP_CENTER);
 
         drawCenteredText(context.getMatrixStack(), textRenderer, leftText, (int)anchorPoint.getX(), (int)anchorPoint.getY() + 2, 0xffffffff);
         drawCenteredText(context.getMatrixStack(), textRenderer, rightText, (int)anchorPoint.getX(), (int)anchorPoint.getY() + textRenderer.fontHeight + 4, 0xffffffff);
@@ -325,8 +326,8 @@ public class LayoutScreen extends Screen {
             Rectangle parentBounds = getParentBounds(selectedTree);
 
             drawDashedRectangle(context, bounds, DASH_COLOR);
-            drawDashedLine(context, bounds.interpolate(position.getHandle().getT()),
-                    parentBounds.interpolate(position.getParentHandle().getT()), DASH_COLOR);
+            drawDashedLine(context, bounds.interpolate(position.getAnchor().getT()),
+                    parentBounds.interpolate(position.getParentAnchor().getT()), DASH_COLOR);
         }
         if (hoveredTree != null) {
             drawDashedRectangle(context, hoveredTree.getBoundsLastFrame(), DASH_COLOR);
@@ -350,13 +351,13 @@ public class LayoutScreen extends Screen {
     private void renderHandles(DrawingContext context, HudElementTree tree) {
         Rectangle bounds = tree.getBoundsLastFrame();
 
-        for (Rectangle.Node anchor : Rectangle.Node.values()) {
+        for (Anchor anchor : Anchor.values()) {
             Point anchorPoint = bounds.interpolate(anchor.getT());
 
             Rectangle handleTexture = getHandleType(tree, anchor).getTexture();
 
             context.drawTexturedRectangle(
-                    handleTexture.align(anchorPoint, Rectangle.Node.CENTER),
+                    handleTexture.align(anchorPoint, Anchor.CENTER),
                     handleTexture, LAYOUT_WIDGETS_SIZE);
         }
     }
@@ -364,14 +365,14 @@ public class LayoutScreen extends Screen {
     /**
      * Determines the click action and icon corresponding to a handle.
      */
-    private HandleIcon getHandleType(HudElementTree tree, Rectangle.Node anchor) {
+    private HandleIcon getHandleType(HudElementTree tree, Anchor anchor) {
         boolean isParentAnchor;
         boolean isChildAnchor;
 
         if (selectedTree != null) {
             RelativePosition position = selectedTree.getPosition();
-            isParentAnchor = tree == selectedTree.getParent() && anchor == position.getParentHandle();
-            isChildAnchor = tree == selectedTree && anchor == position.getHandle();
+            isParentAnchor = tree == selectedTree.getParent() && anchor == position.getParentAnchor();
+            isChildAnchor = tree == selectedTree && anchor == position.getAnchor();
         } else {
             isParentAnchor = false;
             isChildAnchor = false;

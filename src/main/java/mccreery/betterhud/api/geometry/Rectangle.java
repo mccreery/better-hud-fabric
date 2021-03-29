@@ -85,37 +85,37 @@ public final class Rectangle {
 
     /**
      * Interpolates between the minimum and maximum points.
-     * @param node The node within the rectangle.
+     * @param anchor The anchor within the rectangle.
      */
-    public Point interpolate(Node node) {
-        return interpolate(node.getT());
+    public Point interpolate(Anchor anchor) {
+        return interpolate(anchor.getT());
     }
 
     /**
-     * Aligns a point inside the rectangle with an anchor point.
-     * @param anchor The fixed anchor point.
+     * Aligns a point inside the rectangle with a fixed point.
+     * @param fixedPoint The fixed point.
      * @param t The linear interpolation parameter.
-     * @return A new rectangle.
+     * @return The rectangle, moved so that its interpolated point at {@code t} is on {@code fixedPoint}.
      */
-    public Rectangle align(Point anchor, Point t) {
-        return new Rectangle(anchor.subtract(getSize().scale(t)), getSize());
+    public Rectangle align(Point fixedPoint, Point t) {
+        return new Rectangle(fixedPoint.subtract(getSize().scale(t)), getSize());
     }
 
     /**
-     * Aligns a point inside the rectangle with an anchor point.
-     * @param anchor The fixed anchor point.
-     * @param node The node within the rectangle.
-     * @return A new rectangle.
+     * Aligns an anchor inside the rectangle with a fixed point.
+     * @param fixedPoint The fixed point.
+     * @param anchor The anchor inside the rectangle.
+     * @return The rectangle, moved so that its point at {@code anchor} is on {@code fixedPoint}.
      */
-    public Rectangle align(Point anchor, Node node) {
-        return align(anchor, node.getT());
+    public Rectangle align(Point fixedPoint, Anchor anchor) {
+        return align(fixedPoint, anchor.getT());
     }
 
     /**
      * Aligns a point inside the rectangle with the corresponding point in a container.
      * @param container The container.
      * @param t The linear interpolation parameter.
-     * @return A new rectangle.
+     * @return The rectangle, moved so that corresponding interpolated points at {@code t} are aligned.
      */
     public Rectangle align(Rectangle container, Point t) {
         return align(container.interpolate(t), t);
@@ -124,11 +124,11 @@ public final class Rectangle {
     /**
      * Aligns a point inside the rectangle with the corresponding point in a container.
      * @param container The container.
-     * @param node The node within the rectangle.
-     * @return A new rectangle.
+     * @param anchor The anchor within the rectangle.
+     * @return The rectangle, moved so that corresponding points at {@code anchor} are aligned.
      */
-    public Rectangle align(Rectangle container, Node node) {
-        return align(container, node.getT());
+    public Rectangle align(Rectangle container, Anchor anchor) {
+        return align(container, anchor.getT());
     }
 
     @Override
@@ -153,32 +153,4 @@ public final class Rectangle {
         return "Rectangle{position=" + getPosition() + ", size=" + getSize() + "}";
     }
 
-    /**
-     * Points within a rectangle on a 3x3 grid. These can usually be used where an interpolation parameter is expected.
-     */
-    public enum Node {
-        TOP_LEFT(new Point(0.0, 0.0)),
-        TOP_CENTER(new Point(0.5, 0.0)),
-        TOP_RIGHT(new Point(1.0, 0.0)),
-        CENTER_LEFT(new Point(0.0, 0.5)),
-        CENTER(new Point(0.5, 0.5)),
-        CENTER_RIGHT(new Point(1.0, 0.5)),
-        BOTTOM_LEFT(new Point(0.0, 1.0)),
-        BOTTOM_CENTER(new Point(0.5, 1.0)),
-        BOTTOM_RIGHT(new Point(1.0, 1.0));
-
-        private final Point t;
-
-        Node(Point t) {
-            this.t = t;
-        }
-
-        /**
-         * Converts this node to the corresponding interpolation parameter.
-         * @return The corresponding interpolation parameter.
-         */
-        public Point getT() {
-            return t;
-        }
-    }
 }
