@@ -4,7 +4,7 @@ import jobicade.betterhud.geom.Rect;
 import jobicade.betterhud.gui.GuiElementSettings;
 import jobicade.betterhud.util.Textures;
 
-public class SettingLock extends SettingBoolean {
+public class SettingLock extends BooleanProperty {
     // Custom bounds overrides aligned bounds
     private Rect bounds;
 
