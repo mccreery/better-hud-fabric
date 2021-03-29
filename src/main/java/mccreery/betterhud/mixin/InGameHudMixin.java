@@ -76,6 +76,7 @@ public abstract class InGameHudMixin extends DrawableHelper implements HudRender
         context.setPhase(mccreery.betterhud.api.HudRenderContext.Phase.OVERLAY);
         context.setMatrixStack(matrices);
         context.setTickDelta(tickDelta);
+        context.setTextRenderer(client.textRenderer);
         context.setTargetEntity(client.player);
         context.setParentBounds(screenBounds);
         // position is populated by individual element tree nodes

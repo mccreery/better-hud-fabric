@@ -3,6 +3,7 @@ package mccreery.betterhud.internal;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.internal.layout.RelativePosition;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
@@ -14,6 +15,7 @@ public final class HudRenderContext implements mccreery.betterhud.api.HudRenderC
         this.phase = context.phase;
         this.matrixStack = context.matrixStack;
         this.tickDelta = context.tickDelta;
+        this.textRenderer = context.textRenderer;
         this.targetEntity = context.targetEntity;
         this.parentBounds = context.parentBounds;
         this.position = context.position;
@@ -51,6 +53,17 @@ public final class HudRenderContext implements mccreery.betterhud.api.HudRenderC
 
     public void setTickDelta(float tickDelta) {
         this.tickDelta = tickDelta;
+    }
+
+    private TextRenderer textRenderer;
+
+    @Override
+    public TextRenderer getTextRenderer() {
+        return textRenderer;
+    }
+
+    public void setTextRenderer(TextRenderer textRenderer) {
+        this.textRenderer = textRenderer;
     }
 
     private LivingEntity targetEntity;
