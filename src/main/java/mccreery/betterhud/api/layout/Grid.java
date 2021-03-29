@@ -21,7 +21,8 @@ public class Grid extends LayoutBox {
     private double rowGutter;
     private double columnGutter;
 
-    public Grid(int rowCount, int columnCount, Point cellSize) {
+    public Grid(ScreenRenderContext context, int rowCount, int columnCount, Point cellSize) {
+        super(context);
         if (rowCount < 1 || columnCount < 1) {
             throw new IllegalArgumentException("Minimum 1 row and 1 column");
         }
@@ -86,9 +87,9 @@ public class Grid extends LayoutBox {
     }
 
     @Override
-    public void render(ScreenRenderContext context) {
+    public void render() {
         for (LayoutBox cell : cells) {
-            cell.render(context);
+            cell.render();
         }
     }
 

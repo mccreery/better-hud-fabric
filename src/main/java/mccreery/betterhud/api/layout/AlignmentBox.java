@@ -8,13 +8,14 @@ public class AlignmentBox extends LayoutBox {
     private final LayoutBox content;
     private final Point alignment;
 
-    public AlignmentBox(LayoutBox content, Point t) {
+    public AlignmentBox(ScreenRenderContext context, LayoutBox content, Point t) {
+        super(context);
         this.content = content;
         this.alignment = t;
     }
 
-    public AlignmentBox(LayoutBox content, Rectangle.Node node) {
-        this(content, node.getT());
+    public AlignmentBox(ScreenRenderContext context, LayoutBox content, Rectangle.Node node) {
+        this(context, content, node.getT());
     }
 
     @Override
@@ -34,7 +35,7 @@ public class AlignmentBox extends LayoutBox {
     }
 
     @Override
-    public void render(ScreenRenderContext context) {
-        content.render(context);
+    public void render() {
+        content.render();
     }
 }

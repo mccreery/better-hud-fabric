@@ -9,6 +9,20 @@ import mccreery.betterhud.api.geometry.Rectangle;
  * rendering a number of children.
  */
 public abstract class LayoutBox {
+    private ScreenRenderContext context;
+
+    public LayoutBox(ScreenRenderContext context) {
+        this.context = context;
+    }
+
+    public ScreenRenderContext getContext() {
+        return context;
+    }
+
+    public void setContext(ScreenRenderContext context) {
+        this.context = context;
+    }
+
     private Rectangle bounds;
 
     /**
@@ -65,5 +79,5 @@ public abstract class LayoutBox {
     /**
      * Renders the content inside the bounding box. Must not be called before {@link #applyLayout(Rectangle)}.
      */
-    public abstract void render(ScreenRenderContext context);
+    public abstract void render();
 }
