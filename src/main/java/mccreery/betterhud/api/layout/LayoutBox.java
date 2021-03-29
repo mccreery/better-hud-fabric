@@ -32,7 +32,8 @@ public abstract class LayoutBox {
     }
 
     /**
-     * Sets bounding boxes for this box (the parent) and its children.
+     * Sets bounding boxes for this box (the parent) and its children. If the size of the bounding box is not the size
+     * returned by {@link #getPreferredSize()}, it must be accepted by {@link #negotiateSize(Point)}.
      *
      * <p>Implementations must call {@code super.applyLayout(bounds)} to set the parent bounds. The layout cascades to
      * the children by calling their own {@code applyLayout} methods. Child bounding boxes must not overflow the parent
@@ -44,33 +45,24 @@ public abstract class LayoutBox {
         setBounds(bounds);
     }
 
+    /**
+     * Returns the preferred size of the box. It is guaranteed to be accepted by {@link #negotiateSize(Point)}.
+     * @return The preferred size of the box.
+     */
     public abstract Point getPreferredSize();
 
     /**
-     * Responds to a size offer with the offer itself or a counter offer.
-     * Flexible objects should return the argument, indicating that
-     * the offer has been accepted. Fixed size objects should return
-     * their fixed size instead. Callers can decide whether to honor
-     * counter offers.
+     * Accepts or rejects a size for this box. If the size is rejected, the response is a different, acceptable size.
      *
-     * <p>This operation should be idempotent, so that applying it
-     * once is identical to applying it twice.
-     *
-     * @param size The proposed size to render with.
-     * @return The argument or a counter offer size to render with.
+     * @param size The proposed size.
+     * @return An acceptable size. Equal to the proposed size if it is acceptable.
      */
     public Point negotiateSize(Point size) {
         return getPreferredSize();
     }
 
     /**
-     * Renders the object inside the current bounds.
-     *
-     * <p>If the size of the current bounds is not equal to
-     * the result of {@code getPreferredSize(bounds.getSize())},
-     * this method does not guarantee that the object
-     * will be rendered correctly. Implementations may throw an
-     * exception if the given bounds are undesirable.
+     * Renders the content inside the bounding box. Must not be called before {@link #applyLayout(Rectangle)}.
      */
     public abstract void render();
 }
