@@ -7,6 +7,7 @@ import java.util.Objects;
  */
 public final class Color {
     public static final Color WHITE = new Color(255, 255, 255);
+    public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
     private final int red;
     private final int green;
