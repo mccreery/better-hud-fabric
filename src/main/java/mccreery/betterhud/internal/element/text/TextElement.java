@@ -5,6 +5,7 @@ import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.api.layout.Grid;
+import mccreery.betterhud.api.layout.LabelOptions;
 import mccreery.betterhud.api.property.AnchorProperty;
 import mccreery.betterhud.api.property.ColorProperty;
 import mccreery.betterhud.internal.render.Color;
@@ -12,10 +13,8 @@ import mccreery.betterhud.internal.render.Color;
 import java.util.List;
 
 public abstract class TextElement extends HudElement {
-    private final ColorProperty color; // TODO color
+    private final ColorProperty color;
     private final AnchorProperty alignment;
-
-    protected boolean border = false;
 
     public TextElement() {
         color = new ColorProperty("color", Color.WHITE);
@@ -31,13 +30,17 @@ public abstract class TextElement extends HudElement {
             return null;
         }
 
-        Grid grid = Grid.ofLabels(context, alignment.get(), lines);
+        Grid grid = Grid.ofLabels(context, alignment.get(), getLabelOptions(), lines);
 
         Rectangle bounds = context.calculateBounds(grid.getPreferredSize());
         grid.applyLayout(bounds);
         grid.render();
 
         return bounds;
+    }
+
+    protected LabelOptions getLabelOptions() {
+        return LabelOptions.DEFAULT.withColor(color.get());
     }
 
     /**
