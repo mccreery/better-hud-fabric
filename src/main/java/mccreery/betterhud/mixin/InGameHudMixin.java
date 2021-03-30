@@ -73,6 +73,7 @@ public abstract class InGameHudMixin extends DrawableHelper implements HudRender
         tryRenderPortalOverlay(tickDelta);
 
         HudRenderContext context = new HudRenderContext();
+        context.setClient(client);
         context.setPhase(mccreery.betterhud.api.HudRenderContext.Phase.OVERLAY);
         context.setMatrixStack(matrices);
         context.setTickDelta(tickDelta);

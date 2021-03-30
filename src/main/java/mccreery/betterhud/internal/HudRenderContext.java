@@ -3,6 +3,7 @@ package mccreery.betterhud.internal;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.internal.layout.RelativePosition;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -12,6 +13,7 @@ public final class HudRenderContext implements mccreery.betterhud.api.HudRenderC
     }
 
     public HudRenderContext(HudRenderContext context) {
+        this.client = context.client;
         this.phase = context.phase;
         this.matrixStack = context.matrixStack;
         this.tickDelta = context.tickDelta;
@@ -20,6 +22,17 @@ public final class HudRenderContext implements mccreery.betterhud.api.HudRenderC
         this.parentBounds = context.parentBounds;
         this.position = context.position;
         this.layoutMode = context.layoutMode;
+    }
+
+    private MinecraftClient client;
+
+    @Override
+    public MinecraftClient getClient() {
+        return client;
+    }
+
+    public void setClient(MinecraftClient client) {
+        this.client = client;
     }
 
     private Phase phase;
