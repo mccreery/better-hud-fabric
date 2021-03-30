@@ -1,34 +1,21 @@
 package mccreery.betterhud.internal.element;
 
-import static jobicade.betterhud.BetterHud.MC;
-import static jobicade.betterhud.BetterHud.SPACER;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.Legend;
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
-import mccreery.betterhud.api.property.BooleanProperty;
-import mccreery.betterhud.api.property.DoubleProperty;
 import mccreery.betterhud.api.property.EnumProperty;
-import jobicade.betterhud.element.settings.SettingDirection;
-import jobicade.betterhud.element.settings.SettingPosition;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
-import net.minecraft.client.resources.I18n;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.Direction;
 
-public class Compass extends OverlayElement {
+public class Compass extends HudElement {
     private static final String[] DIRECTIONS = { "S", "E", "N", "W" };
 
-    private SettingPosition position;
-    private EnumProperty mode, requireItem;
-    private DoubleProperty directionScaling;
-    private BooleanProperty showNotches;
+    private final EnumProperty<RequiredItemSlot> requireItem;
 
     private static final int[] notchX = new int[9];
 
@@ -41,28 +28,8 @@ public class Compass extends OverlayElement {
     }
 
     public Compass() {
-        super("compass");
-
-        position = new SettingPosition("position");
-        position.setDirectionOptions(DirectionOptions.TOP_BOTTOM);
-        position.setContentOptions(DirectionOptions.NORTH_SOUTH);
-        addSetting(position);
-
-        mode = new EnumProperty("mode", "visual", "text");
-        addSetting(mode);
-
-        addSetting(new Legend("misc"));
-
-        directionScaling = new DoubleProperty("letterScale", 0, 1);
-        directionScaling.setDisplayPercent();
-        addSetting(directionScaling);
-
-        showNotches = new BooleanProperty("showNotches");
-        showNotches.setValuePrefix(BooleanProperty.VISIBLE);
-        addSetting(showNotches);
-
-        requireItem = new EnumProperty("requireItem", "disabled", "inventory", "hand");
-        addSetting(requireItem);
+        requireItem = new EnumProperty<>("requireItem", RequiredItemSlot.NONE);
+        addProperty(requireItem);
     }
 
     private void drawBackground(Rectangle bounds) {
@@ -171,5 +138,11 @@ public class Compass extends OverlayElement {
         }
 
         return bounds;
+    }
+
+    public enum RequiredItemSlot {
+        NONE,
+        INVENTORY,
+        HAND
     }
 }

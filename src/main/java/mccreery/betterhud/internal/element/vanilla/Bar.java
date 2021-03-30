@@ -1,18 +1,9 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
-
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.api.property.EnumProperty;
-import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.util.bars.StatBar;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.util.math.Direction;
 
 public abstract class Bar extends OverlayElement {
     protected SettingPosition position;

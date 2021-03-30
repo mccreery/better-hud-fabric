@@ -1,22 +1,11 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MC;
-
-import jobicade.betterhud.geom.Direction;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.geom.Size;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.render.DefaultBoxed;
-import jobicade.betterhud.render.Label;
-import jobicade.betterhud.render.Quad;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectUtils;
+import mccreery.betterhud.api.layout.Label;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
 public class PotionIcon extends DefaultBoxed {

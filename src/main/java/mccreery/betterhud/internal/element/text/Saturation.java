@@ -1,19 +1,12 @@
 package mccreery.betterhud.internal.element.text;
 
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.HudRenderContext;
+import net.minecraft.client.resource.language.I18n;
 
 import java.util.Arrays;
 import java.util.List;
 
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.util.MathUtil;
-import net.minecraft.client.resources.I18n;
-
 public class Saturation extends TextElement {
-    public Saturation() {
-        super("saturation");
-    }
-
     @Override
     public boolean shouldRender(HudRenderContext context) {
         return MC.playerController.gameIsSurvivalOrAdventure();

@@ -1,22 +1,14 @@
 package mccreery.betterhud.internal.element.particles;
 
-import static jobicade.betterhud.BetterHud.MC;
+import com.mojang.blaze3d.systems.RenderSystem;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.internal.render.Color;
 
 import java.util.Random;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import jobicade.betterhud.geom.Direction;
-import mccreery.betterhud.api.geometry.Point;
-import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
-import jobicade.betterhud.util.RandomWrapper;
-import jobicade.betterhud.util.Textures;
-import net.minecraft.client.gui.AbstractGui;
-
 public class ParticleWater extends ParticleBase {
-    private float speed;
+    private final float speed;
 
     protected ParticleWater(Point position, int iconIndex, float opacity, float size, float speed) {
         super(position, 96 + iconIndex, opacity, size, 0);

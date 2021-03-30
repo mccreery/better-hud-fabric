@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class BloodSplatters extends ParticleOverlay {
-    public BloodSplatters() {
-        super("bloodSplatters");
-    }
-
     public void onDamaged(int amount) {
         int spawnMultiplier = (density.getIndex() + 1) * 4;
         int count = spawnMultiplier * amount;

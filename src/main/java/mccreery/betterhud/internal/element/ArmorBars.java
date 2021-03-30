@@ -1,44 +1,23 @@
 package mccreery.betterhud.internal.element;
 
-import static jobicade.betterhud.BetterHud.MC;
-
-import jobicade.betterhud.element.settings.DirectionOptions;
 import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.layout.Label;
 import mccreery.betterhud.api.property.BooleanProperty;
 import mccreery.betterhud.api.property.EnumProperty;
-import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.geom.Size;
-import jobicade.betterhud.render.Boxed;
-import jobicade.betterhud.render.DefaultBoxed;
-import jobicade.betterhud.render.Grid;
-import jobicade.betterhud.render.Label;
-import jobicade.betterhud.util.GlUtil;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Direction;
 
 public class ArmorBars extends EquipmentDisplay {
-    private SettingPosition position;
-    private EnumProperty barType;
-    private BooleanProperty alwaysVisible;
+    private final EnumProperty<BarType> barType;
+    private final BooleanProperty alwaysVisible;
 
     public ArmorBars() {
-        super("armorBars");
-
-        position = new SettingPosition("position");
-        position.setDirectionOptions(DirectionOptions.CORNERS);
-        position.setContentOptions(DirectionOptions.WEST_EAST);
-        addSetting(position);
-
-        barType = new EnumProperty("bars", "visible.off", "smallBars", "largeBars");
-        addSetting(barType);
-        alwaysVisible = new BooleanProperty("alwaysVisible");
-        addSetting(alwaysVisible);
+        barType = new EnumProperty<>("bars", BarType.SMALL);
+        addProperty(barType);
+        alwaysVisible = new BooleanProperty("alwaysVisible", false);
+        addProperty(alwaysVisible);
     }
 
     @Override
@@ -136,5 +115,11 @@ public class ArmorBars extends EquipmentDisplay {
                 GlUtil.drawDamageBar(bar, stack, false);
             }
         }
+    }
+
+    public enum BarType {
+        HIDDEN,
+        SMALL,
+        LARGE
     }
 }

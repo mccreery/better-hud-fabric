@@ -1,24 +1,17 @@
 package mccreery.betterhud.internal.element.text;
 
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.property.BooleanProperty;
 
 import java.util.Arrays;
 import java.util.List;
 
-import jobicade.betterhud.element.settings.Legend;
-import mccreery.betterhud.api.HudRenderContext;
-import mccreery.betterhud.api.property.BooleanProperty;
-import net.minecraft.client.resources.I18n;
-
 public class FullInvIndicator extends TextElement {
-    private BooleanProperty offHand;
+    private final BooleanProperty offHand;
 
     public FullInvIndicator() {
-        super("fullInvIndicator");
-
-        addSetting(new Legend("misc"));
-        offHand = new BooleanProperty("offhand");
-        addSetting(offHand);
+        offHand = new BooleanProperty("offhand", false);
+        addProperty(offHand);
     }
 
     @Override

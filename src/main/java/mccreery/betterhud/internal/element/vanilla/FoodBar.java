@@ -1,14 +1,9 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MC;
-
-import mccreery.betterhud.api.property.BooleanProperty;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.events.OverlayHook;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.util.bars.StatBarFood;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import mccreery.betterhud.api.property.BooleanProperty;
+
+import java.lang.annotation.ElementType;
 
 public class FoodBar extends Bar {
     private BooleanProperty hideMount;

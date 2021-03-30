@@ -1,30 +1,22 @@
 package mccreery.betterhud.internal.element.entityinfo;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
-import static jobicade.betterhud.BetterHud.SPACER;
-
-import com.mojang.realmsclient.gui.ChatFormatting;
-
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.api.property.DoubleProperty;
-import jobicade.betterhud.events.BillboardContext;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
-import jobicade.betterhud.util.bars.StatBarHealth;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.resources.I18n;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
-public class MobInfo extends BillboardElement {
+public class MobInfo extends HudElement {
     private final StatBarHealth bar = new StatBarHealth();
-    private DoubleProperty compress;
+    private final DoubleProperty compress;
 
     public MobInfo() {
-        super("mobInfo");
+        setRenderPhase(HudRenderContext.Phase.LIVING_ENTITY_BILLBOARD);
 
         compress = new DoubleProperty("compress", 0, 200) {
             @Override
@@ -36,7 +28,7 @@ public class MobInfo extends BillboardElement {
                 }
             }
         };
-        addSetting(compress);
+        addProperty(compress);
         compress.setInterval(20);
     }
 

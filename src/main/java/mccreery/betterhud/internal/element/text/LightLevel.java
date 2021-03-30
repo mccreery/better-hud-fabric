@@ -1,17 +1,11 @@
 package mccreery.betterhud.internal.element.text;
 
-import static jobicade.betterhud.BetterHud.MC;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.util.math.BlockPos;
-
 public class LightLevel extends TextElement {
-    public LightLevel() {
-        super("lightLevel");
-    }
-
     @Override
     protected List<String> getText() {
         BlockPos position = new BlockPos(MC.player.getPosX(), MC.player.getPosY(), MC.player.getPosZ());

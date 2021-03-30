@@ -1,31 +1,12 @@
 package mccreery.betterhud.internal.element.text;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
-import static jobicade.betterhud.BetterHud.SPACER;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
 
 import java.util.Arrays;
 import java.util.List;
 
-import jobicade.betterhud.element.settings.Legend;
-import mccreery.betterhud.api.geometry.Rectangle;
-import mccreery.betterhud.api.property.EnumProperty;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.geom.Direction;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.BlockRayTraceResult;
-
 public class Distance extends TextElement {
-    private EnumProperty mode;
-
-    public Distance() {
-        super("distance");
-
-        addSetting(new Legend("misc"));
-        mode = new EnumProperty("mode", 3);
-        addSetting(mode);
-    }
-
     @Override
     protected Rectangle moveRect(Rectangle bounds) {
         if(position.isDirection(Direction.CENTER)) {

@@ -1,46 +1,36 @@
 package mccreery.betterhud.internal.element.text;
 
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.EnumProperty;
+import mccreery.betterhud.internal.element.Compass;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.util.Date;
-import java.util.TimeZone;
-
-import jobicade.betterhud.element.settings.DirectionOptions;
-import mccreery.betterhud.api.HudRenderContext;
-import mccreery.betterhud.api.geometry.Rectangle;
-import mccreery.betterhud.api.property.BooleanProperty;
-import mccreery.betterhud.api.property.EnumProperty;
-import jobicade.betterhud.geom.Direction;
-import mccreery.betterhud.api.geometry.Point;
-import jobicade.betterhud.util.GlUtil;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraftforge.common.extensions.IForgeDimension.SleepResult;
 
 public class GameClock extends Clock {
     private static final ItemStack BED = new ItemStack(Items.RED_BED);
 
-    private BooleanProperty showDays;
-    private BooleanProperty showSleepIndicator;
-    private EnumProperty requireItem;
+    private final BooleanProperty showDays;
+    private final BooleanProperty showSleepIndicator;
+    private final EnumProperty<Compass.RequiredItemSlot> requireItem;
 
     public GameClock() {
-        super("gameClock");
-
         showDays = new BooleanProperty("showDays");
         showDays.setValuePrefix(BooleanProperty.VISIBLE);
-        addSetting(showDays);
+        addProperty(showDays);
 
         showSleepIndicator = new BooleanProperty("showSleepIndicator");
         showSleepIndicator.setValuePrefix(BooleanProperty.VISIBLE);
-        addSetting(showSleepIndicator);
+        addProperty(showSleepIndicator);
 
-        requireItem = new EnumProperty("requireItem", "disabled", "inventory", "hand");
-        addSetting(requireItem);
+        requireItem = new EnumProperty<>("requireItem", Compass.RequiredItemSlot.NONE);
+        addProperty(requireItem);
     }
 
     @Override

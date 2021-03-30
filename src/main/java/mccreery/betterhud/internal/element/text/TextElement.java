@@ -1,37 +1,22 @@
 package mccreery.betterhud.internal.element.text;
 
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.ColorProperty;
+import mccreery.betterhud.internal.BetterHud;
+import mccreery.betterhud.internal.render.Color;
+
 import java.util.List;
 
-import jobicade.betterhud.BetterHud;
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingColor;
-import jobicade.betterhud.element.settings.SettingPosition;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.geom.Direction;
-import mccreery.betterhud.api.geometry.Point;
-import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.render.Grid;
-import jobicade.betterhud.render.Label;
-import jobicade.betterhud.util.GlUtil;
-
-public abstract class TextElement extends OverlayElement {
-    protected SettingPosition position;
-    private SettingColor color;
+public abstract class TextElement extends HudElement {
+    private final ColorProperty color;
 
     protected boolean border = false;
 
-    public TextElement(String name) {
-        super(name);
-
-        position = new SettingPosition("position");
-        position.setDirectionOptions(DirectionOptions.TOP_BOTTOM);
-        position.setContentOptions(DirectionOptions.CORNERS);
-        addSetting(position);
-
-        color = new SettingColor("color");
-        addSetting(color);
+    public TextElement() {
+        color = new ColorProperty("color", Color.WHITE);
+        addProperty(color);
     }
 
     public Color getColor() {

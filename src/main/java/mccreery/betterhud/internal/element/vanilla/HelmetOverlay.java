@@ -1,20 +1,11 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
-
-import jobicade.betterhud.element.OverlayElement;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.events.OverlayHook;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
+import mccreery.betterhud.internal.render.Color;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+
+import java.lang.annotation.ElementType;
 
 public class HelmetOverlay extends OverlayElement {
     private static final ResourceLocation PUMPKIN_BLUR_TEX_PATH = new ResourceLocation("textures/misc/pumpkinblur.png");

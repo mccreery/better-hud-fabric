@@ -1,39 +1,31 @@
 package mccreery.betterhud.internal.element.entityinfo;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.layout.Label;
+import mccreery.betterhud.api.property.DoubleProperty;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-
-import mccreery.betterhud.api.geometry.Point;
-import mccreery.betterhud.api.geometry.Rectangle;
-import mccreery.betterhud.api.property.DoubleProperty;
-import jobicade.betterhud.events.BillboardContext;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.render.Grid;
-import jobicade.betterhud.render.Label;
-import jobicade.betterhud.util.GlUtil;
-import jobicade.betterhud.util.bars.StatBar;
-import jobicade.betterhud.util.bars.StatBarArmor;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
-
-public class PlayerInfo extends BillboardElement {
+public class PlayerInfo extends HudElement {
     private StatBar<? super PlayerEntity> bar = new StatBarArmor();
 
     private DoubleProperty tooltipLines;
 
     public PlayerInfo() {
-        super("playerInfo");
+        setRenderPhase(HudRenderContext.Phase.LIVING_ENTITY_BILLBOARD);
 
         tooltipLines = new DoubleProperty("tooltipLines", -1, 10) {
             @Override
@@ -45,7 +37,7 @@ public class PlayerInfo extends BillboardElement {
                 }
             }
         };
-        addSetting(tooltipLines);
+        addProperty(tooltipLines);
         tooltipLines.setInterval(1);
     }
 

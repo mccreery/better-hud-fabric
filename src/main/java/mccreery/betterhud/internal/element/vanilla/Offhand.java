@@ -1,19 +1,8 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MC;
-import static jobicade.betterhud.BetterHud.SPACER;
-
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingPosition;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.geom.Direction;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.registry.OverlayElements;
-import jobicade.betterhud.util.GlUtil;
-import jobicade.betterhud.util.Textures;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.HandSide;
+import net.minecraft.util.math.Direction;
 
 public class Offhand extends OverlayElement {
     private SettingPosition position;

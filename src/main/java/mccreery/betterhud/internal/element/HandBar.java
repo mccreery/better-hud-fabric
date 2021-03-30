@@ -1,45 +1,30 @@
 package mccreery.betterhud.internal.element;
 
-import static jobicade.betterhud.BetterHud.MC;
-
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.Legend;
 import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.api.property.BooleanProperty;
-import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
+import mccreery.betterhud.internal.render.Color;
 import net.minecraft.item.ItemStack;
 
 public class HandBar extends EquipmentDisplay {
-    private SettingPosition position;
-    private BooleanProperty showItem, offHand, showBars, showNonTools;
+    private final BooleanProperty showItem;
+    private final BooleanProperty offHand;
+    private final BooleanProperty showBars;
+    private final BooleanProperty showNonTools;
 
     public HandBar() {
-        super("handBar");
+        showItem = new BooleanProperty("showItem", true);
+        addProperty(showItem);
 
-        position = new SettingPosition("position");
-        position.setDirectionOptions(DirectionOptions.BAR);
-        position.setContentOptions(DirectionOptions.NORTH_SOUTH);
-        addSetting(position);
+        showBars = new BooleanProperty("bars", true);
+        addProperty(showBars);
 
-        addSetting(new Legend("misc"));
+        offHand = new BooleanProperty("offhand", false);
+        addProperty(offHand);
 
-        showItem = new BooleanProperty("showItem");
-        showItem.setValuePrefix(BooleanProperty.VISIBLE);
-        addSetting(showItem);
-
-        showBars = new BooleanProperty("bars");
-        addSetting(showBars);
-        offHand = new BooleanProperty("offhand");
-        addSetting(offHand);
-
-        showNonTools = new BooleanProperty("showNonTools");
-        showNonTools.setValuePrefix("betterHud.value.nonTools");
-        addSetting(showNonTools);
+        showNonTools = new BooleanProperty("showNonTools", false);
+        addProperty(showNonTools);
     }
 
     public void renderBar(ItemStack stack, int x, int y) {

@@ -6,6 +6,8 @@ import java.util.Objects;
  * Color with integer RGBA components in the range 0-255. The alpha component is opacity.
  */
 public final class Color {
+    public static final Color WHITE = new Color(255, 255, 255);
+
     private final int red;
     private final int green;
     private final int blue;

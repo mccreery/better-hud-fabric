@@ -1,35 +1,16 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
-
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.api.property.BooleanProperty;
 import mccreery.betterhud.api.property.EnumProperty;
-import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.registry.OverlayElements;
-import jobicade.betterhud.util.GlUtil;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.settings.AttackIndicatorStatus;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraft.util.math.Direction;
+
+import java.lang.annotation.ElementType;
 
 public class Crosshair extends OverlayElement {
     private SettingPosition position;

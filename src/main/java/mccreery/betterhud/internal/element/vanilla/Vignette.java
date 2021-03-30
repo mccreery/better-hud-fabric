@@ -1,38 +1,25 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
-
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-
-import jobicade.betterhud.element.OverlayElement;
+import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.api.property.BooleanProperty;
-import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.util.ResourceLocation;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.border.WorldBorder;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.gui.ForgeIngameGui;
 
-public class Vignette extends OverlayElement {
-    private static final ResourceLocation VIGNETTE_TEX_PATH = new ResourceLocation("textures/misc/vignette.png");
+import java.lang.annotation.ElementType;
 
-    private BooleanProperty warnings;
+public class Vignette extends HudElement {
+    private static final Identifier VIGNETTE_TEX_PATH = new Identifier("textures/misc/vignette.png");
+
+    private final BooleanProperty warnings;
     private float brightness = 1;
 
     public Vignette() {
-        super("vignette");
-
-        warnings = new BooleanProperty("warnings");
-        warnings.setValuePrefix(BooleanProperty.VISIBLE);
-        addSetting(warnings);
+        warnings = new BooleanProperty("warnings", true);
+        addProperty(warnings);
     }
 
     @Override

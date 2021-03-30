@@ -1,37 +1,26 @@
 package mccreery.betterhud.internal.element;
 
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jobicade.betterhud.element.settings.Legend;
-import mccreery.betterhud.api.geometry.Rectangle;
-import mccreery.betterhud.api.property.BooleanProperty;
-import jobicade.betterhud.element.text.TextElement;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.geom.Direction;
-import mccreery.betterhud.api.geometry.Point;
-import jobicade.betterhud.registry.OverlayElements;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
-
-public class ExperienceInfo extends TextElement {
-    private BooleanProperty total;
-    private BooleanProperty lifetime;
+public class ExperienceInfo extends HudElement {
+    private final BooleanProperty total;
+    private final BooleanProperty lifetime;
 
     public ExperienceInfo() {
-        super("experienceInfo");
+        total = new BooleanProperty("showTotalExp", false);
+        addProperty(total);
 
-        addSetting(new Legend("misc"));
-
-        total = new BooleanProperty("showTotalExp");
-        total.setValuePrefix(BooleanProperty.VISIBLE);
-        addSetting(total);
-
-        lifetime = new BooleanProperty("showLifetimeExp");
-        lifetime.setValuePrefix(BooleanProperty.VISIBLE);
-        addSetting(lifetime);
+        lifetime = new BooleanProperty("showLifetimeExp", false);
+        addProperty(lifetime);
     }
 
     @Override

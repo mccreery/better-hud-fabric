@@ -1,14 +1,9 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import jobicade.betterhud.element.HealIndicator;
-import jobicade.betterhud.element.settings.DirectionOptions;
 import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Direction;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.util.bars.StatBarHealth;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+
+import java.lang.annotation.ElementType;
 
 public class HealthBar extends Bar {
     public HealthBar() {

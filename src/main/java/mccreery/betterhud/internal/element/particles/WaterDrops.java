@@ -1,19 +1,12 @@
 package mccreery.betterhud.internal.element.particles;
 
-import static jobicade.betterhud.BetterHud.MC;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-import jobicade.betterhud.util.RandomWrapper;
-import net.minecraft.util.math.BlockPos;
-
 public class WaterDrops extends ParticleOverlay {
-    public WaterDrops() {
-        super("waterDrops");
-    }
-
     private boolean wasUnderwaterLastTick = false;
 
     @Override

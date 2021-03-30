@@ -1,11 +1,9 @@
 package mccreery.betterhud.internal.element.vanilla;
 
 import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.events.OverlayHook;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.util.bars.StatBarAir;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+
+import java.lang.annotation.ElementType;
 
 public class AirBar extends Bar {
     public AirBar() {

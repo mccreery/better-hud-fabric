@@ -1,36 +1,31 @@
 package mccreery.betterhud.internal.element.text;
 
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.EnumProperty;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import jobicade.betterhud.element.settings.Legend;
-import mccreery.betterhud.api.property.BooleanProperty;
-import mccreery.betterhud.api.property.EnumProperty;
+public abstract class Clock extends HudElement {
+    private final BooleanProperty twentyFour;
+    private final BooleanProperty showSeconds;
+    private final BooleanProperty fullYear;
+    private final EnumProperty<DateType> dateType;
 
-public abstract class Clock extends TextElement {
-    private BooleanProperty twentyFour, showSeconds, fullYear;
-    private EnumProperty dateType;
+    public Clock() {
+        twentyFour = new BooleanProperty("24hr", true);
+        addProperty(twentyFour);
+        showSeconds = new BooleanProperty("showSeconds", false);
+        addProperty(showSeconds);
 
-    public Clock(String name) {
-        super(name);
-
-        addSetting(new Legend("misc"));
-        twentyFour = new BooleanProperty("24hr");
-        addSetting(twentyFour);
-        showSeconds = new BooleanProperty("showSeconds");
-        addSetting(showSeconds);
-        showSeconds.setValuePrefix(BooleanProperty.VISIBLE);
-
-        dateType = new EnumProperty("dateType", "dmy", "mdy", "ymd");
-        addSetting(dateType);
-        fullYear = new BooleanProperty("fullYear");
-        addSetting(fullYear);
-        fullYear.setValuePrefix(BooleanProperty.VISIBLE);
-
-        border = true;
+        dateType = new EnumProperty<>("dateType", DateType.MONTH_DAY_YEAR);
+        addProperty(dateType);
+        fullYear = new BooleanProperty("fullYear", true);
+        addProperty(fullYear);
     }
 
     protected DateFormat getTimeFormat() {
@@ -65,4 +60,10 @@ public abstract class Clock extends TextElement {
     }
 
     protected abstract Date getDate();
+
+    public enum DateType {
+        DAY_MONTH_YEAR,
+        MONTH_DAY_YEAR,
+        YEAR_MONTH_DAY
+    }
 }

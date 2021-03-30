@@ -1,23 +1,10 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MC;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingPosition;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Direction;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.util.GlUtil;
-import jobicade.betterhud.util.Textures;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.SpectatorGui;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraft.util.math.Direction;
+
+import java.lang.annotation.ElementType;
 
 public class Hotbar extends OverlayElement {
     private SettingPosition position;

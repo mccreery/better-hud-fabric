@@ -1,26 +1,22 @@
 package mccreery.betterhud.internal.element.particles;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.property.EnumProperty;
+import mccreery.betterhud.internal.BetterHud;
+import net.minecraft.util.Tickable;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import jobicade.betterhud.BetterHud;
-import jobicade.betterhud.element.OverlayElement;
-import mccreery.betterhud.api.property.EnumProperty;
-import mccreery.betterhud.api.HudRenderContext;
-import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.util.Tickable;
+public abstract class ParticleOverlay extends HudElement implements Tickable {
+    protected EnumProperty<ParticleDensity> density;
+    protected final List<Particle> particles = new CopyOnWriteArrayList<>();
 
-public abstract class ParticleOverlay extends OverlayElement implements Tickable {
-    protected EnumProperty density;
-    protected final List<Particle> particles = new CopyOnWriteArrayList<Particle>();
-
-    public ParticleOverlay(String name) {
-        super(name);
-        density = new EnumProperty("density", "sparse", "normal", "dense", "denser");
-        addSetting(density);
+    public ParticleOverlay() {
+        density = new EnumProperty<>("density", ParticleDensity.NORMAL);
+        addProperty(density);
     }
 
     /** Called each tick while enabled to spawn new particles.
@@ -49,5 +45,12 @@ public abstract class ParticleOverlay extends OverlayElement implements Tickable
     @Override
     public boolean shouldRender(HudRenderContext context) {
         return !particles.isEmpty();
+    }
+
+    public enum ParticleDensity {
+        SPARSE,
+        NORMAL,
+        DENSE,
+        DENSER
     }
 }

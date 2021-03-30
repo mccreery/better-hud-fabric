@@ -1,42 +1,18 @@
 package mccreery.betterhud.internal.element;
 
-import static jobicade.betterhud.BetterHud.MC;
-
-import jobicade.betterhud.element.settings.DirectionOptions;
-import mccreery.betterhud.api.property.BooleanProperty;
-import jobicade.betterhud.element.settings.SettingPosition;
+import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Direction;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.registry.OverlayElements;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
+import mccreery.betterhud.internal.render.Color;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.Direction;
 
-public class ArrowCount extends OverlayElement {
+public class ArrowCount extends HudElement {
     private static final ItemStack ARROW = new ItemStack(Items.ARROW, 1);
-
-    private SettingPosition position;
-    private BooleanProperty overlay;
-
-    public ArrowCount() {
-        super("arrowCount");
-
-        position = new SettingPosition("position");
-        position.setDirectionOptions(DirectionOptions.CORNERS);
-        position.setContentOptions(DirectionOptions.NONE);
-        addSetting(position);
-
-        overlay = new BooleanProperty("overlay");
-        addSetting(overlay);
-
-        position.setEnableOn(() -> !overlay.get());
-    }
 
     /** Note this method only cares about arrows which can be shot by a vanilla bow
      * @return The number of arrows in the player's inventory

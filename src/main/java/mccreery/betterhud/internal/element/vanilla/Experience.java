@@ -1,20 +1,11 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
-
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingPosition;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.events.OverlayHook;
-import jobicade.betterhud.geom.Direction;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.util.math.Direction;
+
+import java.lang.annotation.ElementType;
 
 public class Experience extends OverlayElement {
     private SettingPosition position;

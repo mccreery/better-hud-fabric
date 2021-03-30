@@ -1,39 +1,25 @@
 package mccreery.betterhud.internal.element.text;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.property.DoubleProperty;
+import net.minecraft.util.math.Direction;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jobicade.betterhud.element.settings.Legend;
-import mccreery.betterhud.api.HudRenderContext;
-import mccreery.betterhud.api.geometry.Rectangle;
-import mccreery.betterhud.api.property.BooleanProperty;
-import mccreery.betterhud.api.property.DoubleProperty;
-import jobicade.betterhud.geom.Direction;
-import mccreery.betterhud.api.geometry.Point;
-import jobicade.betterhud.geom.Size;
-import jobicade.betterhud.render.Grid;
-import jobicade.betterhud.render.Label;
-import net.minecraft.client.resources.I18n;
-
 public class Coordinates extends TextElement {
-    private BooleanProperty spaced;
-    private DoubleProperty decimalPlaces;
+    private final BooleanProperty spaced;
+    private final DoubleProperty decimalPlaces;
 
     public Coordinates() {
-        super("coordinates");
-
-        addSetting(new Legend("misc"));
-        spaced = new BooleanProperty("spaced");
-        addSetting(spaced);
-        decimalPlaces = new DoubleProperty("precision", 0, 5);
+        spaced = new BooleanProperty("spaced", true);
+        addProperty(spaced);
+        decimalPlaces = new DoubleProperty("precision", 1, 0, 5);
         decimalPlaces.setInterval(1);
         decimalPlaces.setUnlocalizedValue("betterHud.value.places");
-        addSetting(decimalPlaces);
+        addProperty(decimalPlaces);
     }
 
     @Override

@@ -1,39 +1,13 @@
 package mccreery.betterhud.internal.element;
 
-import static jobicade.betterhud.BetterHud.MC;
-import static jobicade.betterhud.BetterHud.SPACER;
-
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.Legend;
+import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Rectangle;
-import mccreery.betterhud.api.property.EnumProperty;
-import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.registry.OverlayElements;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
-import jobicade.betterhud.util.Textures;
-import net.minecraft.client.resources.I18n;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.world.GameRules;
 
-public class HealIndicator extends OverlayElement {
-    private SettingPosition position;
-    private EnumProperty mode;
-
-    public HealIndicator() {
-        super("healIndicator");
-
-        position = new SettingPosition("position");
-        position.setDirectionOptions(DirectionOptions.NONE);
-        position.setContentOptions(DirectionOptions.NONE);
-        addSetting(position);
-
-        addSetting(new Legend("misc"));
-        mode = new EnumProperty("mode", 2);
-        addSetting(mode);
-    }
-
+public class HealIndicator extends HudElement {
     @Override
     public Rectangle render(HudRenderContext context) {
             String healIndicator = I18n.format("betterHud.hud.healIndicator");

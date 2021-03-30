@@ -1,38 +1,19 @@
 package mccreery.betterhud.internal.element;
 
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.layout.Label;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.util.Identifier;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingPosition;
-import mccreery.betterhud.api.HudRenderContext;
-import mccreery.betterhud.api.geometry.Point;
-import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.render.Grid;
-import jobicade.betterhud.render.Label;
-import jobicade.betterhud.render.Quad;
-import net.minecraft.tileentity.SignTileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockRayTraceResult;
-
-public class SignReader extends OverlayElement {
-    private static final ResourceLocation SIGN_TEXTURE = new ResourceLocation("textures/entity/sign.png");
-
-    private SettingPosition position;
-
-    public SignReader() {
-        super("signReader");
-
-        position = new SettingPosition("position");
-        position.setDirectionOptions(DirectionOptions.CORNERS);
-        position.setContentOptions(DirectionOptions.NONE);
-        addSetting(position);
-    }
+public class SignReader extends HudElement {
+    private static final Identifier SIGN_TEXTURE = new Identifier("textures/entity/sign.png");
 
     @Override
     public boolean shouldRender(HudRenderContext context) {

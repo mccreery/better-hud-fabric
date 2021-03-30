@@ -1,20 +1,16 @@
 package mccreery.betterhud.internal.element.text;
 
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.property.BooleanProperty;
 
 import java.util.Arrays;
 import java.util.List;
 
-import mccreery.betterhud.api.property.BooleanProperty;
-
 public class FpsCount extends TextElement {
-    private BooleanProperty numberOnly;
+    private final BooleanProperty numberOnly;
 
     public FpsCount() {
-        super("fpsCount");
-
-        numberOnly = new BooleanProperty("numberOnly");
-        addSetting(numberOnly);
+        numberOnly = new BooleanProperty("numberOnly", true);
+        addProperty(numberOnly);
     }
 
     @Override

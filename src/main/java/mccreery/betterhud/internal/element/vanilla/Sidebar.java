@@ -1,46 +1,21 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.layout.Label;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingPosition;
-import mccreery.betterhud.api.HudRenderContext;
-import jobicade.betterhud.geom.Direction;
-import mccreery.betterhud.api.geometry.Point;
-import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.geom.Size;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.render.Grid;
-import jobicade.betterhud.render.Label;
-import jobicade.betterhud.util.GlUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.scoreboard.Score;
-import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-
-
-public class Sidebar extends OverlayElement {
-    private SettingPosition position;
-
-    public Sidebar() {
-        super("scoreboard");
-
-        position = new SettingPosition("position");
-        position.setDirectionOptions(DirectionOptions.LEFT_RIGHT);
-        position.setContentOptions(DirectionOptions.WEST_EAST);
-        addSetting(position);
-    }
-
+public class Sidebar extends HudElement {
     @Override
     public boolean shouldRender(HudRenderContext context) {
         return ForgeIngameGui.renderObjective

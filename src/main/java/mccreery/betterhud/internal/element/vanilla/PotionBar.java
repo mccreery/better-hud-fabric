@@ -1,26 +1,7 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MANAGER;
-import static jobicade.betterhud.BetterHud.MC;
-import static jobicade.betterhud.BetterHud.SPACER;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import mccreery.betterhud.api.HudRenderContext;
-import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 import mccreery.betterhud.api.property.BooleanProperty;
-import jobicade.betterhud.element.settings.SettingPosition;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.render.Boxed;
-import jobicade.betterhud.render.Grid;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.ResourceLocation;
 
 public class PotionBar extends OverlayElement {
     public static final ResourceLocation INVENTORY = new ResourceLocation("textures/gui/container/inventory.png");

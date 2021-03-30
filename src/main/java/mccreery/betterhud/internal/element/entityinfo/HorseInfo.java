@@ -1,31 +1,29 @@
 package mccreery.betterhud.internal.element.entityinfo;
 
-import java.util.ArrayList;
-
-import jobicade.betterhud.BetterHud;
+import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.layout.Label;
 import mccreery.betterhud.api.property.BooleanProperty;
-import jobicade.betterhud.events.BillboardContext;
-import jobicade.betterhud.geom.Direction;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.render.Grid;
-import jobicade.betterhud.render.Label;
-import jobicade.betterhud.util.GlUtil;
-import jobicade.betterhud.util.MathUtil;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.passive.horse.HorseEntity;
+import mccreery.betterhud.internal.BetterHud;
+import mccreery.betterhud.internal.render.Color;
+import net.minecraft.entity.passive.HorseEntity;
+import net.minecraft.util.math.Direction;
 
-public class HorseInfo extends BillboardElement {
-    private BooleanProperty jump, speed;
+import java.util.ArrayList;
+
+public class HorseInfo extends HudElement {
+    private final BooleanProperty jump;
+    private final BooleanProperty speed;
 
     public HorseInfo() {
-        super("horseInfo");
+        setRenderPhase(HudRenderContext.Phase.LIVING_ENTITY_BILLBOARD);
 
-        jump = new BooleanProperty("jump");
-        addSetting(jump);
-        speed = new BooleanProperty("speed");
-        addSetting(speed);
+        jump = new BooleanProperty("jump", true);
+        addProperty(jump);
+        speed = new BooleanProperty("speed", true);
+        addProperty(speed);
     }
 
     @Override

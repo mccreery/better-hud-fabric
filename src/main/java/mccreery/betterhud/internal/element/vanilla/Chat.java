@@ -1,20 +1,9 @@
 package mccreery.betterhud.internal.element.vanilla;
 
-import static jobicade.betterhud.BetterHud.MC;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import jobicade.betterhud.element.OverlayElement;
-import jobicade.betterhud.element.settings.DirectionOptions;
-import jobicade.betterhud.element.settings.SettingPosition;
-import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.geom.Size;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.NewChatGui;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.common.MinecraftForge;
+
+import java.lang.annotation.ElementType;
 
 public class Chat extends OverlayElement {
     private final SettingPosition position;

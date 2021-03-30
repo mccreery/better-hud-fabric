@@ -1,19 +1,11 @@
 package mccreery.betterhud.internal.element.particles;
 
-import static jobicade.betterhud.BetterHud.MC;
-
-import java.util.Random;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import jobicade.betterhud.geom.Direction;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
-import jobicade.betterhud.render.Color;
-import jobicade.betterhud.util.GlUtil;
-import jobicade.betterhud.util.RandomWrapper;
-import jobicade.betterhud.util.Textures;
-import net.minecraft.client.gui.AbstractGui;
+import mccreery.betterhud.internal.render.Color;
+
+import java.util.Random;
 
 public class ParticleBase implements Particle {
     protected Point position;
