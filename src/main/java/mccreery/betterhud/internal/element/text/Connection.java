@@ -1,6 +1,8 @@
 package mccreery.betterhud.internal.element.text;
 
+import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.property.BooleanProperty;
+import net.minecraft.client.resource.language.I18n;
 
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -30,8 +32,8 @@ public class Connection extends TextElement {
     }
 
     @Override
-    protected List<String> getText() {
-        List<String> toRender = new ArrayList<String>(3);
+    protected List<String> getText(HudRenderContext context) {
+        List<String> toRender = new ArrayList<>(3);
 
         if(playerCount.get()) {
             int players = MC.getConnection().getPlayerInfoMap().size();

@@ -1,6 +1,6 @@
 package mccreery.betterhud.internal.element.text;
 
-import mccreery.betterhud.api.HudElement;
+import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.property.BooleanProperty;
 import mccreery.betterhud.api.property.EnumProperty;
 
@@ -10,7 +10,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public abstract class Clock extends HudElement {
+// TODO background shading
+public abstract class Clock extends TextElement {
     private final BooleanProperty twentyFour;
     private final BooleanProperty showSeconds;
     private final BooleanProperty fullYear;
@@ -42,15 +43,16 @@ public abstract class Clock extends HudElement {
         return new SimpleDateFormat(format.toString());
     }
 
-    private static final String[] dateFormats = {"dd/MM/yy", "MM/dd/yy", "yy/MM/dd"};
-    private static final String[] dateFormatsFull = {"dd/MM/yyyy", "MM/dd/yyyy", "yyyy/MM/dd"};
-
     protected DateFormat getDateFormat() {
-        return new SimpleDateFormat((fullYear.get() ? dateFormatsFull : dateFormats)[dateType.getIndex()]);
+        if (fullYear.get()) {
+            return dateType.get().getLongFormat();
+        } else {
+            return dateType.get().getShortFormat();
+        }
     }
 
     @Override
-    protected List<String> getText() {
+    protected List<String> getText(HudRenderContext context) {
         Date date = getDate();
 
         return Arrays.asList(
@@ -62,8 +64,24 @@ public abstract class Clock extends HudElement {
     protected abstract Date getDate();
 
     public enum DateType {
-        DAY_MONTH_YEAR,
-        MONTH_DAY_YEAR,
-        YEAR_MONTH_DAY
+        DAY_MONTH_YEAR("dd/MM/yy", "dd/MM/yyyy"),
+        MONTH_DAY_YEAR("MM/dd/yy", "MM/dd/yyyy"),
+        YEAR_MONTH_DAY("yy/MM/dd", "yyyy/MM/dd");
+
+        private final DateFormat shortFormat;
+        private final DateFormat longFormat;
+
+        DateType(String shortFormat, String longFormat) {
+            this.shortFormat = new SimpleDateFormat(shortFormat);
+            this.longFormat = new SimpleDateFormat(longFormat);
+        }
+
+        public DateFormat getShortFormat() {
+            return shortFormat;
+        }
+
+        public DateFormat getLongFormat() {
+            return longFormat;
+        }
     }
 }

@@ -1,14 +1,12 @@
 package mccreery.betterhud.internal.element.text;
 
-import java.util.Arrays;
-import java.util.List;
-
-import jobicade.betterhud.element.settings.Legend;
 import mccreery.betterhud.api.property.BooleanProperty;
 import mccreery.betterhud.api.property.DoubleProperty;
-import jobicade.betterhud.util.MathUtil;
-import jobicade.betterhud.util.Tickable;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.util.Tickable;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CpsCount extends TextElement implements Tickable {
     private DoubleProperty timeoutMax;
@@ -25,10 +23,6 @@ public class CpsCount extends TextElement implements Tickable {
     private float cps = 0;
 
     public CpsCount() {
-        super("cps");
-
-        addSetting(new Legend("misc"));
-
         timeoutMax = new DoubleProperty("timeout", 1, 10);
         timeoutMax.setInterval(1);
         timeoutMax.setUnlocalizedValue("betterHud.hud.seconds");

@@ -1,8 +1,12 @@
 package mccreery.betterhud.internal.element.text;
 
 import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.api.geometry.Point;
+import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.layout.Label;
 import mccreery.betterhud.api.property.BooleanProperty;
 import mccreery.betterhud.api.property.DoubleProperty;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.math.Direction;
 
 import java.util.Arrays;

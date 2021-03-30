@@ -1,25 +1,15 @@
 package mccreery.betterhud.internal.element.text;
 
-import mccreery.betterhud.api.property.BooleanProperty;
+import mccreery.betterhud.api.HudRenderContext;
+import mccreery.betterhud.internal.FpsProvider;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FpsCount extends TextElement {
-    private final BooleanProperty numberOnly;
-
-    public FpsCount() {
-        numberOnly = new BooleanProperty("numberOnly", true);
-        addProperty(numberOnly);
-    }
-
     @Override
-    protected List<String> getText() {
-        String fps = MC.debug.substring(0, MC.debug.indexOf(' '));
-
-        if(!numberOnly.get()) {
-            fps = getLocalizedName() + ": " + fps;
-        }
-        return Arrays.asList(fps);
+    protected List<String> getText(HudRenderContext context) {
+        int fps = ((FpsProvider)context.getClient()).getCurrentFps();
+        return Collections.singletonList(String.valueOf(fps));
     }
 }

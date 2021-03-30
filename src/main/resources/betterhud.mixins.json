@@ -3,11 +3,10 @@
   "minVersion": "0.8",
   "package": "mccreery.betterhud.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
   "client": [
     "GameRendererMixin",
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
