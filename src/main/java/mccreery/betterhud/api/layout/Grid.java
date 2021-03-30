@@ -8,10 +8,8 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A grid layout with a fixed cell size and number of rows and columns.
@@ -138,7 +136,7 @@ public class Grid extends LayoutBox {
             label.setOptions(options);
             labels.add(label);
         }
-        Point cellSize = getMaxSize(labels);
+        Point cellSize = LayoutBox.getMaxSize(labels);
 
         Grid grid = new Grid(context, labels.size(), 1, cellSize);
         for (int i = 0; i < labels.size(); i++) {
@@ -146,19 +144,5 @@ public class Grid extends LayoutBox {
         }
 
         return grid;
-    }
-
-    private static Point getMaxSize(Collection<? extends LayoutBox> boxes) {
-        if (boxes.isEmpty()) {
-            throw new IllegalArgumentException("Cannot get max size from empty collection");
-        }
-
-        Optional<Point> optional = boxes.stream()
-                .map(LayoutBox::getPreferredSize)
-                .reduce(Point::max);
-
-        // Since the collection is not empty there must be a value
-        assert optional.isPresent();
-        return optional.get();
     }
 }

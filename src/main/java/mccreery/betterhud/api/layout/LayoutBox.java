@@ -4,6 +4,10 @@ import mccreery.betterhud.api.ScreenRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
 
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
 /**
  * A box with renderable content that can be moved and resized. It may also be responsible for moving, resizing and
  * rendering a number of children.
@@ -80,4 +84,29 @@ public abstract class LayoutBox {
      * Renders the content inside the bounding box. Must not be called before {@link #applyLayout(Rectangle)}.
      */
     public abstract void render();
+
+    /**
+     * Returns the largest preferred size between a number of boxes.
+     * @param boxes The boxes.
+     * @return The largest preferred size.
+     */
+    public static Point getMaxSize(LayoutBox... boxes) {
+        return getMaxSize(Arrays.asList(boxes));
+    }
+
+    /**
+     * Returns the largest preferred size between a number of boxes.
+     * @param boxes The boxes.
+     * @return The largest preferred size.
+     */
+    public static Point getMaxSize(Iterable<? extends LayoutBox> boxes) {
+        Optional<Point> optional = StreamSupport.stream(boxes.spliterator(), false)
+                .map(LayoutBox::getPreferredSize)
+                .reduce(Point::max);
+
+        if (!optional.isPresent()) {
+            throw new IllegalArgumentException("Cannot get max size of no boxes");
+        }
+        return optional.get();
+    }
 }

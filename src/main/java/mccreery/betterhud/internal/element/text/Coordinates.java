@@ -1,19 +1,22 @@
 package mccreery.betterhud.internal.element.text;
 
+import mccreery.betterhud.api.HudElement;
 import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
+import mccreery.betterhud.api.layout.Grid;
 import mccreery.betterhud.api.layout.Label;
+import mccreery.betterhud.api.layout.LayoutBox;
 import mccreery.betterhud.api.property.BooleanProperty;
 import mccreery.betterhud.api.property.DoubleProperty;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.math.Direction;
+import net.minecraft.entity.Entity;
+import net.minecraft.text.Text;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class Coordinates extends TextElement {
+public class Coordinates extends HudElement {
     private final BooleanProperty spaced;
     private final DoubleProperty decimalPlaces;
 
@@ -21,44 +24,44 @@ public class Coordinates extends TextElement {
         spaced = new BooleanProperty("spaced", true);
         addProperty(spaced);
         decimalPlaces = new DoubleProperty("precision", 1, 0, 5);
-        decimalPlaces.setInterval(1);
-        decimalPlaces.setUnlocalizedValue("betterHud.value.places");
+//        decimalPlaces.setInterval(1);
+//        decimalPlaces.setUnlocalizedValue("betterHud.value.places");
         addProperty(decimalPlaces);
     }
 
     @Override
-    public Rectangle render(HudRenderContext context, List<String> text) {
-        if(!spaced.get() || !position.isDirection(Direction.NORTH) && !position.isDirection(Direction.SOUTH)) {
-            return super.render(context, text);
-        }
+    public Rectangle render(HudRenderContext context) {
+        Entity player = context.getClient().player;
 
-        Grid<Label> grid = new Grid<>(new Point(3, 1), text.stream().map(Label::new).collect(Collectors.toList()))
-            .setCellAlignment(position.getDirection()).setGutter(new Point(5, 5));
-
-        Size size = grid.getPreferredSize();
-        if(size.getX() < 150) size = size.withX(150);
-        Rectangle bounds = MANAGER.position(position.getDirection(), new Rectangle(size));
-
-        grid.setBounds(bounds).render();
-        return bounds;
-    }
-
-    @Override
-    protected List<String> getText() {
         DecimalFormat format = new DecimalFormat();
-        format.setMaximumFractionDigits((int)decimalPlaces.getValue());
+        format.setMaximumFractionDigits((int)decimalPlaces.get());
 
-        String x = format.format(MC.player.getPosX());
-        String y = format.format(MC.player.getPosY());
-        String z = format.format(MC.player.getPosZ());
+        String xPart = "X: " + format.format(player.getX());
+        String yPart = "Y: " + format.format(player.getY());
+        String zPart = "Z: " + format.format(player.getZ());
 
-        if(spaced.get()) {
-            x = I18n.format("betterHud.hud.x", x);
-            y = I18n.format("betterHud.hud.y", y);
-            z = I18n.format("betterHud.hud.z", z);
-            return Arrays.asList(x, y, z);
+        LayoutBox rootBox;
+
+        if (spaced.get()) {
+            List<Label> labels = Arrays.asList(
+                new Label(context, Text.of(xPart)),
+                new Label(context, Text.of(yPart)),
+                new Label(context, Text.of(zPart))
+            );
+            // Min width 50
+            Point cellSize = Point.max(new Point(50, 0), LayoutBox.getMaxSize(labels));
+
+            Grid grid = new Grid(context, 1, 3, cellSize);
+            grid.setColumnGutter(10);
+            rootBox = grid;
         } else {
-            return Arrays.asList(I18n.format("betterHud.hud.xyz", x, y, z));
+            String text = String.join(", ", xPart, yPart, zPart);
+            rootBox = new Label(context, Text.of(text));
         }
+
+        Rectangle bounds = context.calculateBounds(rootBox.getPreferredSize());
+        rootBox.applyLayout(bounds);
+        rootBox.render();
+        return bounds;
     }
 }
