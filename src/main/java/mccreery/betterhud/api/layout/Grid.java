@@ -4,6 +4,7 @@ import mccreery.betterhud.api.ScreenRenderContext;
 import mccreery.betterhud.api.geometry.Anchor;
 import mccreery.betterhud.api.geometry.Point;
 import mccreery.betterhud.api.geometry.Rectangle;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,41 +115,25 @@ public class Grid extends LayoutBox {
     }
 
     /**
-     * {@code options} defaults to {@link LabelOptions#DEFAULT}.
-     * @see #ofLabels(ScreenRenderContext, Anchor, LabelOptions, String...)
-     */
-    public static Grid ofLabels(ScreenRenderContext context, Anchor alignment, String... lines) {
-        return ofLabels(context, alignment, LabelOptions.DEFAULT, lines);
-    }
-
-    /**
      * Creates a grid for lines of text separated by a small space.
      * @param lines The lines of text.
      * @param alignment The alignment of the lines.
      * @return A grid containing labels of each line.
      */
-    public static Grid ofLabels(ScreenRenderContext context, Anchor alignment, LabelOptions options, String... lines) {
+    public static Grid ofLabels(ScreenRenderContext context, Anchor alignment, LabelOptions options, Text... lines) {
         return ofLabels(context, alignment, options, Arrays.asList(lines));
     }
 
     /**
-     * {@code options} defaults to {@link LabelOptions#DEFAULT}.
-     * @see #ofLabels(ScreenRenderContext, Anchor, LabelOptions, Iterable) 
-     */
-    public static Grid ofLabels(ScreenRenderContext context, Anchor alignment, Iterable<String> lines) {
-        return ofLabels(context, alignment, LabelOptions.DEFAULT, lines);
-    }
-
-    /**
      * Creates a grid for lines of text separated by a small space.
      * @param lines The lines of text.
      * @param alignment The alignment of the lines.
      * @return A grid containing labels of each line.
      */
-    public static Grid ofLabels(ScreenRenderContext context, Anchor alignment, LabelOptions options, Iterable<String> lines) {
+    public static Grid ofLabels(ScreenRenderContext context, Anchor alignment, LabelOptions options, Iterable<? extends Text> lines) {
         List<Label> labels = new ArrayList<>();
 
-        for (String line : lines) {
+        for (Text line : lines) {
             Label label = new Label(context, line);
             label.setOptions(options);
             labels.add(label);

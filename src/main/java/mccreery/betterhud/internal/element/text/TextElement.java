@@ -9,6 +9,7 @@ import mccreery.betterhud.api.layout.LabelOptions;
 import mccreery.betterhud.api.property.AnchorProperty;
 import mccreery.betterhud.api.property.ColorProperty;
 import mccreery.betterhud.internal.render.Color;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public abstract class TextElement extends HudElement {
 
     @Override
     public Rectangle render(HudRenderContext context) {
-        List<String> lines = getText(context);
+        List<Text> lines = getText(context);
         if (lines.isEmpty()) {
             return null;
         }
@@ -48,5 +49,5 @@ public abstract class TextElement extends HudElement {
      * @param context The current render context.
      * @return The lines of text.
      */
-    protected abstract List<String> getText(HudRenderContext context);
+    protected abstract List<Text> getText(HudRenderContext context);
 }

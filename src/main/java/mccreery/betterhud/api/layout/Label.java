@@ -7,23 +7,19 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 public class Label extends LayoutBox {
-    // Mojang's interfaces are confusing, but it's fairly simple to get an OrderedText instance from String or Text
-    private final OrderedText text;
+    private final Text text;
     private LabelOptions options = LabelOptions.DEFAULT;
 
-    public Label(ScreenRenderContext context, String text) {
-        this(context, Text.of(text));
-    }
-
+    /**
+     * Creates a label.
+     * @param context The current render context.
+     * @param text The single line of text.
+     * @see Text#of(String) 
+     */
     public Label(ScreenRenderContext context, Text text) {
-        this(context, text.asOrderedText());
-    }
-
-    public Label(ScreenRenderContext context, OrderedText text) {
         super(context);
         this.text = text;
     }
