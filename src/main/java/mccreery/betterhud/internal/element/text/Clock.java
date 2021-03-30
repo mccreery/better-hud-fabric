@@ -3,6 +3,7 @@ package mccreery.betterhud.internal.element.text;
 import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.property.BooleanProperty;
 import mccreery.betterhud.api.property.EnumProperty;
+import net.minecraft.text.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -52,12 +53,12 @@ public abstract class Clock extends TextElement {
     }
 
     @Override
-    protected List<String> getText(HudRenderContext context) {
+    protected List<Text> getText(HudRenderContext context) {
         Date date = getDate();
 
         return Arrays.asList(
-            getTimeFormat().format(date),
-            getDateFormat().format(date)
+            Text.of(getTimeFormat().format(date)),
+            Text.of(getDateFormat().format(date))
         );
     }
 
