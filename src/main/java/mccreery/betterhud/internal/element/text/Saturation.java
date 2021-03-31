@@ -1,19 +1,20 @@
 package mccreery.betterhud.internal.element.text;
 
 import mccreery.betterhud.api.HudRenderContext;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Saturation extends TextElement {
     @Override
-    public boolean shouldRender(HudRenderContext context) {
-        return MC.playerController.gameIsSurvivalOrAdventure();
-    }
-
-    @Override
-    protected List<String> getText() {
-        return Arrays.asList(I18n.format("betterHud.hud.saturation", MathUtil.formatToPlaces(MC.player.getFoodStats().getSaturationLevel(), 1)));
+    protected List<Text> getText(HudRenderContext context) {
+        if (context.getClient().interactionManager.getCurrentGameMode().isSurvivalLike()) {
+            double saturation = context.getClient().player.getHungerManager().getSaturationLevel();
+            return Collections.singletonList(new TranslatableText("betterhud.saturation", saturation));
+        } else {
+            return Collections.emptyList();
+        }
     }
 }

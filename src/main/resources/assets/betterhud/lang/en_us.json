@@ -1,5 +1,7 @@
 {
   "options.hudLayout": "HUD Layout...",
   "hudLayout.prompt.left": "Select and move with %s",
-  "hudLayout.prompt.right": "Edit with %s"
+  "hudLayout.prompt.right": "Edit with %s",
+  "betterhud.inventoryFull": "Inventory Full",
+  "betterhud.saturation": "Saturation: %.1f"
 }

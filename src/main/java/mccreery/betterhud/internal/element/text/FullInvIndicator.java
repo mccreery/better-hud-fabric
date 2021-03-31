@@ -2,8 +2,12 @@ package mccreery.betterhud.internal.element.text;
 
 import mccreery.betterhud.api.HudRenderContext;
 import mccreery.betterhud.api.property.BooleanProperty;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FullInvIndicator extends TextElement {
@@ -15,13 +19,14 @@ public class FullInvIndicator extends TextElement {
     }
 
     @Override
-    protected List<String> getText() {
-        return Arrays.asList(I18n.format("betterHud.hud.fullInv"));
-    }
+    protected List<Text> getText(HudRenderContext context) {
+        PlayerEntity player = context.getClient().player;
 
-    @Override
-    public boolean shouldRender(HudRenderContext context) {
-        return MC.player.inventory.getFirstEmptyStack() == -1 &&
-            (!offHand.get() || !MC.player.inventory.offHandInventory.get(0).isEmpty());
+        if (player.inventory.getEmptySlot() == -1 &&
+                (!offHand.get() || !player.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())) {
+            return Collections.singletonList(new TranslatableText("betterhud.inventoryFull"));
+        } else {
+            return Collections.emptyList();
+        }
     }
 }
